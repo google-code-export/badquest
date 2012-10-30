@@ -1,0 +1,16 @@
+#summary For dumping ideas as they arrive.
+#labels Phase-Design
+
+= Introduction =
+
+This page exists for jotting down any ideas that are had. An idea will take the form of a bullet point in the following list, and possibly a paragraph expansion, or some concept art.
+
+
+= Ideas =
+
+  * *Eyeroller enemy*
+  * *Sentient pit*
+  An enemy which acts as a connected set of pit or void tiles, growing in size with each actor it consumes. Would be mobile.
+  * *Faux z-axis*
+  May be interesting to show tiles scaled down in the background, possibly darker than those in the foreground. Idea was tied to the sentient pit, in which the player may witness an event where an enemy npc faction pushes some of its members off into the background, where they are consumed by the pit.
+ 
