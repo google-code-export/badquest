@@ -11,6 +11,24 @@ public abstract class DrawableObject {
 	protected double radius,angle;
 	protected boolean moveable = true, solid = true;
 	
+	protected final int OID;
+	
+	public DrawableObject(){
+		OID = register();
+	}
+	
+	public DrawableObject(int ID){
+		OID = register(ID);
+	}
+	
+	private final int register(){
+		return ObjectManager.register(this);
+	}
+	
+	private final int register(int ID){
+		return ObjectManager.register(this, ID);
+	}
+	
 	//Gets
 	public Vector getPosition(){
 		return new Vector(position);
@@ -55,4 +73,8 @@ public abstract class DrawableObject {
 	}
 	public abstract void update(double elapsedTime);
 	public abstract void drawBody(Graphics2D g, double elapsedSeconds, Camera cam);
+	
+	public String toString(){
+		return "Object "+OID;
+	}
 }
