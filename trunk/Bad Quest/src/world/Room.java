@@ -3,13 +3,16 @@ package world;
 import gameObjects.DrawableObject;
 
 import java.awt.Graphics2D;
+import java.util.ArrayDeque;
 
 import util.Collision;
 import client.Camera;
 
 public class Room {
 	private Tile[][] map;
+	private ArrayDeque<DrawableObject> entityList;
 	public final int R,C;
+	private int RID;
 	/**
 	 * Initialize a room with R row and C columns
 	 * @param R
@@ -38,22 +41,32 @@ public class Room {
 		map[8][7] = new Wall(8,7);
 		map[9][7] = new Wall(9,7);
 		map[9][6] = new Wall(9,6);
+		
+		entityList = new ArrayDeque<DrawableObject>();
+	}
+	
+	public void setRID(int RID){
+		this.RID = RID;
+	}
+	
+	public int getRID(){
+		return RID;
+	}
+	
+	public void addEntity(DrawableObject obj){
+		entityList.add(obj);
+	}
+	
+	/**
+	 * Returns a reference to this room's entity list.
+	 * @return the room's entity list.
+	 */
+	public ArrayDeque<DrawableObject> getEntityList(){
+		return entityList;
 	}
 	
 	public void collideWithSolids(DrawableObject obj, double elapsedSeconds){
 		Collision.collideObjectWithRoom(map, obj, elapsedSeconds);
-//		double r = obj.getRadius();
-//		double x = 2*Tile.SIZE;
-//		double D = obj.getVelocity().scale(elapsedSeconds).mag();
-//		double check = Math.pow(r+D+x,2);
-//		for(int i = 0; i < C; i++)
-//			for(int j = 0; j < R; j++){
-//				Vector center = map[i][j].getCenter();
-//				if(!map[i][j].isSolid() || center.sub(obj.getPosition()).mag2() > check)
-//					continue;
-//				//Otherwise, collide the two!
-//				Collision.objectTileCollision(obj, map[i][j], elapsedSeconds);
-//			}
 	}
 	
 	public void drawAll(Graphics2D g, double elapsedSeconds, Camera cam){

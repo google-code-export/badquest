@@ -35,7 +35,7 @@ public class Actor extends DrawableObject {
 
 	@Override
 	public void update(double elapsedSeconds){
-		Vector.add(position,velocity.scale(elapsedSeconds));
+		move(elapsedSeconds);
 	}
 
 	@Override

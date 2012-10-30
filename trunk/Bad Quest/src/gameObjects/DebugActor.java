@@ -8,29 +8,12 @@ import util.Vector;
 import client.Camera;
 
 public class DebugActor extends DrawableObject{
-	private Vector base,velocity = new Vector(5,0);
-	private double R,timeElapsed,period;
 	public DebugActor(Vector v){
-		R = 75;
-		timeElapsed = 0;
-		period = 2;
-		base = new Vector(v);
-		position = base.add(new Vector(R,0));
+		setPosition(v);
 	}
-	
-	public void setPosition(Vector v){
-		position.setTo(v);
-	}
-	
+
 	public void update(double elapsedSeconds){
-//		timeElapsed = (timeElapsed + elapsedTime)%period;
-//		Vector add = new Vector(2*Math.PI*timeElapsed/period).scale(R);
-//		position = base.add(add);
-		position = position.add(velocity);
-	}
-	
-	public Vector getPosition() {
-		return position;
+		move(elapsedSeconds);
 	}
 	
 	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam){

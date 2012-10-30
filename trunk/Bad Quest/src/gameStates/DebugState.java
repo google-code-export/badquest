@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayDeque;
 import java.util.BitSet;
 import java.util.LinkedList;
 
@@ -22,7 +23,7 @@ import client.GameClient;
 public class DebugState extends State{
 	Room room = new Room(20,30);
 	Actor[] actors;
-	LinkedList<DrawableObject> drawList; 
+	ArrayDeque<DrawableObject> drawList; 
 	Camera cam = new Camera(new Vector(0,0));
 	
 	int[] dx = new int[]{0,0,-1,1};
@@ -36,7 +37,6 @@ public class DebugState extends State{
 	
 	public DebugState(){
 		keys = new BitSet();
-		drawList = new LinkedList<DrawableObject>();
 		
 		actors = new Actor[]{new Player("Rawnblade", 10, new Vector(200,200)), 
 							 new Actor("Rusty Stranglechain", 10, new Vector(120,100)),
@@ -46,7 +46,8 @@ public class DebugState extends State{
 							 new Actor("Horace Elbowdrum", 10, new Vector(100,100))};
 //		addChildState(new EditorOverlayState());
 		for(Actor a:actors)
-			drawList.add(a);
+			room.addEntity(a);
+		drawList = room.getEntityList();
 	}
 	
 	public void setCameraFollow(DrawableObject focus){
@@ -93,11 +94,14 @@ public class DebugState extends State{
 			if(activeActor == 0)
 				((Player)actors[0]).setAngle(Math.atan2(my-cam.worldToScreen(actors[0].getPosition()).y,mx-cam.worldToScreen(actors[0].getPosition()).x));
 			actors[activeActor].setVelocity(velocity.scale(1/scale));
-			room.collideWithSolids(actors[activeActor], elapsedSeconds);
 			cam.follow(actors[activeActor]);
 		}else{
 			cam.follow(null);
 		}
+		
+		for(Actor a:actors)
+			if(a.isSolid())
+				room.collideWithSolids(a, elapsedSeconds);
 		
 		for(DrawableObject d:drawList)
 			d.update(elapsedSeconds);

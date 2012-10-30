@@ -10,7 +10,10 @@ public class Collision {
 	private static int[] dx = new int[]{1,0,0,1};
 	private static int[] dy = new int[]{0,0,1,1};
 	private static int[] cardinal = new int[]{0,-1,0,1};
-	private static double extensionEPS = 1e-3;
+	
+	private static final double extensionEPS = 1e-3;
+	private static final int MAX_COLLISIONS = 10;
+	
 	public static Pair objectTileCollision(DrawableObject obj, Tile t, double elapsedSeconds){
 		Vector nextPos = obj.getPosition().add(obj.getVelocity().scale(elapsedSeconds));
 		double min = 1;
@@ -61,11 +64,15 @@ public class Collision {
 		return new Pair(hit,min);
 	}
 	
-	//TODO: Get rid of this ugly loop, attempt to fix the problem where object radius == Tile.SIZE/2 leads to infinite collisions
 	public static void collideObjectWithRoom(Tile[][] map, DrawableObject obj, double elapsedSeconds){
 		boolean changed = true;
-		int times = 0;
-		while(times < 100 && changed){
+		int counter = 0;
+		while(changed){
+			if(counter >= MAX_COLLISIONS){
+				obj.setVelocity(new Vector(0,0));
+				break;
+			}
+			
 			Pair best = new Pair(null,1);
 			
 			double r = obj.getRadius();
@@ -92,8 +99,9 @@ public class Collision {
 				
 				obj.setPosition(stop);
 				obj.setVelocity(obj.getVelocity().sub(sub));
+//				obj.setVelocity(new Vector(0,0));
 			}
-			times++;
+			counter++;
 		}
 	}
 	

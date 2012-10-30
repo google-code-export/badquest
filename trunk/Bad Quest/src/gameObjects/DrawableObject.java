@@ -8,8 +8,10 @@ import client.Camera;
 public abstract class DrawableObject {
 	protected Vector position = new Vector(0,0);
 	protected Vector velocity = new Vector(0,0);
-	protected double radius;
-	protected boolean moveable = true;
+	protected double radius,angle;
+	protected boolean moveable = true, solid = true;
+	
+	//Gets
 	public Vector getPosition(){
 		return new Vector(position);
 	}
@@ -19,9 +21,14 @@ public abstract class DrawableObject {
 	public double getRadius(){
 		return radius;
 	}
-	public double setRadius(){
-		return radius;
+	public double getAngle() {
+		return angle;
 	}
+	public boolean isSolid() {
+		return solid;
+	}
+	
+	//Sets
 	public void setPosition(Vector v){
 		position.setTo(v);
 	}
@@ -32,6 +39,17 @@ public abstract class DrawableObject {
 		}
 		velocity.setTo(v);
 	}
+	public void setRadius(double radius){
+		this.radius = radius;
+	}
+	public void setAngle(double angle){
+		this.angle = angle;
+	}
+	public void setSolid(boolean solid) {
+		this.solid = solid;
+	}
+	
+	//Update stuff
 	public void move(double elapsedSeconds){
 		Vector.add(position, velocity.scale(elapsedSeconds));
 	}
