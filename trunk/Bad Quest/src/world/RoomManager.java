@@ -8,7 +8,7 @@ import java.util.TreeMap;
 
 public class RoomManager {
 	private static TreeMap<Integer, Room> rmap = new TreeMap<Integer, Room>();
-	private static int RIDcounter = 0;
+	private static int RIDcounter = 1;
 	private static int curRID = -1;
 	
 	public static Room setRoom(int ID){

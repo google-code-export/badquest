@@ -8,14 +8,16 @@ import util.Vector;
 import client.Camera;
 
 public abstract class Tile {
+	protected Room owner;
 	protected Color color = Color.gray;
 	protected Vector position,center;
 	public final static int SIZE = 21;
 	public final TileType TID;
-	public Tile(Vector position, TileType t){
-		this.position = new Vector(position);
-		this.center = position.add(new Vector(SIZE/2.,SIZE/2.));
+	public Tile(Vector position, TileType t, Room owner){
+		this.position = owner.getPosition().add(position);
+		this.center = this.position.add(new Vector(SIZE/2.,SIZE/2.));
 		TID = t;
+		this.owner = owner;
 	}
 	
 	public boolean isSolid(){

@@ -7,8 +7,8 @@ import util.Vector;
 import client.Camera;
 
 public class Wall extends Tile {
-	public Wall(int x, int y){
-		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.WALL);
+	public Wall(int y, int x, Room owner){
+		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.WALL, owner);
 //		color = Color.RED.darker().darker().darker();
 	}
 	

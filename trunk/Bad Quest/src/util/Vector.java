@@ -91,6 +91,9 @@ public class Vector {
 	public double mag(){
 		return Math.sqrt(mag2());
 	}
+	public double dis2(Vector p){
+		return sub(p).mag2();
+	}
 	public double dis(Vector p){
 		return sub(p).mag();
 	}
