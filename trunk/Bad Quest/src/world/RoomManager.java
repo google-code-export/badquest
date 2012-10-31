@@ -40,18 +40,16 @@ public class RoomManager {
 		for(Integer OID:add)
 			next.addEntity(ObjectManager.getObjectByID(OID));
 		
-		System.out.println("Transferring from " + curRID + " to " + ID);
+		System.out.println("Transferring from " + rmap.get(curRID) + " to " + rmap.get(ID));
 		
 		curRID = ID;
 		return next;
 	}
 	
 	public static Room getRoomFromID(int ID){
-		Room ret = null;
 		synchronized(rmap){
-			ret = rmap.get(ID);
+			return rmap.get(ID);
 		}
-		return ret;
 	}
 	
 	public static int register(Room room, int ID){

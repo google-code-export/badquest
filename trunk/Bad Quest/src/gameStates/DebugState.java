@@ -102,12 +102,14 @@ public class DebugState extends State{
 			cam.follow(null);
 		}
 		
-		for(Integer oid:drawList.keySet())
-			if(drawList.get(oid).isSolid())
-				room.collideWithSolids(drawList.get(oid), elapsedSeconds);
-		
-		for(Integer oid:drawList.keySet())
-			drawList.get(oid).update(elapsedSeconds);
+		synchronized(drawList){
+			for(Integer oid:drawList.keySet())
+				if(drawList.get(oid).isSolid())
+					room.collideWithSolids(drawList.get(oid), elapsedSeconds);
+			
+			for(Integer oid:drawList.keySet())
+				drawList.get(oid).update(elapsedSeconds);
+		}
 		
 		cam.setScale(scale);
 		cam.update(elapsedSeconds);
@@ -129,8 +131,10 @@ public class DebugState extends State{
 		
 		room.drawAll(g, elapsedSeconds, cam);
 		
-		for(Integer oid:drawList.keySet())
-			drawList.get(oid).drawBody(g, elapsedSeconds, cam);
+		synchronized(drawList){
+			for(Integer oid:drawList.keySet())
+				drawList.get(oid).drawBody(g, elapsedSeconds, cam);
+		}
 		
 		g.setColor(Color.WHITE);
 		g.setStroke(new BasicStroke(2.f));
