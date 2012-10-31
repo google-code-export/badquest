@@ -30,6 +30,9 @@ public abstract class DrawableObject {
 	}
 	
 	//Gets
+	public int getOID(){
+		return OID;
+	}
 	public Vector getPosition(){
 		return new Vector(position);
 	}

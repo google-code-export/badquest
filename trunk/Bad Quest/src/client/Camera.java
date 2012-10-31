@@ -42,6 +42,10 @@ public class Camera {
 		this.scale = scale;
 	}
 	
+	public Vector getPosition(){
+		return position;
+	}
+	
 	public void setPosition(Vector v){
 		position.setTo(v);
 	}
