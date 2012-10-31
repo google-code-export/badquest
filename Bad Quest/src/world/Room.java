@@ -58,7 +58,9 @@ public class Room {
 	}
 	
 	public void addEntity(DrawableObject obj){
-		entityMap.put(obj.getOID(),obj);
+		synchronized(entityMap){
+			entityMap.put(obj.getOID(),obj);
+		}
 	}
 	
 	/**
@@ -67,8 +69,10 @@ public class Room {
 	 */
 	public ArrayDeque<DrawableObject> getEntityList(){
 		ArrayDeque<DrawableObject> entityList = new ArrayDeque<DrawableObject>();
-		for(Integer x:entityMap.keySet())
-			entityList.add(entityMap.get(x));
+		synchronized(entityMap){
+			for(Integer x:entityMap.keySet())
+				entityList.add(entityMap.get(x));
+		}
 		return entityList;
 	}
 	
@@ -77,7 +81,9 @@ public class Room {
 	}
 	
 	public void collideWithSolids(DrawableObject obj, double elapsedSeconds){
-		Collision.collideObjectWithRoom(map, obj, elapsedSeconds);
+		synchronized(entityMap){
+			Collision.collideObjectWithRoom(map, obj, elapsedSeconds);
+		}
 	}
 	
 	public void drawAll(Graphics2D g, double elapsedSeconds, Camera cam){
