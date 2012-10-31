@@ -13,17 +13,20 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayDeque;
 import java.util.BitSet;
-import java.util.LinkedList;
+import java.util.TreeMap;
 
 import util.Vector;
 import world.Room;
+import world.RoomManager;
 import client.Camera;
 import client.GameClient;
 
 public class DebugState extends State{
-	Room room = new Room(20,30);
+	Room room = new Room(20,50);
+	Room background = new Room(50,20);
+	Room backbackground = new Room(50,50);
 	Actor[] actors;
-	ArrayDeque<DrawableObject> drawList; 
+	TreeMap<Integer, DrawableObject> drawList; 
 	Camera cam = new Camera(new Vector(0,0));
 	
 	int[] dx = new int[]{0,0,-1,1};
@@ -44,10 +47,12 @@ public class DebugState extends State{
 							 new Actor("Pork Undertow", 10, new Vector(60,100)),
 							 new Actor("Kurt Lioncrusher", 10, new Vector(80,100)),
 							 new Actor("Horace Elbowdrum", 10, new Vector(100,100))};
-//		addChildState(new EditorOverlayState());
+		
+		RoomManager.setRoom(room.getRID());
+		
 		for(Actor a:actors)
 			room.addEntity(a);
-		drawList = room.getEntityList();
+		drawList = room.getEntityMap();
 	}
 	
 	public void setCameraFollow(DrawableObject focus){
@@ -79,7 +84,7 @@ public class DebugState extends State{
 	//State stuff
 	//**************
 	
-	protected void update(double elapsedSeconds){
+	protected void update(double elapsedSeconds){		
 		Vector velocity = getPlayerVel();
 		if(keys.get(KeyEvent.VK_Q))
 			scale = scale*9/10.;
@@ -91,20 +96,18 @@ public class DebugState extends State{
 		
 //		System.out.println(activeActor);
 		if(activeActor > -1){
-			if(activeActor == 0)
-				((Player)actors[0]).setAngle(Math.atan2(my-cam.worldToScreen(actors[0].getPosition()).y,mx-cam.worldToScreen(actors[0].getPosition()).x));
 			actors[activeActor].setVelocity(velocity.scale(1/scale));
 			cam.follow(actors[activeActor]);
 		}else{
 			cam.follow(null);
 		}
 		
-		for(Actor a:actors)
-			if(a.isSolid())
-				room.collideWithSolids(a, elapsedSeconds);
+		for(Integer oid:drawList.keySet())
+			if(drawList.get(oid).isSolid())
+				room.collideWithSolids(drawList.get(oid), elapsedSeconds);
 		
-		for(DrawableObject d:drawList)
-			d.update(elapsedSeconds);
+		for(Integer oid:drawList.keySet())
+			drawList.get(oid).update(elapsedSeconds);
 		
 		cam.setScale(scale);
 		cam.update(elapsedSeconds);
@@ -113,10 +116,21 @@ public class DebugState extends State{
 	protected void draw(Graphics2D g, double elapsedSeconds){
 		AffineTransform prev = g.getTransform();
 		
+		Camera backbackCam = new Camera(cam.getPosition(), cam.scale()*.5);
+		backbackground.drawAll(g, elapsedSeconds, backbackCam);
+		
+		Camera backCam = new Camera(cam.getPosition(), cam.scale()*.75);
+		background.drawAll(g, elapsedSeconds, backCam);
+
+		g.setColor(new Color(0,0,0,100));
+		g.fillRect(0, 0, 2100, 2100);
+		
+		g.setTransform(prev);
+		
 		room.drawAll(g, elapsedSeconds, cam);
 		
-		for(DrawableObject d:drawList)
-			d.drawBody(g, elapsedSeconds, cam);
+		for(Integer oid:drawList.keySet())
+			drawList.get(oid).drawBody(g, elapsedSeconds, cam);
 		
 		g.setColor(Color.WHITE);
 		g.setStroke(new BasicStroke(2.f));
@@ -131,6 +145,7 @@ public class DebugState extends State{
 				g.drawString(((Actor)(cam.getFocus())).getName(), GameClient.frameWidth/2-(int)(f.getStringBounds(((Actor)(cam.getFocus())).getName(), g).getWidth()/2), 62);
 			g.drawString(String.format("(%.4f, %.4f)", cam.getFocus().getPosition().x, cam.getFocus().getPosition().y), GameClient.frameWidth/2+5, GameClient.frameHeight/2-7);
 			g.drawString(String.format("(%.4f, %.4f)", cam.getFocus().getVelocity().x, cam.getFocus().getVelocity().y), GameClient.frameWidth/2+5, GameClient.frameHeight/2+15);
+			g.drawString(String.format("%.4f", cam.scale()), GameClient.frameWidth/2-5, GameClient.frameHeight-30);
 		}
 		
 		g.setTransform(prev);
@@ -138,6 +153,20 @@ public class DebugState extends State{
 	
 	@Override
 	protected void keyPressed(KeyEvent e) {
+		if(!keys.get(e.getKeyCode()) && e.getKeyCode() == KeyEvent.VK_P){
+			ArrayDeque<Integer> transfer = new ArrayDeque<Integer>();
+			if(activeActor > -1)
+				transfer.add(actors[activeActor].getOID());
+			
+			Room temp = room;
+			room = RoomManager.changeRoom(transfer, background.getRID());
+			background = temp;
+			
+			synchronized(room.getEntityList()){
+				drawList = room.getEntityMap();
+			}
+		}
+		
 		keys.set(e.getKeyCode());
 		if(e.getKeyCode() == KeyEvent.VK_0){
 			activeActor = -1;

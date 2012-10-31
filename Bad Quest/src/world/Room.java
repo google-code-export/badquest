@@ -4,21 +4,28 @@ import gameObjects.DrawableObject;
 
 import java.awt.Graphics2D;
 import java.util.ArrayDeque;
+import java.util.TreeMap;
 
 import util.Collision;
+import util.Vector;
 import client.Camera;
 
 public class Room {
 	private Tile[][] map;
-	private ArrayDeque<DrawableObject> entityList;
+	private TreeMap<Integer, DrawableObject> entityMap;
+	
+	private Vector position;
+	
 	public final int R,C;
-	private int RID;
+	private final int RID;
 	/**
 	 * Initialize a room with R row and C columns
 	 * @param R
 	 * @param C
 	 */
 	public Room(int R, int C){
+		RID = RoomManager.register(this);
+		
 		this.R = R;
 		this.C = C;
 		
@@ -42,11 +49,8 @@ public class Room {
 		map[9][7] = new Wall(9,7);
 		map[9][6] = new Wall(9,6);
 		
-		entityList = new ArrayDeque<DrawableObject>();
-	}
-	
-	public void setRID(int RID){
-		this.RID = RID;
+		entityMap = new TreeMap<Integer, DrawableObject>();
+		position = new Vector(0,0);
 	}
 	
 	public int getRID(){
@@ -54,7 +58,7 @@ public class Room {
 	}
 	
 	public void addEntity(DrawableObject obj){
-		entityList.add(obj);
+		entityMap.put(obj.getOID(),obj);
 	}
 	
 	/**
@@ -62,7 +66,14 @@ public class Room {
 	 * @return the room's entity list.
 	 */
 	public ArrayDeque<DrawableObject> getEntityList(){
+		ArrayDeque<DrawableObject> entityList = new ArrayDeque<DrawableObject>();
+		for(Integer x:entityMap.keySet())
+			entityList.add(entityMap.get(x));
 		return entityList;
+	}
+	
+	public TreeMap<Integer, DrawableObject> getEntityMap(){
+		return entityMap;
 	}
 	
 	public void collideWithSolids(DrawableObject obj, double elapsedSeconds){
@@ -73,5 +84,9 @@ public class Room {
 		for(Tile[] row:map)
 			for(Tile t:row)
 				t.drawBody(g, elapsedSeconds, cam);
+	}
+	
+	public String toString(){
+		return "Room " + RID;
 	}
 }

@@ -9,7 +9,6 @@ import client.Camera;
 
 public class DebugActor extends DrawableObject{
 	public DebugActor(Vector v){
-//		super();
 		setPosition(v);
 	}
 
