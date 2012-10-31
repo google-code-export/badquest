@@ -1,6 +1,8 @@
 package world;
 
+import gameObjects.Actor;
 import gameObjects.DrawableObject;
+import gameObjects.Player;
 
 import java.awt.Graphics2D;
 import java.util.ArrayDeque;
@@ -28,33 +30,48 @@ public class Room {
 		
 		this.R = R;
 		this.C = C;
+		position = new Vector(0,0);
 		
-		map = new Tile[C][R];
-		for(int i = 0; i < C; i++)
-			for(int j = 0; j < R; j++)
-				map[i][j] = new Stone(i,j);
-		for(int i = 0; i < C; i++){
-			map[i][0] = new Wall(i,0);
-			map[i][R-1] = new Wall(i,R-1);
-		}
+		map = new Tile[R][C];
+		for(int i = 0; i < R; i++)
+			for(int j = 0; j < C; j++)
+				map[i][j] = new Stone(i,j,this);
 		for(int i = 0; i < R; i++){
-			map[0][i] = new Wall(0,i);
-			map[C-1][i] = new Wall(C-1,i);
+			map[i][0] = new Wall(i,0,this);
+			map[i][C-1] = new Wall(i,C-1,this);
+		}
+		for(int i = 0; i < C; i++){
+			map[0][i] = new Wall(0,i,this);
+			map[R-1][i] = new Wall(R-1,i,this);
 		}
 		
-		map[7][5] = new Wall(7,5);
-		map[7][6] = new Wall(7,6);
-		map[7][7] = new Wall(7,7);
-		map[8][7] = new Wall(8,7);
-		map[9][7] = new Wall(9,7);
-		map[9][6] = new Wall(9,6);
+		map[7][5] = new Wall(7,5,this);
+		map[7][6] = new Wall(7,6,this);
+		map[7][7] = new Wall(7,7,this);
+		map[8][7] = new Wall(8,7,this);
+		map[9][7] = new Wall(9,7,this);
+		map[9][6] = new Wall(9,6,this);
 		
 		entityMap = new TreeMap<Integer, DrawableObject>();
-		position = new Vector(0,0);
+	}
+	
+	public Room(int selector, Vector v){
+		RID = RoomManager.register(this);
+		position = new Vector(v);
+		
+		map = DebugRoomMaker.selectPrebuilt(selector,this);
+		R = map.length;
+		C = map[0].length;
+		
+		entityMap = new TreeMap<Integer, DrawableObject>();
 	}
 	
 	public int getRID(){
 		return RID;
+	}
+	
+	public Vector getPosition(){
+		return new Vector(position);
 	}
 	
 	public void addEntity(DrawableObject obj){
@@ -63,10 +80,6 @@ public class Room {
 		}
 	}
 	
-	/**
-	 * Returns a reference to this room's entity list.
-	 * @return the room's entity list.
-	 */
 	public ArrayDeque<DrawableObject> getEntityList(){
 		ArrayDeque<DrawableObject> entityList = new ArrayDeque<DrawableObject>();
 		synchronized(entityMap){
@@ -80,6 +93,16 @@ public class Room {
 		return entityMap;
 	}
 	
+	public boolean actorWithinCircle(Vector p, double r){
+		boolean flag = false;
+		synchronized(entityMap){
+			for(Integer x:entityMap.keySet())
+				if(entityMap.get(x) instanceof Actor && entityMap.get(x).getPosition().dis2(p) <= r*r)
+					flag = true;
+		}
+		return flag;
+	}
+	
 	public void collideWithSolids(DrawableObject obj, double elapsedSeconds){
 		synchronized(entityMap){
 			Collision.collideObjectWithRoom(map, obj, elapsedSeconds);
@@ -90,6 +113,11 @@ public class Room {
 		for(Tile[] row:map)
 			for(Tile t:row)
 				t.drawBody(g, elapsedSeconds, cam);
+		
+		synchronized(entityMap){
+			for(Integer e:entityMap.keySet())
+				entityMap.get(e).drawBody(g, elapsedSeconds, cam);
+		}
 	}
 	
 	public String toString(){

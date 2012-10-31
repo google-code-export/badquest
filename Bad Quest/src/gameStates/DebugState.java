@@ -3,6 +3,7 @@ package gameStates;
 import gameObjects.Actor;
 import gameObjects.DrawableObject;
 import gameObjects.Player;
+import gameObjects.Portal;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -22,9 +23,10 @@ import client.Camera;
 import client.GameClient;
 
 public class DebugState extends State{
-	Room room = new Room(20,50);
+	Room room = new Room(0,new Vector(400,0));
 	Room background = new Room(50,20);
 	Room backbackground = new Room(50,50);
+	
 	Actor[] actors;
 	TreeMap<Integer, DrawableObject> drawList; 
 	Camera cam = new Camera(new Vector(0,0));
@@ -34,12 +36,22 @@ public class DebugState extends State{
 	BitSet keys; //Set of active keyboard presses
 	double acc = 225;
 	double scale = 1;
+	double layerSpacing = .75;
 	
 	int activeActor = 0;
 	int mx = 0, my = 0;
 	
 	public DebugState(){
 		keys = new BitSet();
+		
+		Portal A = new Portal(room, new Vector(500,40));
+		Portal B = new Portal(background, new Vector(50,200));
+		
+		A.setPortal(background, B);
+		B.setPortal(room, A);
+		
+		room.addEntity(A);
+		background.addEntity(B);
 		
 		actors = new Actor[]{new Player("Rawnblade", 10, new Vector(200,200)), 
 							 new Actor("Rusty Stranglechain", 10, new Vector(120,100)),
@@ -52,6 +64,7 @@ public class DebugState extends State{
 		
 		for(Actor a:actors)
 			room.addEntity(a);
+		
 		drawList = room.getEntityMap();
 	}
 	
@@ -111,31 +124,60 @@ public class DebugState extends State{
 				drawList.get(oid).update(elapsedSeconds);
 		}
 		
+		Portal transfer = null;
+		Actor move = null;
+		synchronized(drawList){
+			for(Integer oid:drawList.keySet()){
+				if(drawList.get(oid) instanceof Actor)
+				for(Integer pid:drawList.keySet()){
+					if(drawList.get(pid) instanceof Portal){
+						Portal p = (Portal)drawList.get(pid);
+						Actor a = (Actor)drawList.get(oid);
+						if(p.getState() == Portal.State.ACTIVE && p.getPosition().dis2(a.getPosition()) <= p.getRadius()*p.getRadius()){
+							transfer = p;
+							move = a;
+						}
+					}
+				}
+			}
+		}
+		
+		if(transfer != null){
+			Room next = transfer.getExitRoom();
+			Portal exit = transfer.getExitPortal();
+			
+			move.setPosition(exit.getPosition());
+			transfer.setState(Portal.State.INACTIVE);
+			exit.setState(Portal.State.INACTIVE);
+			changeActiveRoom(next);
+		}
+		
 		cam.setScale(scale);
 		cam.update(elapsedSeconds);
 	}
 	
+	double shearx = 0;
 	protected void draw(Graphics2D g, double elapsedSeconds){
 		AffineTransform prev = g.getTransform();
 		
-		Camera backbackCam = new Camera(cam.getPosition(), cam.scale()*.5);
+		//Draw non-focus rooms
+		//In the future, sort rooms by depth before drawing. Determine proper shadow quantity.
+		Camera backbackCam = new Camera(cam.getPosition(), 1/(1 + 2*layerSpacing)*cam.scale());
 		backbackground.drawAll(g, elapsedSeconds, backbackCam);
 		
-		Camera backCam = new Camera(cam.getPosition(), cam.scale()*.75);
+		g.setColor(new Color(0,0,0,150));
+		g.fillRect(0, 0, GameClient.frameWidth, GameClient.frameHeight);
+		
+		Camera backCam = new Camera(cam.getPosition(), 1/(1 + layerSpacing)*cam.scale());
 		background.drawAll(g, elapsedSeconds, backCam);
 
-		g.setColor(new Color(0,0,0,100));
-		g.fillRect(0, 0, 2100, 2100);
+		g.setColor(new Color(0,0,0,150));
+		g.fillRect(0, 0, GameClient.frameWidth, GameClient.frameHeight);
 		
-		g.setTransform(prev);
-		
+		//Draw current room
 		room.drawAll(g, elapsedSeconds, cam);
 		
-		synchronized(drawList){
-			for(Integer oid:drawList.keySet())
-				drawList.get(oid).drawBody(g, elapsedSeconds, cam);
-		}
-		
+		//Draw camera information
 		g.setColor(Color.WHITE);
 		g.setStroke(new BasicStroke(2.f));
 		g.drawLine(GameClient.frameWidth/2, GameClient.frameHeight/2-20, GameClient.frameWidth/2, GameClient.frameHeight/2+20);
@@ -155,20 +197,24 @@ public class DebugState extends State{
 		g.setTransform(prev);
 	}
 	
+	public void changeActiveRoom(Room next){
+		ArrayDeque<Integer> transfer = new ArrayDeque<Integer>();
+		if(activeActor > -1)
+			transfer.add(actors[activeActor].getOID());
+		
+		Room temp = room;
+		room = RoomManager.changeRoom(transfer, next.getRID());
+		background = temp;
+		
+		synchronized(room.getEntityList()){
+			drawList = room.getEntityMap();
+		}
+	}
+	
 	@Override
 	protected void keyPressed(KeyEvent e) {
 		if(!keys.get(e.getKeyCode()) && e.getKeyCode() == KeyEvent.VK_P){
-			ArrayDeque<Integer> transfer = new ArrayDeque<Integer>();
-			if(activeActor > -1)
-				transfer.add(actors[activeActor].getOID());
-			
-			Room temp = room;
-			room = RoomManager.changeRoom(transfer, background.getRID());
-			background = temp;
-			
-			synchronized(room.getEntityList()){
-				drawList = room.getEntityMap();
-			}
+			changeActiveRoom(background);
 		}
 		
 		keys.set(e.getKeyCode());

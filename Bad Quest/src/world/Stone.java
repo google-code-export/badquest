@@ -8,8 +8,8 @@ import util.Vector;
 import client.Camera;
 
 public class Stone extends Tile{
-	public Stone(int x, int y){
-		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.STONE);
+	public Stone(int y, int x, Room owner){
+		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.STONE, owner);
 		color = new Color(33,45,52);
 	}
 	@Override
