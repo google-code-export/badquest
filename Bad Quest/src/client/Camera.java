@@ -1,6 +1,7 @@
 package client;
 
 import gameObjects.DrawableObject;
+import util.SpringDampHelper;
 import util.Vector;
 
 /**
@@ -10,10 +11,8 @@ public class Camera {
 	private int viewHeight = GameClient.frameHeight;
 	private int viewWidth = GameClient.frameWidth;
 	private double scale;
-	private double springStiffness = 0.9, 
-				   springDampening = .08, 
-				   assumedMass = .05,
-				   dragPerSecond = .9;
+	private double dragPerSecond = .9;
+	private SpringDampHelper spring = new SpringDampHelper(1.2,.08,1.7);
 	
 	private Vector position = new Vector(0,0); //Position in the game world
 	private Vector velocity = new Vector(0,0);
@@ -119,14 +118,16 @@ public class Camera {
 	}
 	
 	public void update(double elapsedSeconds){
+		spring.setVelocity(velocity);
 		if(follow != null){
-			Vector d = follow.getPosition().sub(position);
-			Vector f1 = d.scale(springStiffness*assumedMass);
-			Vector f2 = velocity.scale(-springDampening*assumedMass);
-			velocity = f1.add(f2);
+			velocity = spring.getVelocity(follow.getPosition(), position);
+//			Vector d = follow.getPosition().sub(position);
+//			Vector f1 = d.scale(springStiffness*assumedMass);
+//			Vector f2 = velocity.scale(-springDampening*assumedMass);
+//			velocity = f1.add(f2);
 		}else{
 			Vector.add(velocity, velocity.scale(-dragPerSecond*elapsedSeconds));
 		}
-		position = position.add(velocity);
+		position = position.add(velocity.scale(elapsedSeconds));
 	}
 }

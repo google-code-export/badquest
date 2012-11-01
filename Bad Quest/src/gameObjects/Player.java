@@ -15,10 +15,14 @@ public class Player extends Actor {
 	
 	private int[] vx;
 	private int[] vy;
+	
+	private EquipmentModule rightHand;
+	
 	public Player(String name, int r, Vector position){
 		super(name,r,position);
 		color = new Color(125,190,209).darker();
-//		solid = false;
+		rightHand = new EquipmentModule(new Vector(Math.PI/2.5).scale(radius*1.5).add(position));
+		rightHand.loadEquipment(new DebugSword(new Vector(-Math.PI/2.5).scale(radius*1.5).add(position)));
 		initVisor();
 	}
 	
@@ -31,38 +35,30 @@ public class Player extends Actor {
 	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam) {
 		AffineTransform prev = g.getTransform();
 		
-//		Polygon visor = new Polygon(vx, vy, vx.length);
-//		
-//		g.setColor(color);
 		g.translate(cam.xTranslatePosition(position.x), cam.yTranslatePosition(position.y));
 		g.scale(cam.scale(), cam.scale());
-//		g.rotate(angle);
+		g.rotate(angle);
 		
 		g.setColor(Color.black);
 		g.drawOval(-(int)radius, -(int)radius, 2*(int)radius, 2*(int)radius);
 		
-//		g.setClip(0, (int)-(radius+1), (int)visorHeight+1, (int)(2*(radius+1)));
-//		g.fillPolygon(visor);
-		g.setTransform(prev);
-//		g.setClip(null);
-		
 		super.drawBody(g, elapsedSeconds, cam);
-//		
-//		prev = g.getTransform();
-//		
-//		g.setColor(color.darker());
-//		g.translate(cam.xTranslatePosition(position.x), cam.yTranslatePosition(position.y));
-//		g.scale(cam.scale(), cam.scale());
-//		g.rotate(angle);
-//		
-//		g.fillRect((int)(-jointHeight/2), -(int)(radius+jointWidth-1), (int)jointHeight, (int)jointWidth);
-//		g.fillRect((int)(-jointHeight/2), (int)(radius-1), (int)jointHeight, (int)jointWidth);
+		
+		g.setColor(Color.black);
+		g.drawLine(0, 0, (int)radius, 0);
 		
 		g.setTransform(prev);
+		
+		rightHand.drawBody(g, elapsedSeconds, cam);
 	}
 	
 	@Override
-	public void update(double elapsedSeconds) {
+	public void update(double elapsedSeconds){
+		if(velocity.mag2() > 0)
+			angle = velocity.ang();
+		rightHand.setPosition(new Vector(Math.PI/2.5).scale(radius*1.5).rot(angle).add(position));
+		rightHand.move(elapsedSeconds);
+		rightHand.setAngle(angle + Math.PI/6);
 		super.update(elapsedSeconds);
 	}
 }

@@ -2,7 +2,6 @@ package world;
 
 import gameObjects.Actor;
 import gameObjects.DrawableObject;
-import gameObjects.Player;
 
 import java.awt.Graphics2D;
 import java.util.ArrayDeque;
@@ -75,6 +74,18 @@ public class Room {
 	}
 	
 	public void addEntity(DrawableObject obj){
+		synchronized(entityMap){
+			entityMap.put(obj.getOID(),obj);
+		}
+	}
+	
+	/**
+	 * Add a drawable object to this Room at the specified room coordinates.
+	 * @param obj
+	 * @param v Coordinates relative to the top-left corner of the room.
+	 */
+	public void addEntityAt(DrawableObject obj, Vector v){
+		obj.setPosition(getPosition().add(v));
 		synchronized(entityMap){
 			entityMap.put(obj.getOID(),obj);
 		}
