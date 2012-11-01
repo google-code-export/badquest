@@ -19,6 +19,7 @@ import java.util.TreeMap;
 import util.Vector;
 import world.Room;
 import world.RoomManager;
+import world.Tile;
 import client.Camera;
 import client.GameClient;
 
@@ -62,8 +63,9 @@ public class DebugState extends State{
 		
 		RoomManager.setRoom(room.getRID());
 		
+		int x = 41;
 		for(Actor a:actors)
-			room.addEntity(a);
+			room.addEntityAt(a,new Vector((x=x+21)-21, 3*Tile.SIZE));
 		
 		drawList = room.getEntityMap();
 	}

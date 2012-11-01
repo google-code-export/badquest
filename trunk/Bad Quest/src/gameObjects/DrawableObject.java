@@ -74,7 +74,7 @@ public abstract class DrawableObject {
 	public void move(double elapsedSeconds){
 		Vector.add(position, velocity.scale(elapsedSeconds));
 	}
-	public abstract void update(double elapsedTime);
+	public abstract void update(double elapsedSeconds);
 	public abstract void drawBody(Graphics2D g, double elapsedSeconds, Camera cam);
 	
 	public String toString(){
