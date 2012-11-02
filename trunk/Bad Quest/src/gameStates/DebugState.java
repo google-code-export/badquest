@@ -9,6 +9,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -26,7 +27,7 @@ import client.GameClient;
 public class DebugState extends State{
 	Room room = new Room(0,new Vector(400,0));
 	Room background = new Room(50,20);
-	Room backbackground = new Room(50,50);
+	Room backbackground = new Room(20,20);
 	
 	Actor[] actors;
 	TreeMap<Integer, DrawableObject> drawList; 
@@ -47,12 +48,19 @@ public class DebugState extends State{
 		
 		Portal A = new Portal(room, new Vector(500,40));
 		Portal B = new Portal(background, new Vector(50,200));
+		Portal C = new Portal(background, new Vector(50,500));
+		Portal D = new Portal(backbackground, new Vector(50,200));
 		
 		A.setPortal(background, B);
 		B.setPortal(room, A);
+		C.setPortal(backbackground, D);
+		D.setPortal(background, C);
 		
+		room.addEntityAt(new Portal(room, new Vector(0)), new Vector(400,100));
 		room.addEntity(A);
 		background.addEntity(B);
+		background.addEntity(C);
+		backbackground.addEntity(D);
 		
 		actors = new Actor[]{new Player("Rawnblade", 10, new Vector(200,200)), 
 							 new Actor("Rusty Stranglechain", 10, new Vector(120,100)),
@@ -63,9 +71,11 @@ public class DebugState extends State{
 		
 		RoomManager.setRoom(room.getRID());
 		
+		background.addEntityAt(new Actor("Big McLargehuge", 4), new Vector(Tile.SIZE*10, Tile.SIZE*15));
+		
 		int x = 41;
 		for(Actor a:actors)
-			room.addEntityAt(a,new Vector((x=x+21)-21, 3*Tile.SIZE));
+			room.addEntityAt(a,new Vector((x=x+21)-21, 4*Tile.SIZE));
 		
 		drawList = room.getEntityMap();
 	}
@@ -161,6 +171,7 @@ public class DebugState extends State{
 	double shearx = 0;
 	protected void draw(Graphics2D g, double elapsedSeconds){
 		AffineTransform prev = g.getTransform();
+		Stroke pStroke = g.getStroke();
 		
 		//Draw non-focus rooms
 		//In the future, sort rooms by depth before drawing. Determine proper shadow quantity.
@@ -196,6 +207,7 @@ public class DebugState extends State{
 			g.drawString(String.format("%.4f", cam.scale()), GameClient.frameWidth/2-5, GameClient.frameHeight-30);
 		}
 		
+		g.setStroke(pStroke);
 		g.setTransform(prev);
 	}
 	

@@ -7,13 +7,14 @@ import java.awt.geom.AffineTransform;
 import util.Vector;
 import client.Camera;
 
-public class Stone extends Tile{
-	public Stone(int y, int x, Room owner){
+public class Glass extends Tile {
+	
+	public Glass(int y, int x, Room owner){
 		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.STONE, owner);
-		color = new Color(33,45,52);
 	}
+	
 	@Override
-	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam){
+	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam) {
 		AffineTransform prev = g.getTransform();
 		
 		g.translate(cam.xTranslatePosition(position.x), cam.yTranslatePosition(position.y));
@@ -21,14 +22,19 @@ public class Stone extends Tile{
 		
 		g.setClip(0, 0, Tile.SIZE, Tile.SIZE);
 		
-		g.setColor(color.darker());
-		g.fillRect(0, 0, Tile.SIZE+1, Tile.SIZE+1);
-		g.setColor(color.brighter());
-		g.fillRect(0,0,Tile.SIZE-1,Tile.SIZE-1);
-		g.setColor(color);
-		g.fillRect(1, 1, Tile.SIZE-2, Tile.SIZE-2);
+		g.setColor(new Color(255,255,255,10));
+		g.fillRect(0, 0, Tile.SIZE, Tile.SIZE);
+		
+		g.setColor(new Color(128,128,128,40));
+		g.drawArc(-Tile.SIZE/2, -Tile.SIZE/2, Tile.SIZE, Tile.SIZE, 270, 90);
+		g.drawArc(Tile.SIZE/2, Tile.SIZE/2, Tile.SIZE, Tile.SIZE, 90, 90);
+		
+		g.setColor(new Color(64,64,64,200));
+		g.drawRect(0, 0, Tile.SIZE, Tile.SIZE);
 		
 		g.setClip(null);
+		
 		g.setTransform(prev);
 	}
+
 }
