@@ -3,6 +3,7 @@ package gameObjects;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 
 import util.Vector;
@@ -22,6 +23,7 @@ public class DebugSword extends Equipment {
 	@Override
 	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam) {
 		AffineTransform prev = g.getTransform();
+		Stroke pStroke = g.getStroke();
 		
 		g.translate(cam.xTranslatePosition(position.x), cam.yTranslatePosition(position.y));
 		g.rotate(angle);
@@ -36,6 +38,7 @@ public class DebugSword extends Equipment {
 		g.setColor(Color.yellow.darker().darker());
 		g.fillOval(-6,-1,2,2);
 		
+		g.setStroke(pStroke);
 		g.setTransform(prev);
 	}
 }

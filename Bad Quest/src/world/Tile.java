@@ -11,7 +11,7 @@ public abstract class Tile {
 	protected Room owner;
 	protected Color color = Color.gray;
 	protected Vector position,center;
-	public final static int SIZE = 21;
+	public final static int SIZE = 22;
 	public final TileType TID;
 	public Tile(Vector position, TileType t, Room owner){
 		this.position = owner.getPosition().add(position);
