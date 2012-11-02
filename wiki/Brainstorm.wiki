@@ -13,4 +13,13 @@ This page exists for jotting down any ideas that are had. An idea will take the 
   An enemy which acts as a connected set of pit or void tiles, growing in size with each actor it consumes. Would be mobile.
   * *Faux z-axis*
   May be interesting to show tiles scaled down in the background, possibly darker than those in the foreground. Idea was tied to the sentient pit, in which the player may witness an event where an enemy npc faction pushes some of its members off into the background, where they are consumed by the pit. _Edit: This looks really cool in motion._
+  * *Bar/Rest area accessible from each dungeon level*
+  Allow the player some way of entering this hang-out, either at any time or from the beginning of a level. It'll act as this game's Firelink or Sanctuary, possibly offering an assortment of NPCs, and maybe even a game of...
+  * *Ternary Tic-Tac-Toe*
+  For the uninitiated, Ternary Tic-Tac-Toe (TTTT) is a variant on the classic game, in which three players face off on an n by n grid with the following goals (turn order as listed):
+  * X: Wins by placing n Xs in a row, column, or diagonal
+  * O: Wins by placing n Os in a row, column, or diagonal
+  * W: The wildcard, his marker counts as both an X and an O. As he cannot win, his main objective is to force a draw, as misery loves company.
+
+  Here's a chance to show it off to the world! Here's how I envision it: two knights are having a quarrel at some table in the bar, when the player approaches. He's asked to act as the mediator between them as they settle their dispute. The player now finds himself playing the wildcard in a game of TTTT, with one of three outcomes. If he plays his role optimally, then the two knights unite in a mutual dislike of the player character. If one player triumphs over the other, the loser will murder the boasting victor at some point later on. These three outcomes may have an affect later in the game, but that can be decided later.
  
