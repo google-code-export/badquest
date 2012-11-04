@@ -38,7 +38,6 @@ public class Collision {
 		}
 		
 		//Intersect the 4 circles
-		double angle = 2*Math.PI;
 		for(int i = 0; i < 4; i++){
 			//Center of the circle, a vertex on the tile
 			Vector a = t.getPosition().add(new Vector(dx[i]*Tile.SIZE, dy[i]*Tile.SIZE));
@@ -53,7 +52,6 @@ public class Collision {
 					hit = a;
 				}
 			}
-			angle -= Math.PI/2;
 		}
 		
 		//If minimum scale on displacement vector is 1, there is no collision

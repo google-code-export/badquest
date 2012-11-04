@@ -51,10 +51,8 @@ public class DebugState extends State{
 		Portal C = new Portal(background, new Vector(50,500));
 		Portal D = new Portal(backbackground, new Vector(50,200));
 		
-		A.setPortal(background, B);
-		B.setPortal(room, A);
-		C.setPortal(backbackground, D);
-		D.setPortal(background, C);
+		A.linkAndSetActive(B);
+		C.linkAndSetActive(D);
 		
 		room.addEntityAt(new Portal(room, new Vector(0)), new Vector(400,100));
 		room.addEntity(A);
@@ -156,11 +154,15 @@ public class DebugState extends State{
 		
 		if(transfer != null){
 			Room next = transfer.getExitRoom();
-			Portal exit = transfer.getExitPortal();
+			Vector pos = transfer.getExitPosition();
 			
-			move.setPosition(exit.getPosition());
-			transfer.setState(Portal.State.INACTIVE);
-			exit.setState(Portal.State.INACTIVE);
+			move.setPosition(next.getPosition().add(pos));
+			
+			ArrayDeque<DrawableObject> nearby = next.getEntitiesWithinCircle(move.getPosition(), move.getRadius()+transfer.getRadius());
+			for(DrawableObject d:nearby)
+				if(d instanceof Portal && ((Portal) d).getState() == Portal.State.ACTIVE)
+					((Portal) d).setState(Portal.State.INACTIVE);
+			
 			changeActiveRoom(next);
 		}
 		

@@ -104,6 +104,7 @@ public class Room {
 		return entityMap;
 	}
 	
+	//TODO: Consolidate into getEntitiesWithinCircle
 	public boolean actorWithinCircle(Vector p, double r){
 		boolean flag = false;
 		synchronized(entityMap){
@@ -112,6 +113,21 @@ public class Room {
 					flag = true;
 		}
 		return flag;
+	}
+	
+	/**
+	 * Retrieve a list of entities within the specified circle
+	 * @param p the center of the circle
+	 * @param r the radius of the circle
+	 */
+	public ArrayDeque<DrawableObject> getEntitiesWithinCircle(Vector p, double r){
+		ArrayDeque<DrawableObject> ret = new ArrayDeque<DrawableObject>();
+		synchronized(entityMap){
+			for(Integer x:entityMap.keySet())
+				if(entityMap.get(x).getPosition().dis2(p) <= r*r)
+					ret.add(entityMap.get(x));
+		}
+		return ret;
 	}
 	
 	public void collideWithSolids(DrawableObject obj, double elapsedSeconds){
