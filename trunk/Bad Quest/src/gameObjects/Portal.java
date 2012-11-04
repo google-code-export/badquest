@@ -14,7 +14,7 @@ public class Portal extends DrawableObject {
 	private Room owner;
 	
 	private Room to;
-	private Portal exit;
+	private Vector exitPos;
 	
 	private State state;
 	
@@ -41,45 +41,64 @@ public class Portal extends DrawableObject {
 		}
 	}
 	
-	public void setPortal(Room r, Portal e){
-		to = r;
-		exit = e;
-		state = State.ACTIVE;
-	}
-	
-	@Override
-	public void update(double elapsedSeconds) {
-		if(state == State.INACTIVE && !owner.actorWithinCircle(position, radius+Tile.SIZE/2))
-			state = State.ACTIVE;
-		if(state == State.ACTIVE)
-			angle = (angle + angularVelocity*elapsedSeconds)%(2*Math.PI);
-	}
-	
 	public void setState(State s){
 		state = s;
+	}	
+	
+	public void setExit(Room to, Vector pos){
+		this.to = to;
+		exitPos = new Vector(pos);
 	}
 	
 	public State getState(){
 		return state;
 	}
 	
+	public Room getOwner(){
+		return owner;
+	}
+	
 	public Room getExitRoom(){
 		return to;
 	}
 	
-	public Portal getExitPortal(){
-		return exit;
+	public Vector getExitPosition(){
+		return exitPos;
+	}
+	
+	public void link(Portal p){
+		setExit(p.getOwner(), p.getPosition().sub(to.getPosition()));
+		p.setExit(owner, getPosition().sub(owner.getPosition()));
+	}
+	
+	public void linkAndSetActive(Portal p){
+		setExit(p.getOwner(), p.getPosition().sub(p.getOwner().getPosition()));
+		p.setExit(owner, getPosition().sub(owner.getPosition()));
+		
+		setState(State.ACTIVE);
+		p.setState(State.ACTIVE);
+	}
+	
+	@Override
+	public void update(double elapsedSeconds) {
+		if(state == State.INACTIVE && !owner.actorWithinCircle(position, radius+Tile.SIZE/2))
+			state = State.ACTIVE;
+//		if(state == State.ACTIVE)
+//			angle = (angle + angularVelocity*elapsedSeconds)%(2*Math.PI);
 	}
 	
 	@Override
 	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam) {
+		if(state == State.ACTIVE)
+		angle = (angle + angularVelocity*elapsedSeconds)%(2*Math.PI);
+		
 		AffineTransform prev = g.getTransform();
 		
 		g.translate(cam.xTranslatePosition(position.x), cam.yTranslatePosition(position.y));
 		g.scale(cam.scale(), cam.scale());
 		g.rotate(angle);
 		
-		Polygon draw = new Polygon(x, y, n);
+		Polygon draw = new Polygon(x,y,n);
 		
 		int drawRadius = (int)radius;
 		g.setColor(Color.gray.darker());

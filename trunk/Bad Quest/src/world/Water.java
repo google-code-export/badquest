@@ -9,7 +9,7 @@ import client.Camera;
 
 public class Water extends Tile {
 	
-	double period = 5;
+	double period = 2;
 	double time = 0;
 	
 	public Water(int y, int x, Room owner){
@@ -25,22 +25,18 @@ public class Water extends Tile {
 		g.setClip(0, 0, Tile.SIZE, Tile.SIZE);
 		
 		time = (time + elapsedSeconds)%period;
-		
 		double shift = time/period * Tile.SIZE;
-		
 		
 		g.setColor(new Color(30,100,200,255));
 		g.fillRect(0, 0, Tile.SIZE+1, Tile.SIZE+1);
 		
 		g.setColor(new Color(20,128,255,255));
+		
 		g.drawArc((int)Math.round(-Tile.SIZE*3/2.+shift), -Tile.SIZE/2, Tile.SIZE, Tile.SIZE, 270, 90);
-		g.drawArc((int)Math.round(-Tile.SIZE/2+shift), Tile.SIZE/2, Tile.SIZE, Tile.SIZE, 90, 90);
+		g.drawArc((int)Math.round(-Tile.SIZE/2.+shift), Tile.SIZE/2, Tile.SIZE, Tile.SIZE, 90, 90);
 		
-		g.drawArc((int)Math.round(-Tile.SIZE/2+shift), -Tile.SIZE/2, Tile.SIZE, Tile.SIZE, 270, 90);
-		g.drawArc((int)Math.round(Tile.SIZE/2+shift), Tile.SIZE/2, Tile.SIZE, Tile.SIZE, 90, 90);
-		
-//		g.setColor(new Color(64,64,64,200));
-//		g.drawRect(0, 0, Tile.SIZE, Tile.SIZE);
+		g.drawArc((int)Math.round(-Tile.SIZE/2.+shift), -Tile.SIZE/2, Tile.SIZE, Tile.SIZE, 270, 90);
+		g.drawArc((int)Math.round(Tile.SIZE/2.+shift), Tile.SIZE/2, Tile.SIZE, Tile.SIZE, 90, 90);
 		
 		g.setClip(null);
 		

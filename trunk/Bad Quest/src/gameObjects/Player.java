@@ -1,39 +1,56 @@
 package gameObjects;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
+import java.util.Arrays;
 
 import util.Vector;
 import client.Camera;
 
 public class Player extends Actor {
-	private double visorHeight = radius + radius*.5, 
-	               visorBase = 1.3*radius, 
-	               jointWidth = .3 * radius, 
-	               jointHeight = .7 * radius;
+	private double[] vx;
+	private double[] vy;
+	private double[] cx;
+	private double[] cy;
 	
-	private int[] vx;
-	private int[] vy;
-	
-	private EquipmentModule rightHand;
+	private EquipmentModule rightHand,head;
 	
 	public Player(String name, int r, Vector position){
 		super(name,r,position);
 		color = new Color(125,190,209).darker();
 		rightHand = new EquipmentModule(new Vector(Math.PI/2.5).scale(radius*1.5).add(position));
 		rightHand.loadEquipment(new DebugSword(new Vector(-Math.PI/2.5).scale(radius*1.5).add(position)));
+		head = new EquipmentModule(position, true);
+		head.loadEquipment(new DebugHelmet());
 		initVisor();
 	}
 	
 	private void initVisor(){
-		vx = new int[]{(int)Math.round(visorHeight), (int)Math.round(radius*.1), (int)Math.round(radius*.1)};
-		vy = new int[]{0, (int)Math.round(visorBase), (int)Math.round(-visorBase)};
+		cy = new double[]{radius + 15/200. * radius, radius + 15/200. * radius, radius - 15/200. * radius, radius - 15/200. * radius};
+		cx = new double[]{-55/200. * radius, 55/200. * radius, 95/200. * radius, -95/200. * radius};
+		
+		vx = new double[]{cx[1], radius * 1.7, cx[1]};
+		vy = new double[]{cy[1], 0, -cy[1]};
+	}
+	
+	public void drawPoly(double[] x, double[] y, Graphics2D g){
+		int[] px = new int[x.length];
+		int[] py = new int[y.length];
+		for(int i = 0; i < x.length; i++){
+			px[i] = (int)Math.round(x[i]);
+			py[i] = (int)Math.round(y[i]);
+		}
+		
+		g.drawPolygon(px, py, x.length);
 	}
 	
 	@Override
 	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam) {
 		AffineTransform prev = g.getTransform();
+		Stroke pStroke = g.getStroke();
 		
 		g.translate(cam.xTranslatePosition(position.x), cam.yTranslatePosition(position.y));
 		g.scale(cam.scale(), cam.scale());
@@ -41,24 +58,29 @@ public class Player extends Actor {
 		
 		g.setColor(Color.black);
 		g.drawOval(-(int)radius, -(int)radius, 2*(int)radius, 2*(int)radius);
-		
+
 		super.drawBody(g, elapsedSeconds, cam);
 		
-		g.setColor(Color.black);
-		g.drawLine(0, 0, (int)radius, 0);
-		
+		g.setStroke(pStroke);
 		g.setTransform(prev);
 		
 		rightHand.drawBody(g, elapsedSeconds, cam);
+		head.drawBody(g, elapsedSeconds, cam);
 	}
 	
 	@Override
 	public void update(double elapsedSeconds){
 		if(velocity.mag2() > 0)
 			angle = velocity.ang();
+		
+		super.update(elapsedSeconds);
+		
 		rightHand.setPosition(new Vector(Math.PI/2.5).scale(radius*1.5).rot(angle).add(position));
 		rightHand.move(elapsedSeconds);
 		rightHand.setAngle(angle + Math.PI/6);
-		super.update(elapsedSeconds);
+		
+		head.setPosition(position);
+		head.setAngle(angle);
+		head.move(elapsedSeconds);
 	}
 }

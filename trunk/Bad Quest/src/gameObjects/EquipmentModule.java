@@ -10,10 +10,16 @@ public class EquipmentModule {
 	private Vector position; //The expected position of his piece of equipment
 	private Equipment cur;
 	
+	private boolean STRICT; //Strict follow
 	private SpringDampHelper spring = new SpringDampHelper(2.9, .08, 5);
 	
 	public EquipmentModule(Vector position){
 		this.position = new Vector(position);
+	}
+	
+	public EquipmentModule(Vector position, boolean follow){
+		this.position = new Vector(position);
+		STRICT = follow;
 	}
 	
 	/**
@@ -34,8 +40,12 @@ public class EquipmentModule {
 	
 	public void move(double elapsedSeconds){
 		if(cur != null){
-			Vector velocity = spring.getVelocity(position, cur.getPosition());
-			cur.setVelocity(velocity);
+			if(STRICT){
+				cur.setPosition(position);
+			}else{
+				Vector velocity = spring.getVelocity(position, cur.getPosition());
+				cur.setVelocity(velocity);
+			}
 			cur.update(elapsedSeconds);
 		}
 	}
