@@ -5,6 +5,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.BitSet;
 
+import util.Vector;
+
 import client.Camera;
 
 /**
@@ -26,7 +28,7 @@ public class LevelEditorState extends State {
 
 	@Override
 	protected void update(double elapsedSeconds) {
-		
+		cam.setPosition(new Vector(mx,my));
 	}
 	
 	@Override
