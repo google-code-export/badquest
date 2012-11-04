@@ -1,21 +1,14 @@
 package gameObjects;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
-import java.util.Arrays;
 
 import util.Vector;
 import client.Camera;
 
-public class Player extends Actor {
-	private double[] vx;
-	private double[] vy;
-	private double[] cx;
-	private double[] cy;
-	
+public class Player extends Actor {	
 	private EquipmentModule rightHand,head;
 	
 	public Player(String name, int r, Vector position){
@@ -25,17 +18,8 @@ public class Player extends Actor {
 		rightHand.loadEquipment(new DebugSword(new Vector(-Math.PI/2.5).scale(radius*1.5).add(position)));
 		head = new EquipmentModule(position, true);
 		head.loadEquipment(new DebugHelmet());
-		initVisor();
 	}
-	
-	private void initVisor(){
-		cy = new double[]{radius + 15/200. * radius, radius + 15/200. * radius, radius - 15/200. * radius, radius - 15/200. * radius};
-		cx = new double[]{-55/200. * radius, 55/200. * radius, 95/200. * radius, -95/200. * radius};
-		
-		vx = new double[]{cx[1], radius * 1.7, cx[1]};
-		vy = new double[]{cy[1], 0, -cy[1]};
-	}
-	
+
 	public void drawPoly(double[] x, double[] y, Graphics2D g){
 		int[] px = new int[x.length];
 		int[] py = new int[y.length];
