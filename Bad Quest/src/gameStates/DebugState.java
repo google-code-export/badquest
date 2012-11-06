@@ -1,7 +1,9 @@
 package gameStates;
 
 import gameObjects.Actor;
+import gameObjects.DebugBullet;
 import gameObjects.DrawableObject;
+import gameObjects.ObjectManager;
 import gameObjects.Player;
 import gameObjects.Portal;
 
@@ -14,7 +16,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.TreeMap;
 
 import util.Vector;
@@ -25,9 +29,11 @@ import client.Camera;
 import client.GameClient;
 
 public class DebugState extends State{
-	Room room = new Room(0,new Vector(400,0));
-	Room background = new Room(50,20);
-	Room backbackground = new Room(20,20);
+	Room room = new Room(0,new Vector(400,0),0);
+	Room fore = new Room(1,new Vector(-50,-50), 0);
+	Room background = new Room(50,20,1);
+	Room backbackground = new Room(40,40,2);
+	ArrayList<Room> roomList = RoomManager.getRoomList();
 	
 	Actor[] actors;
 	TreeMap<Integer, DrawableObject> drawList; 
@@ -37,8 +43,9 @@ public class DebugState extends State{
 	int[] dy = new int[]{-1,1,0,0};
 	BitSet keys; //Set of active keyboard presses
 	double acc = 225;
-	double scale = 1;
+	double scale = 2.868;
 	double layerSpacing = .75;
+	double drawLayers = 4;
 	
 	int activeActor = 0;
 	int mx = 0, my = 0;
@@ -50,11 +57,15 @@ public class DebugState extends State{
 		Portal B = new Portal(background, new Vector(50,200));
 		Portal C = new Portal(background, new Vector(50,500));
 		Portal D = new Portal(backbackground, new Vector(50,200));
+		Portal E = new Portal(room, new Vector(400,100).add(room.getPosition()));
+		Portal F = new Portal(fore, new Vector(14*Tile.SIZE,Tile.SIZE).add(fore.getPosition()));
 		
 		A.linkAndSetActive(B);
 		C.linkAndSetActive(D);
+		E.linkAndSetActive(F);
 		
-		room.addEntityAt(new Portal(room, new Vector(0)), new Vector(400,100));
+		fore.addEntity(F);
+		room.addEntity(E);
 		room.addEntity(A);
 		background.addEntity(B);
 		background.addEntity(C);
@@ -117,7 +128,6 @@ public class DebugState extends State{
 		for(Actor a:actors)
 			a.setVelocity(new Vector(0,0));
 		
-//		System.out.println(activeActor);
 		if(activeActor > -1){
 			actors[activeActor].setVelocity(velocity.scale(1/scale));
 			cam.follow(actors[activeActor]);
@@ -166,30 +176,33 @@ public class DebugState extends State{
 			changeActiveRoom(next);
 		}
 		
+		room.clean(); //Delete all dead objects
+		
 		cam.setScale(scale);
 		cam.update(elapsedSeconds);
 	}
 	
-	double shearx = 0;
 	protected void draw(Graphics2D g, double elapsedSeconds){
 		AffineTransform prev = g.getTransform();
 		Stroke pStroke = g.getStroke();
 		
 		//Draw non-focus rooms
-		//In the future, sort rooms by depth before drawing. Determine proper shadow quantity.
-		Camera backbackCam = new Camera(cam.getPosition(), 1/(1 + 2*layerSpacing)*cam.scale());
-		backbackground.drawAll(g, elapsedSeconds, backbackCam);
+		for(Room r:roomList){
+			double L = r.getDepth(room.getLayer());
+			
+			if(L < 0)
+				break;
+			if(r.getRID() == room.getRID())
+				continue;
+			
+			Camera backCam = new Camera(cam.getPosition(), 1/(1 + L*layerSpacing)*cam.scale());
+			r.drawAll(g, elapsedSeconds, backCam);
+			
+			g.setColor(new Color(0,0,0,(int)Math.min(255,(120 + 175/(drawLayers+1) * L))));
+			g.fillRect((int)Math.round(backCam.worldToScreen(r.getPosition()).x)-1, (int)Math.round(backCam.worldToScreen(r.getPosition()).y)-1, (int)Math.round(r.C*Tile.SIZE*backCam.scale())+2, (int)Math.round(r.R*Tile.SIZE*backCam.scale())+2);
+		}
 		
-		g.setColor(new Color(0,0,0,150));
-		g.fillRect(0, 0, GameClient.frameWidth, GameClient.frameHeight);
-		
-		Camera backCam = new Camera(cam.getPosition(), 1/(1 + layerSpacing)*cam.scale());
-		background.drawAll(g, elapsedSeconds, backCam);
-
-		g.setColor(new Color(0,0,0,150));
-		g.fillRect(0, 0, GameClient.frameWidth, GameClient.frameHeight);
-		
-		//Draw current room
+		//Draw current room, above all else
 		room.drawAll(g, elapsedSeconds, cam);
 		
 		//Draw camera information
@@ -207,6 +220,7 @@ public class DebugState extends State{
 			g.drawString(String.format("(%.4f, %.4f)", cam.getFocus().getPosition().x, cam.getFocus().getPosition().y), GameClient.frameWidth/2+5, GameClient.frameHeight/2-7);
 			g.drawString(String.format("(%.4f, %.4f)", cam.getFocus().getVelocity().x, cam.getFocus().getVelocity().y), GameClient.frameWidth/2+5, GameClient.frameHeight/2+15);
 			g.drawString(String.format("%.4f", cam.scale()), GameClient.frameWidth/2-5, GameClient.frameHeight-30);
+			g.drawString(String.format("%d", ObjectManager.objectCount()), GameClient.frameWidth/2-5, GameClient.frameHeight-45);
 		}
 		
 		g.setStroke(pStroke);

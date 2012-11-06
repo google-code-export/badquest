@@ -19,8 +19,8 @@ public class GameClient {
 	final long updateCapNanos = (long)(1e9/30);
 	final float nanoSecondsPerSecond = 1e9f;
 	
-	public final static int frameWidth = 1200;
-	public final static int frameHeight = 700;
+	public final static int frameWidth = 1280;
+	public final static int frameHeight = 720;
 	
 	JFrame gameFrame;
 	GraphicsConfiguration graphicsConfiguration;
@@ -35,7 +35,7 @@ public class GameClient {
 		gameFrame = new JFrame("Bad Quest", graphicsConfiguration);
 		gameFrame.setSize(frameWidth, frameHeight);
 //		gameFrame.setUndecorated(true);
-//		gameFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
+//		gameFrame.setExtendedState(gameFrame.MAXIMIZED_BOTH);
 		gameFrame.setResizable(false);
 		
 		// The program should end when the window is closed

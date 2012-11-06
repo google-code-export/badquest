@@ -3,14 +3,16 @@ package gameObjects;
 import java.awt.Graphics2D;
 
 import util.Vector;
+import world.Room;
 import client.Camera;
 
 public abstract class DrawableObject {
 	protected Vector position = new Vector(0,0);
 	protected Vector velocity = new Vector(0,0);
 	protected double radius,angle;
-	protected boolean moveable = true, solid = true;
+	protected boolean moveable = true, solid = true, alive = true;
 	
+	protected Room currentRoom;
 	protected final int OID;
 	
 	public DrawableObject(){
@@ -48,6 +50,9 @@ public abstract class DrawableObject {
 	public boolean isSolid() {
 		return solid;
 	}
+	public Room getCurrentRoom(){
+		return currentRoom;
+	}
 	
 	//Sets
 	public void setPosition(Vector v){
@@ -68,6 +73,60 @@ public abstract class DrawableObject {
 	}
 	public void setSolid(boolean solid) {
 		this.solid = solid;
+	}
+	public void setCurrentRoom(Room next){
+		currentRoom = next;
+	}
+	
+	public void kill(){
+		alive = false;
+	}
+	
+	public boolean isDead(){
+		return !alive;
+	}
+	
+	/**
+	 * Unregister this object, get rid of all references to it.
+	 */
+	public final void delete(){
+		if(currentRoom != null)
+			currentRoom.removeEntity(getOID());
+		ObjectManager.removeObjectByID(getOID());
+	}
+	
+	/**
+	 * Transfers this drawable object to a specified room. Deletes this object from the current room's object map,
+	 * then adds this object to the next room's object map. Note that the object retains its position.
+	 * @param next
+	 * 			The room this object is moving to. Set to null if removing this object from the game world.
+	 */
+	public void changeCurrentRoom(Room next) {
+		if(currentRoom != null)
+			currentRoom.getEntityMap().remove(getOID());
+		
+		if(next != null)
+			next.addEntity(this);
+	
+		setCurrentRoom(next);
+	}
+	
+	/**
+	 * Transfers this drawable object to a specified room, at the specified coordinates. Deletes this object from 
+	 * the current room's object map, then adds this object to the next room's object map.
+	 * @param next
+	 * 			The room this object is moving to. Set to null if removing this object from the game world.
+	 * @param pos
+	 * 			The room-relative location at which to place this object.
+	 */
+	public void changeCurrentRoom(Room next, Vector pos) {
+		if(currentRoom != null)
+			currentRoom.getEntityMap().remove(getOID());
+		
+		if(next != null)
+			next.addEntityAt(this, pos);
+	
+		setCurrentRoom(next);
 	}
 	
 	/**

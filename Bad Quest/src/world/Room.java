@@ -11,11 +11,12 @@ import util.Collision;
 import util.Vector;
 import client.Camera;
 
-public class Room {
+public class Room implements Comparable<Room>{
 	private Tile[][] map;
 	private TreeMap<Integer, DrawableObject> entityMap;
 	
 	private Vector position;
+	private double layer;
 	
 	public final int R,C;
 	private final int RID;
@@ -24,9 +25,10 @@ public class Room {
 	 * @param R
 	 * @param C
 	 */
-	public Room(int R, int C){
+	public Room(int R, int C, double d){
 		RID = RoomManager.register(this);
 		
+		layer = d;
 		this.R = R;
 		this.C = C;
 		position = new Vector(0,0);
@@ -54,9 +56,10 @@ public class Room {
 		entityMap = new TreeMap<Integer, DrawableObject>();
 	}
 	
-	public Room(int selector, Vector v){
+	public Room(int selector, Vector v, double d){
 		RID = RoomManager.register(this);
 		position = new Vector(v);
+		layer = d;
 		
 		map = DebugRoomMaker.selectPrebuilt(selector,this);
 		R = map.length;
@@ -73,7 +76,16 @@ public class Room {
 		return new Vector(position);
 	}
 	
+	public double getLayer(){
+		return layer;
+	}
+	
+	public double getDepth(double currentLayer){
+		return layer - currentLayer;
+	}
+	
 	public void addEntity(DrawableObject obj){
+		obj.setCurrentRoom(this);
 		synchronized(entityMap){
 			entityMap.put(obj.getOID(),obj);
 		}
@@ -86,8 +98,12 @@ public class Room {
 	 */
 	public void addEntityAt(DrawableObject obj, Vector v){
 		obj.setPosition(getPosition().add(v));
+		addEntity(obj);
+	}
+	
+	public void removeEntity(int OID){
 		synchronized(entityMap){
-			entityMap.put(obj.getOID(),obj);
+			entityMap.remove(OID);
 		}
 	}
 	
@@ -136,6 +152,18 @@ public class Room {
 		}
 	}
 	
+	public void clean(){
+		ArrayDeque<Integer> remove = new ArrayDeque<Integer>();
+		synchronized(entityMap){
+			for(Integer e:entityMap.keySet())
+				if(entityMap.get(e).isDead())
+					remove.add(e);
+		}
+		
+		for(Integer e:remove)
+			entityMap.get(e).delete();
+	}
+	
 	public void drawAll(Graphics2D g, double elapsedSeconds, Camera cam){
 		for(Tile[] row:map)
 			for(Tile t:row)
@@ -145,6 +173,10 @@ public class Room {
 			for(Integer e:entityMap.keySet())
 				entityMap.get(e).drawBody(g, elapsedSeconds, cam);
 		}
+	}
+	
+	public int compareTo(Room r){
+		return (int)Math.signum(r.getLayer()-layer);
 	}
 	
 	public String toString(){
