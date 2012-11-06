@@ -4,6 +4,8 @@ import gameObjects.DrawableObject;
 import gameObjects.ObjectManager;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.TreeMap;
 
 public class RoomManager {
@@ -29,21 +31,29 @@ public class RoomManager {
 			TreeMap<Integer, DrawableObject> entityMap = getRoomFromID(curRID).getEntityMap();
 			synchronized(entityMap){
 				for(Integer OID:transfer)
-					if(entityMap.containsKey(OID)){
+					if(entityMap.containsKey(OID))
 						add.add(OID);
-						entityMap.remove(OID);
-					}
 			}
 		}
 		
 		Room next = getRoomFromID(ID);
 		for(Integer OID:add)
-			next.addEntity(ObjectManager.getObjectByID(OID));
+			ObjectManager.getObjectByID(OID).changeCurrentRoom(next);
 		
 		System.out.println("Transferring from " + rmap.get(curRID) + " to " + rmap.get(ID));
 		
 		curRID = ID;
 		return next;
+	}
+	
+	public static ArrayList<Room> getRoomList(){
+		ArrayList<Room> ret = new ArrayList<Room>();
+		synchronized(rmap){
+			for(Integer e:rmap.keySet())
+				ret.add(rmap.get(e));
+		}
+		Collections.sort(ret);
+		return ret;
 	}
 	
 	public static Room getRoomFromID(int ID){

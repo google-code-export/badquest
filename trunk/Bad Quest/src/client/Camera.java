@@ -121,10 +121,6 @@ public class Camera {
 		spring.setVelocity(velocity);
 		if(follow != null){
 			velocity = spring.getVelocity(follow.getPosition(), position);
-//			Vector d = follow.getPosition().sub(position);
-//			Vector f1 = d.scale(springStiffness*assumedMass);
-//			Vector f2 = velocity.scale(-springDampening*assumedMass);
-//			velocity = f1.add(f2);
 		}else{
 			Vector.add(velocity, velocity.scale(-dragPerSecond*elapsedSeconds));
 		}

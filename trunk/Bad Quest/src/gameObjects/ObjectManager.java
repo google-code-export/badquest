@@ -12,6 +12,10 @@ public class ObjectManager {
 	private static int OIDcounter = 1;
 	private static TreeMap<Integer, DrawableObject> map = new TreeMap<Integer, DrawableObject>();
 	
+	public static int objectCount(){
+		return map.size();
+	}
+	
 	public static int register(DrawableObject obj, int ID){
 		synchronized(map){
 			if(map.containsKey(ID)){
@@ -48,6 +52,7 @@ public class ObjectManager {
 	 */
 	public static boolean removeObjectByID(int ID){
 		synchronized(map){
+			System.out.println("Removing object " + ID);
 			return map.remove(ID) != null;
 		}
 	}
