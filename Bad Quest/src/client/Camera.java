@@ -18,6 +18,13 @@ public class Camera {
 	private Vector velocity = new Vector(0,0);
 	private Vector center = new Vector(viewWidth/2, viewHeight/2); //Center of view-box
 	
+	private double shakeTime;
+	private double elapsedShakeTime;
+	private double timeToNextShake;
+	private double shakesPerSecond = 20;
+	private double shakeMagnitude;
+	private boolean shaking = false;
+	
 	private DrawableObject follow = null;
 	
 	private final double DEFAULT_SCALE = 1;
@@ -99,6 +106,30 @@ public class Camera {
 		return new Vector(center);
 	}
 	
+	//TODO: Merge shake effects when possible, utilizing a queue.
+	/**
+	 * Shake the camera! If the camera is currently shaking, the active shake effect will be overridden only
+	 * if the new magnitude exceeds the current one.
+	 * 
+	 * For reference, a magnitude of 10 produces a fairly violent effect, 
+	 * whereas a magnitude of 2 is more subtle without being irrelevant.
+	 * 
+	 * @param mag The magnitude of the shake offset
+	 * @param time	The duration of the shake effect
+	 * @return
+	 */
+	public boolean shake(double mag, double time){
+		if(!shaking || mag > shakeMagnitude){
+			shaking = true;
+			shakeMagnitude = mag;
+			shakeTime = time;
+			elapsedShakeTime = 0;
+			timeToNextShake = 0;
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * Convert a pair of world coordinates to screen coordinates
 	 * @param v, the world coordinate pair
@@ -124,6 +155,24 @@ public class Camera {
 		}else{
 			Vector.add(velocity, velocity.scale(-dragPerSecond*elapsedSeconds));
 		}
-		position = position.add(velocity.scale(elapsedSeconds));
+		
+		Vector shakeOffset = new Vector(0,0);
+		if(shaking){
+			elapsedShakeTime += elapsedSeconds;
+			timeToNextShake -= elapsedSeconds;
+			
+			if(timeToNextShake <= 0){ //Shake the camera!
+				shakeOffset = new Vector(Math.random() * (2*Math.PI)).scale(shakeMagnitude);
+				timeToNextShake = 1/shakesPerSecond;
+			}
+			
+			if(elapsedShakeTime > shakeTime){
+				shaking = false;
+				shake(0,0);
+				shaking = false;
+			}
+		}
+		
+		position = position.add(velocity.scale(elapsedSeconds)).add(shakeOffset);
 	}
 }

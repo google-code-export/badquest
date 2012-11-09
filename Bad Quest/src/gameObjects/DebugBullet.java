@@ -2,11 +2,9 @@ package gameObjects;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 
 import util.Vector;
-
 import client.Camera;
 
 public class DebugBullet extends DrawableObject {

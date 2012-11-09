@@ -6,7 +6,6 @@ import java.awt.event.MouseEvent;
 import java.util.BitSet;
 
 import util.Vector;
-
 import client.Camera;
 
 /**

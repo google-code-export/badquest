@@ -16,7 +16,7 @@ public class GameClient {
 	
 	private static final int bufferCreateAttempts = 100;
 	
-	final long updateCapNanos = (long)(1e9/30);
+	final long updateCapNanos = (long)(1e9/60);
 	final float nanoSecondsPerSecond = 1e9f;
 	
 	public final static int frameWidth = 1280;

@@ -39,8 +39,6 @@ public class Water extends Tile {
 		g.drawArc((int)Math.round(Tile.SIZE/2.+shift), Tile.SIZE/2, Tile.SIZE, Tile.SIZE, 90, 90);
 		
 		g.setClip(null);
-		
-		
 		g.setTransform(prev);
 	}
 
