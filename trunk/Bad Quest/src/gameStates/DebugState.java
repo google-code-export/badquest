@@ -1,7 +1,6 @@
 package gameStates;
 
 import gameObjects.Actor;
-import gameObjects.DebugBullet;
 import gameObjects.DrawableObject;
 import gameObjects.ObjectManager;
 import gameObjects.Player;
@@ -18,7 +17,6 @@ import java.awt.geom.AffineTransform;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Collections;
 import java.util.TreeMap;
 
 import util.Vector;
@@ -198,6 +196,7 @@ public class DebugState extends State{
 			Camera backCam = new Camera(cam.getPosition(), 1/(1 + L*layerSpacing)*cam.scale());
 			r.drawAll(g, elapsedSeconds, backCam);
 			
+			//TODO Shadows
 			g.setColor(new Color(0,0,0,(int)Math.min(255,(120 + 175/(drawLayers+1) * L))));
 			g.fillRect((int)Math.round(backCam.worldToScreen(r.getPosition()).x)-1, (int)Math.round(backCam.worldToScreen(r.getPosition()).y)-1, (int)Math.round(r.C*Tile.SIZE*backCam.scale())+2, (int)Math.round(r.R*Tile.SIZE*backCam.scale())+2);
 		}
@@ -213,6 +212,7 @@ public class DebugState extends State{
 		
 		g.drawRect(GameClient.frameWidth/2-150, 30, 300, 40);
 		FontMetrics f = g.getFontMetrics();
+		g.drawString(String.format("%.2f", 1/elapsedSeconds), GameClient.frameWidth-(int)(f.getStringBounds("Following", g).getWidth()+10), 45);
 		g.drawString("Following", GameClient.frameWidth/2-(int)(f.getStringBounds("Following", g).getWidth()/2), 45);
 		if(cam.getFocus() != null){
 			if(cam.getFocus() instanceof Actor)
@@ -239,6 +239,8 @@ public class DebugState extends State{
 		synchronized(room.getEntityList()){
 			drawList = room.getEntityMap();
 		}
+		
+		cam.shake(10,.8);
 	}
 	
 	@Override

@@ -23,7 +23,6 @@ public class Wall extends Tile {
 		
 		g.translate(cam.xTranslatePosition(position.x), cam.yTranslatePosition(position.y));
 		g.scale(cam.scale(), cam.scale());
-		
 		g.setClip(0, 0, Tile.SIZE, Tile.SIZE);
 		
 		g.setColor(color.darker());
