@@ -5,6 +5,7 @@ import gameObjects.DrawableObject;
 import gameObjects.ObjectManager;
 import gameObjects.Player;
 import gameObjects.Portal;
+import graphics.DimmerGraphics;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -51,7 +52,7 @@ public class DebugState extends State{
 	public DebugState(){
 		keys = new BitSet();
 		
-		Portal A = new Portal(room, new Vector(500,40));
+		Portal A = new Portal(room, new Vector(500,50));
 		Portal B = new Portal(background, new Vector(50,200));
 		Portal C = new Portal(background, new Vector(50,500));
 		Portal D = new Portal(backbackground, new Vector(50,200));
@@ -184,6 +185,8 @@ public class DebugState extends State{
 		AffineTransform prev = g.getTransform();
 		Stroke pStroke = g.getStroke();
 		
+		DimmerGraphics backgroundGraphics = new DimmerGraphics(g,1);
+		
 		//Draw non-focus rooms
 		for(Room r:roomList){
 			double L = r.getDepth(room.getLayer());
@@ -193,13 +196,12 @@ public class DebugState extends State{
 			if(r.getRID() == room.getRID())
 				continue;
 			
+			backgroundGraphics.setLevel(1/(2+L*L));
 			Camera backCam = new Camera(cam.getPosition(), 1/(1 + L*layerSpacing)*cam.scale());
-			r.drawAll(g, elapsedSeconds, backCam);
-			
-			//TODO Shadows
-			g.setColor(new Color(0,0,0,(int)Math.min(255,(120 + 175/(drawLayers+1) * L))));
-			g.fillRect((int)Math.round(backCam.worldToScreen(r.getPosition()).x)-1, (int)Math.round(backCam.worldToScreen(r.getPosition()).y)-1, (int)Math.round(r.C*Tile.SIZE*backCam.scale())+2, (int)Math.round(r.R*Tile.SIZE*backCam.scale())+2);
+			r.drawAll(backgroundGraphics, elapsedSeconds, backCam);
 		}
+		
+		backgroundGraphics.dispose();
 		
 		//Draw current room, above all else
 		room.drawAll(g, elapsedSeconds, cam);
