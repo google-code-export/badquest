@@ -1,16 +1,22 @@
-package world;
+package world.tile;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
 import util.Vector;
+import world.Room;
 import client.Camera;
 
 public class Glass extends Tile {
 	
 	public Glass(int y, int x, Room owner){
 		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.STONE, owner);
+	}
+	
+	@Override
+	public void update(double elapsedSeconds) {
+	
 	}
 	
 	@Override
@@ -36,5 +42,4 @@ public class Glass extends Tile {
 		
 		g.setTransform(prev);
 	}
-
 }

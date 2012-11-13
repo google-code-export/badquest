@@ -1,10 +1,11 @@
-package world;
+package world.tile;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
 import util.Vector;
+import world.Room;
 import client.Camera;
 
 public class Water extends Tile {
@@ -17,6 +18,11 @@ public class Water extends Tile {
 	}
 	
 	@Override
+	public void update(double elapsedSeconds) {
+		time = (time + elapsedSeconds)%period;
+	}
+	
+	@Override
 	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam) {
 		AffineTransform prev = g.getTransform();
 		
@@ -24,7 +30,6 @@ public class Water extends Tile {
 		g.scale(cam.scale(), cam.scale());
 		g.setClip(0, 0, Tile.SIZE, Tile.SIZE);
 		
-		time = (time + elapsedSeconds)%period;
 		double shift = time/period * Tile.SIZE;
 		
 		g.setColor(new Color(30,100,200,255));

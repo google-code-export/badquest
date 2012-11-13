@@ -1,5 +1,12 @@
 package world;
 
+import world.tile.Glass;
+import world.tile.Stone;
+import world.tile.Tile;
+import world.tile.Void;
+import world.tile.Wall;
+import world.tile.Water;
+
 public class DebugRoomMaker {
 	private static String[][] prebuilt = new String[][]{{"################################################################################",
 														 "#..............................................................................#",

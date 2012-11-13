@@ -9,6 +9,9 @@ import java.util.TreeMap;
 
 import util.Collision;
 import util.Vector;
+import world.tile.Stone;
+import world.tile.Tile;
+import world.tile.Wall;
 import client.Camera;
 
 public class Room implements Comparable<Room>{
@@ -164,10 +167,34 @@ public class Room implements Comparable<Room>{
 			entityMap.get(e).delete();
 	}
 	
-	public void drawAll(Graphics2D g, double elapsedSeconds, Camera cam){
+	public void updateAll(double elapsedSeconds){
 		for(Tile[] row:map)
 			for(Tile t:row)
-				t.drawBody(g, elapsedSeconds, cam);
+				t.update(elapsedSeconds);
+		
+		synchronized(entityMap){
+			for(Integer oid:entityMap.keySet())
+				if(entityMap.get(oid).isSolid())
+					collideWithSolids(entityMap.get(oid), elapsedSeconds);
+			
+			for(Integer oid:entityMap.keySet())
+				entityMap.get(oid).update(elapsedSeconds);
+		}
+	}
+	
+	public void drawAll(Graphics2D g, double elapsedSeconds, Camera cam){
+		//Get bounding box
+		double[] bound = cam.getBoundingBox();
+		//Compute draw bounds
+		int left = (int)Math.floor((bound[0] - position.x)/Tile.SIZE);
+		int top = (int)Math.floor((bound[1] - position.y)/Tile.SIZE);
+		int right = (int)Math.floor((bound[2] - position.x)/Tile.SIZE);
+		int bot = (int)Math.floor((bound[3] - position.y)/Tile.SIZE);
+		
+		//Only draw visible tiles
+		for(int i = Math.max(top,0); i <= Math.min(bot,R-1); i++)
+			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++)
+				map[i][j].drawBody(g, elapsedSeconds, cam);
 		
 		synchronized(entityMap){
 			for(Integer e:entityMap.keySet())

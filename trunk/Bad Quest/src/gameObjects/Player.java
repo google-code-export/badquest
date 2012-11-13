@@ -54,9 +54,6 @@ public class Player extends Actor {
 	
 	@Override
 	public void update(double elapsedSeconds){
-		if(velocity.mag2() > 0)
-			angle = velocity.ang();
-		
 		super.update(elapsedSeconds);
 		
 		rightHand.setPosition(new Vector(Math.PI/2.5).scale(radius*1.5).rot(angle).add(position));

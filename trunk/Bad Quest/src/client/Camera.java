@@ -106,6 +106,16 @@ public class Camera {
 		return new Vector(center);
 	}
 	
+	/**
+	 * Returns a double array of length 4 containg the bounding box of the camera in world coordinates.
+	 * @return The top left point of the box (x,y) is returned in {0,1}, the bottom right in {2,3}.
+	 */
+	public double[] getBoundingBox(){
+		Vector top = screenToWorld(new Vector(0,0));
+		Vector bot = screenToWorld(new Vector(GameClient.frameWidth, GameClient.frameHeight));
+		return new double[]{top.x,top.y,bot.x,bot.y};
+	}
+	
 	//TODO: Merge shake effects when possible, utilizing a queue.
 	/**
 	 * Shake the camera! If the camera is currently shaking, the active shake effect will be overridden only

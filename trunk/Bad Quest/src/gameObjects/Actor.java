@@ -11,6 +11,8 @@ public class Actor extends DrawableObject {
 	private String name = "default";
 	protected Color color = Color.ORANGE;
 	
+	private Vector lookAt = new Vector(0,0);
+	
 	public Actor(){
 	}
 	
@@ -29,12 +31,25 @@ public class Actor extends DrawableObject {
 		this.position.setTo(position);
 	}
 	
+	public void setName(String name){
+		this.name = name;
+	}
+	
 	public String getName(){
 		return name;
+	}
+	
+	public Vector getLookAt(){
+		return lookAt;
+	}
+	
+	public void setLookAt(Vector look){
+		lookAt.setTo(look);
 	}
 
 	@Override
 	public void update(double elapsedSeconds){
+		angle = lookAt.sub(position).ang();
 		move(elapsedSeconds);
 	}
 
