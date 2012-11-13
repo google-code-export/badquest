@@ -1,9 +1,10 @@
-package world;
+package world.tile;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
 import util.Vector;
+import world.Room;
 import client.Camera;
 
 public class Wall extends Tile {
@@ -15,6 +16,11 @@ public class Wall extends Tile {
 	@Override
 	public boolean isSolid() {
 		return true;
+	}
+	
+	@Override
+	public void update(double elapsedSeconds) {
+	
 	}
 	
 	@Override

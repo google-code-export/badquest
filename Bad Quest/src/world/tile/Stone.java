@@ -1,10 +1,11 @@
-package world;
+package world.tile;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
 import util.Vector;
+import world.Room;
 import client.Camera;
 
 public class Stone extends Tile{
@@ -12,6 +13,12 @@ public class Stone extends Tile{
 		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.STONE, owner);
 		color = new Color(33,45,52);
 	}
+	
+	@Override
+	public void update(double elapsedSeconds) {
+	
+	}
+	
 	@Override
 	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam){
 		AffineTransform prev = g.getTransform();

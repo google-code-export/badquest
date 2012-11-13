@@ -7,7 +7,7 @@ import java.awt.geom.AffineTransform;
 
 import util.Vector;
 import world.Room;
-import world.Tile;
+import world.tile.Tile;
 import client.Camera;
 
 public class Portal extends DrawableObject {

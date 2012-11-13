@@ -1,10 +1,11 @@
-package world;
+package world.tile;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.HashMap;
 
 import util.Vector;
+import world.Room;
 import client.Camera;
 
 public abstract class Tile {
@@ -33,6 +34,7 @@ public abstract class Tile {
 	}
 	
 	public abstract void drawBody(Graphics2D g, double elapsedSeconds, Camera cam);
+	public abstract void update(double elapsedSeconds);
 	
 	private static int enumCount = 0;
 	public static enum TileType{

@@ -4,7 +4,7 @@ import gameObjects.DrawableObject;
 
 import java.util.ArrayDeque;
 
-import world.Tile;
+import world.tile.Tile;
 
 public class Collision {
 	private static int[] dx = new int[]{1,0,0,1};

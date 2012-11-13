@@ -23,7 +23,7 @@ import java.util.TreeMap;
 import util.Vector;
 import world.Room;
 import world.RoomManager;
-import world.Tile;
+import world.tile.Tile;
 import client.Camera;
 import client.GameClient;
 
@@ -31,7 +31,7 @@ public class DebugState extends State{
 	Room room = new Room(0,new Vector(400,0),0);
 	Room fore = new Room(1,new Vector(-50,-50), 0);
 	Room background = new Room(50,20,1);
-	Room backbackground = new Room(40,40,2);
+	Room backbackground = new Room(500,500,2);
 	ArrayList<Room> roomList = RoomManager.getRoomList();
 	
 	Actor[] actors;
@@ -41,6 +41,7 @@ public class DebugState extends State{
 	int[] dx = new int[]{0,0,-1,1};
 	int[] dy = new int[]{-1,1,0,0};
 	BitSet keys; //Set of active keyboard presses
+	BitSet clicks; //Set of active mouse clicks
 	double acc = 225;
 	double scale = 2.868;
 	double layerSpacing = .75;
@@ -51,6 +52,7 @@ public class DebugState extends State{
 	
 	public DebugState(){
 		keys = new BitSet();
+		clicks = new BitSet();
 		
 		Portal A = new Portal(room, new Vector(500,50));
 		Portal B = new Portal(background, new Vector(50,200));
@@ -85,6 +87,12 @@ public class DebugState extends State{
 		for(Actor a:actors)
 			room.addEntityAt(a,new Vector((x=x+21)-21, 4*Tile.SIZE));
 		
+//		new Room(1, new Vector(340, -150), 0);
+//		new Room(0, new Vector(300, -50), 3);
+//		new Room(0, new Vector(300, -600), 3);
+//		new Room(0, new Vector(300, -1150), 3);
+		
+		roomList = RoomManager.getRoomList();
 		drawList = room.getEntityMap();
 	}
 	
@@ -129,19 +137,16 @@ public class DebugState extends State{
 		
 		if(activeActor > -1){
 			actors[activeActor].setVelocity(velocity.scale(1/scale));
+			if(clicks.get(MouseEvent.BUTTON1))
+				actors[activeActor].setLookAt(cam.screenToWorld(new Vector(mx,my)));
+			else if(velocity.mag2() > 0)
+				actors[activeActor].setLookAt(actors[activeActor].getPosition().add(velocity));
 			cam.follow(actors[activeActor]);
 		}else{
 			cam.follow(null);
 		}
 		
-		synchronized(drawList){
-			for(Integer oid:drawList.keySet())
-				if(drawList.get(oid).isSolid())
-					room.collideWithSolids(drawList.get(oid), elapsedSeconds);
-			
-			for(Integer oid:drawList.keySet())
-				drawList.get(oid).update(elapsedSeconds);
-		}
+		room.updateAll(elapsedSeconds);
 		
 		Portal transfer = null;
 		Actor move = null;
@@ -271,5 +276,24 @@ public class DebugState extends State{
 		mx = e.getX();
 		my = e.getY();
 		super.mouseMoved(e);
+	}
+
+	@Override
+	protected void mouseDragged(MouseEvent e) {
+		mx = e.getX();
+		my = e.getY();
+		super.mouseDragged(e);
+	}
+	
+	@Override
+	protected void mousePressed(MouseEvent e) {
+		clicks.set(e.getButton());
+		super.mousePressed(e);
+	}
+	
+	@Override
+	protected void mouseReleased(MouseEvent e) {
+		clicks.clear(e.getButton());
+		super.mouseReleased(e);
 	}
 }
