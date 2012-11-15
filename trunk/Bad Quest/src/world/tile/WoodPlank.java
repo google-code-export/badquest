@@ -39,8 +39,11 @@ public class WoodPlank extends Tile {
 			g.drawLine(0, i*Tile.SIZE/4, Tile.SIZE, i*Tile.SIZE/4);
 		
 		for(int i = 0; i < 2; i++){
-			g.drawLine(Tile.SIZE/4, (2*i+1)*Tile.SIZE/4, Tile.SIZE/4, (2*i+2)*Tile.SIZE/4);
-			g.drawLine(3*Tile.SIZE/4, (2*i)*Tile.SIZE/4, 3*Tile.SIZE/4, (2*i+1)*Tile.SIZE/4);
+			g.drawLine(Tile.SIZE/2, (2*i+1)*Tile.SIZE/4, Tile.SIZE/2, (2*i+2)*Tile.SIZE/4);
+			g.drawLine(Tile.SIZE, (2*i)*Tile.SIZE/4, Tile.SIZE, (2*i+1)*Tile.SIZE/4);
+			g.drawLine(0, (2*i)*Tile.SIZE/4, 0, (2*i+1)*Tile.SIZE/4);
+//			g.drawLine(Tile.SIZE/4, (2*i+1)*Tile.SIZE/4, Tile.SIZE/4, (2*i+2)*Tile.SIZE/4);
+//			g.drawLine(3*Tile.SIZE/4, (2*i)*Tile.SIZE/4, 3*Tile.SIZE/4, (2*i+1)*Tile.SIZE/4);
 		}
 		
 		g.setClip(null);

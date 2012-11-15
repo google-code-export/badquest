@@ -12,7 +12,8 @@ public class DebugBullet extends DrawableObject {
 	
 	public DebugBullet(Vector position, Vector velocity){
 		setPosition(position);
-		setVelocity(velocity);
+		internalVelocity.setTo(velocity);
+//		setVelocity(velocity);
 		radius = 1;
 	}
 	
