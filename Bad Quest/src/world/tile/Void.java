@@ -13,6 +13,7 @@ public class Void extends Tile {
 	
 	@Override
 	public void update(double elapsedSeconds) {
+		
 	}
 	
 	@Override

@@ -3,22 +3,23 @@ package world;
 import world.tile.Glass;
 import world.tile.Stone;
 import world.tile.Tile;
-import world.tile.Void;
 import world.tile.Wall;
 import world.tile.Water;
+import world.tile.WoodPlank;
+import world.tile.Void;
 
 public class DebugRoomMaker {
 	private static String[][] prebuilt = new String[][]{{"################################################################################",
-														 "#..............................................................................#",
-														 "#..............................................................................#",
-														 "#..............................................................................#",
-														 "#..............................................................................#",
-														 "#.......####...................................................................#",
-														 "#    ..    #..................########.........................................#",
-														 "#    ..    #..................#      #................  #..#  .................#",
-														 "     ..    #..................#      #................  #..#  .................#",
-														 "     ..    #..................########...............  #..#  ..................#",
-														 "#.......####......................................... #..#  ...................#",
+														 "#......................wwwwwwwwwwww............................................#",
+														 "#......................#wwwwwwwwww#............................................#",
+														 "#......................pppppppppppp.............................................#",
+														 "#......................#wwwwwwwwww#............................................#",
+														 "#.......####...........wwwwwwwwwwww............................................#",
+														 "#    ..    #...........wwwwwww########.........................................#",
+														 "#    ..ppppp............wwwwww#      #................  #..#  .................#",
+														 "     ..ppppp.............wwwww#      #................  #..#  .................#",
+														 "     ..    #...............www########...............  #..#  ..................#",
+														 "#.......####................wwww..................... #..#  ...................#",
 														 "#...............gggggg..................................#  ....................#",
 														 "#...............gg  gg.........................................................#",
 														 "#...............gg  gg....................................######################",
@@ -34,9 +35,18 @@ public class DebugRoomMaker {
 														 "ggwwwwwwwwwggggg",
 														 "ggwww####wwwgggg",
 														 "gggwwwwwwwwwwwgg",
-														 "gggggggggggggggg"}};
+														 "gggggggggggggggg"},
+														{"wwwwwwwwwwwwwwwwwwwwwww",
+														 "wwwwwwwwwwwwwwwwwwwwwww",
+														 "wwwwwwwwwwwwwwwwwwwwwww",
+														 "wwwwwwwwwwwwwwwwwwwwwww",
+														 "wwwwwwwwwwwwwwwwwwwwwww",
+														 "wwwwwwwwwwwwwwwwwwwwwww",
+														 "wwwwwwwwwwwwwwwwwwwwwww",
+														 "wwwwwwwwwwwwwwwwwwwwwww",
+														 "wwwwwwwwwwwwwwwwwwwwwww",
+														 "wwwwwwwwwwwwwwwwwwwwwww",}};
 									 
-	
 	public static Tile[][] selectPrebuilt(int s, Room caller){
 		return make(prebuilt[s], caller);
 	}
@@ -59,6 +69,9 @@ public class DebugRoomMaker {
 					break;
 				case 'w':
 					map[i][j] = new Water(i,j,caller);
+					break;
+				case 'p':
+					map[i][j] = new WoodPlank(i,j,caller);
 					break;
 				default:
 					map[i][j] = new Void(i,j,caller);

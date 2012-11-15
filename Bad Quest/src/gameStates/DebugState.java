@@ -31,7 +31,7 @@ public class DebugState extends State{
 	Room room = new Room(0,new Vector(400,0),0);
 	Room fore = new Room(1,new Vector(-50,-50), 0);
 	Room background = new Room(50,20,1);
-	Room backbackground = new Room(500,500,2);
+	Room backbackground = new Room(50,50,2);
 	ArrayList<Room> roomList = RoomManager.getRoomList();
 	
 	Actor[] actors;
@@ -87,10 +87,10 @@ public class DebugState extends State{
 		for(Actor a:actors)
 			room.addEntityAt(a,new Vector((x=x+21)-21, 4*Tile.SIZE));
 		
-//		new Room(1, new Vector(340, -150), 0);
-//		new Room(0, new Vector(300, -50), 3);
+		new Room(1, new Vector(-160, 200), 0);
+//		new Room(0, new Vector(300, -50), 4);
 //		new Room(0, new Vector(300, -600), 3);
-//		new Room(0, new Vector(300, -1150), 3);
+//		new Room(0, new Vector(300, -1150), 4).addEntityAt(new Actor("Spot the Farseer",10), new Vector(Tile.SIZE*20, Tile.SIZE*5));
 		
 		roomList = RoomManager.getRoomList();
 		drawList = room.getEntityMap();
@@ -234,34 +234,33 @@ public class DebugState extends State{
 		g.setTransform(prev);
 	}
 	
-	public void changeActiveRoom(Room next){
+	public void changeActiveRoom(Room next){		
 		ArrayDeque<Integer> transfer = new ArrayDeque<Integer>();
 		if(activeActor > -1)
 			transfer.add(actors[activeActor].getOID());
 		
-		Room temp = room;
+		boolean changed = next.getRID() != room.getRID();
 		room = RoomManager.changeRoom(transfer, next.getRID());
-		background = temp;
 		
 		synchronized(room.getEntityList()){
 			drawList = room.getEntityMap();
 		}
 		
-		cam.shake(10,.8);
+		if(changed)
+			cam.shake(10,.8);
 	}
 	
 	@Override
 	protected void keyPressed(KeyEvent e) {
-		if(!keys.get(e.getKeyCode()) && e.getKeyCode() == KeyEvent.VK_P){
-			changeActiveRoom(background);
-		}
-		
 		keys.set(e.getKeyCode());
+		
 		if(e.getKeyCode() == KeyEvent.VK_0){
 			activeActor = -1;
 		}else if(e.getKeyCode() > KeyEvent.VK_0 && e.getKeyCode() < KeyEvent.VK_1+actors.length){
 			activeActor = e.getKeyCode()-KeyEvent.VK_1;
+			changeActiveRoom(actors[activeActor].getCurrentRoom());
 		}
+		
 		super.keyPressed(e);
 	}
 	
