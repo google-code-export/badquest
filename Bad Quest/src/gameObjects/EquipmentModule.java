@@ -44,7 +44,7 @@ public class EquipmentModule {
 				cur.setPosition(position);
 			}else{
 				Vector velocity = spring.getVelocity(position, cur.getPosition());
-				cur.setVelocity(velocity);
+				cur.setInternalVelocity(velocity);
 			}
 			cur.update(elapsedSeconds);
 		}

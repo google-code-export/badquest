@@ -44,12 +44,16 @@ public class Actor extends DrawableObject {
 	}
 	
 	public void setLookAt(Vector look){
-		lookAt.setTo(look);
+		if(look == null)
+			lookAt = null;
+		else
+			lookAt = new Vector(look);
 	}
 
 	@Override
 	public void update(double elapsedSeconds){
-		angle = lookAt.sub(position).ang();
+		if(lookAt != null)
+			angle = lookAt.sub(position).ang();
 		move(elapsedSeconds);
 	}
 

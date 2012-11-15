@@ -133,14 +133,18 @@ public class DebugState extends State{
 			scale = scale*10/9.;
 		
 		for(Actor a:actors)
-			a.setVelocity(new Vector(0,0));
+			a.setInternalVelocity(new Vector(0,0));
 		
 		if(activeActor > -1){
-			actors[activeActor].setVelocity(velocity.scale(1/scale));
+			actors[activeActor].setInternalVelocity(velocity.scale(1/scale));
+			if(keys.get(KeyEvent.VK_SPACE))
+				actors[activeActor].applyExternalVelocity(new Vector(actors[activeActor].getAngle()).scale(acc/(scale*2)));
 			if(clicks.get(MouseEvent.BUTTON1))
 				actors[activeActor].setLookAt(cam.screenToWorld(new Vector(mx,my)));
-			else if(velocity.mag2() > 0)
-				actors[activeActor].setLookAt(actors[activeActor].getPosition().add(velocity));
+			else if(actors[activeActor].getInternalVelocity().mag2() > 0)
+				actors[activeActor].setLookAt(actors[activeActor].getPosition().add(actors[activeActor].getInternalVelocity()));
+			else
+				actors[activeActor].setLookAt(null);
 			cam.follow(actors[activeActor]);
 		}else{
 			cam.follow(null);

@@ -67,7 +67,7 @@ public class Collision {
 		int counter = 0;
 		while(changed){
 			if(counter >= MAX_COLLISIONS){
-				obj.setVelocity(new Vector(0,0));
+				obj.stopMoving();
 				break;
 			}
 			
@@ -96,7 +96,9 @@ public class Collision {
 				Vector sub = obj.getVelocity().project(best.hit.sub(stop));
 				
 				obj.setPosition(stop);
-				obj.setVelocity(obj.getVelocity().sub(sub));
+				obj.stopMovingInDirection(sub);
+//				obj.applyExternalVelocity(sub.scale(-1));
+//				obj.setVelocity(obj.getVelocity().sub(sub));
 //				obj.setVelocity(new Vector(0,0));
 			}
 			counter++;

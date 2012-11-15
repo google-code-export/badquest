@@ -2,14 +2,16 @@ package gameObjects;
 
 import java.awt.Graphics2D;
 
+import util.Geometry;
 import util.Vector;
 import world.Room;
 import client.Camera;
 
 public abstract class DrawableObject {
 	protected Vector position = new Vector(0,0);
-	protected Vector velocity = new Vector(0,0);
-	protected double radius,angle;
+	protected Vector internalVelocity = new Vector(0,0);
+	protected Vector externalVelocity = new Vector(0,0);
+	protected double radius,angle,dragPerSecond = 1200;
 	protected boolean moveable = true, solid = true, alive = true;
 	
 	protected Room currentRoom;
@@ -39,7 +41,13 @@ public abstract class DrawableObject {
 		return new Vector(position);
 	}
 	public Vector getVelocity(){
-		return new Vector(velocity);
+		return internalVelocity.add(externalVelocity);
+	}
+	public Vector getInternalVelocity(){
+		return new Vector(internalVelocity);
+	}
+	public Vector getExternalVelocity(){
+		return new Vector(externalVelocity);
 	}
 	public double getRadius(){
 		return radius;
@@ -58,12 +66,19 @@ public abstract class DrawableObject {
 	public void setPosition(Vector v){
 		position.setTo(v);
 	}
-	public void setVelocity(Vector v){
+	public void setInternalVelocity(Vector v){
 		if(!moveable){
 			System.err.println("Moving an immovable object!");
 			return;
 		}
-		velocity.setTo(v);
+		internalVelocity.setTo(v);
+	}
+	public void setExternalVelocity(Vector v){
+		if(!moveable){
+			System.err.println("Moving an immovable object!");
+			return;
+		}
+		externalVelocity.setTo(v);
 	}
 	public void setRadius(double radius){
 		this.radius = radius;
@@ -76,6 +91,24 @@ public abstract class DrawableObject {
 	}
 	public void setCurrentRoom(Room next){
 		currentRoom = next;
+	}
+	
+	public void applyExternalVelocity(Vector vel){
+		Vector.add(externalVelocity, vel);
+	}
+	
+	public void stopMoving(){
+		internalVelocity = new Vector(0,0);
+		externalVelocity = new Vector(0,0);
+	}
+	
+	public void stopMovingInDirection(Vector dir){
+		Vector iproj = internalVelocity.project(dir);
+		Vector eproj = externalVelocity.project(dir);
+		if(Geometry.findScale(new Vector(0,0), dir, iproj) >= 0)
+			internalVelocity = internalVelocity.sub(iproj);
+		if(Geometry.findScale(new Vector(0,0), dir, eproj) >= 0)
+			externalVelocity = externalVelocity.sub(eproj);
 	}
 	
 	public void kill(){
@@ -158,7 +191,9 @@ public abstract class DrawableObject {
 	
 	//Update stuff
 	public void move(double elapsedSeconds){
-		Vector.add(position, velocity.scale(elapsedSeconds));
+		double mag = externalVelocity.mag();
+		setExternalVelocity(externalVelocity.scale(Math.max((mag-dragPerSecond*elapsedSeconds)/mag,0)));
+		Vector.add(position, getVelocity().scale(elapsedSeconds));
 	}
 	public abstract void update(double elapsedSeconds);
 	public abstract void drawBody(Graphics2D g, double elapsedSeconds, Camera cam);
