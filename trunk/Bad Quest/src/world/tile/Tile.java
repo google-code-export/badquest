@@ -33,8 +33,8 @@ public abstract class Tile {
 		return new Vector(center);
 	}
 	
-	public abstract void drawBody(Graphics2D g, double elapsedSeconds, Camera cam);
 	public abstract void update(double elapsedSeconds);
+	public abstract void drawBody(Graphics2D g, double elapsedSeconds, Camera cam);
 	
 	private static int enumCount = 0;
 	public static enum TileType{
@@ -42,7 +42,7 @@ public abstract class Tile {
 		WALL,
 		DIRT,
 		STONE,
-		PIT;
+		WOOD_PLANK;
 		
 		public final int val;
 		private TileType(){

@@ -24,6 +24,8 @@ public class RoomManager {
 		if(getRoomFromID(ID) == null){
 			System.err.println("Error referencing room " + ID + ", no room found with this ID");
 			return null;
+		}else if(ID == curRID){
+			return rmap.get(ID);
 		}
 		
 		ArrayDeque<Integer> add = new ArrayDeque<Integer>();
