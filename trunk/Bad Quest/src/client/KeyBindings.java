@@ -17,7 +17,7 @@ import java.util.BitSet;
 import java.util.HashMap;
 
 public class KeyBindings implements Serializable{
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 	private static String fileName = "keybindings.bad";
 	private static KeyBindings currentKeyBindings;
 	
@@ -53,7 +53,8 @@ public class KeyBindings implements Serializable{
 		mouseMap = new HashMap<Integer, Player.PlayerInput>();
 		
 		mouseMap.put(MouseEvent.BUTTON1, Player.PlayerInput.USE1);
-		mouseMap.put(MouseEvent.BUTTON2, Player.PlayerInput.USE2);
+		mouseMap.put(MouseEvent.BUTTON3, Player.PlayerInput.USE2);
+		mouseMap.put(MouseEvent.BUTTON2, Player.PlayerInput.USE3);
 	}
 
 	public static ArrayDeque<Player.PlayerInput> getInputList(BitSet keys, BitSet clicks){

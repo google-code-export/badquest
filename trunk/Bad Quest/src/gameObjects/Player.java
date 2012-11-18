@@ -1,5 +1,9 @@
 package gameObjects;
 
+import gameObjects.equipment.DebugHelmet;
+import gameObjects.equipment.DebugShield;
+import gameObjects.equipment.DebugSword;
+import gameObjects.equipment.EquipmentModule;
 import graphics.Camera;
 
 import java.awt.Color;
@@ -14,7 +18,7 @@ import util.Vector;
 import client.KeyBindings;
 
 public class Player extends Actor {	
-	private EquipmentModule rightHand,head;
+	private EquipmentModule[] equip = new EquipmentModule[3];	
 	
 	private ArrayDeque<PlayerInput> input;
 	private double speed = 225;
@@ -24,11 +28,14 @@ public class Player extends Actor {
 		super(name,r,position);
 		color = new Color(125,190,209).darker();
 		
-		rightHand = new EquipmentModule(this, radius*1.5, Math.PI/2.5, Math.PI/6);
-		rightHand.loadEquipment(new DebugSword());
+		equip[0] = new EquipmentModule(this, radius*1.5, Math.PI/2.5, Math.PI/6);
+		equip[0].loadEquipment(new DebugSword());
 		
-		head = new EquipmentModule(this);
-		head.loadEquipment(new DebugHelmet());
+		equip[1] = new EquipmentModule(this, radius*1.4, -Math.PI/2, -Math.PI/1.9, 4);
+		equip[1].loadEquipment(new DebugShield());
+		
+		equip[2] = new EquipmentModule(this);
+		equip[2].loadEquipment(new DebugHelmet());
 		
 		input = new ArrayDeque<PlayerInput>();
 	}
@@ -63,11 +70,13 @@ public class Player extends Actor {
 				case JUMP:
 					break;
 				case USE1:
-					rightHand.use();
+					equip[0].use();
 					break;
 				case USE2:
+					equip[1].use();
 					break;
 				case USE3:
+					equip[2].use();
 					break;
 				case USE4:
 					break;
@@ -82,8 +91,8 @@ public class Player extends Actor {
 		//Perform the Actor update
 		super.update(elapsedSeconds);
 		//Update equipment modules
-		rightHand.update(elapsedSeconds);
-		head.update(elapsedSeconds);
+		for(EquipmentModule mod:equip)
+			mod.update(elapsedSeconds);
 	}
 	
 	@Override
@@ -103,8 +112,8 @@ public class Player extends Actor {
 		g.setStroke(pStroke);
 		g.setTransform(prev);
 		
-		rightHand.drawBody(g, elapsedSeconds, cam);
-		head.drawBody(g, elapsedSeconds, cam);
+		for(EquipmentModule mod:equip)
+			mod.drawBody(g,elapsedSeconds,cam);
 	}
 	
 	private static int enumCount = 0;

@@ -1,5 +1,6 @@
-package gameObjects;
+package gameObjects.equipment;
 
+import gameObjects.Actor;
 import graphics.Camera;
 
 import java.awt.BasicStroke;
