@@ -5,6 +5,7 @@ import gameObjects.DrawableObject;
 import gameObjects.ObjectManager;
 import gameObjects.Player;
 import gameObjects.Portal;
+import graphics.Camera;
 import graphics.DimmerGraphics;
 
 import java.awt.BasicStroke;
@@ -24,8 +25,8 @@ import util.Vector;
 import world.Room;
 import world.RoomManager;
 import world.tile.Tile;
-import client.Camera;
 import client.GameClient;
+import client.KeyBindings;
 
 public class DebugState extends State{
 	Room room = new Room(0,new Vector(400,0),0);
@@ -34,6 +35,7 @@ public class DebugState extends State{
 	Room backbackground = new Room(50,50,2);
 	ArrayList<Room> roomList = RoomManager.getRoomList();
 	
+	Player player;
 	Actor[] actors;
 	TreeMap<Integer, DrawableObject> drawList; 
 	Camera cam = new Camera(new Vector(0,0));
@@ -72,7 +74,8 @@ public class DebugState extends State{
 		background.addEntity(C);
 		backbackground.addEntity(D);
 		
-		actors = new Actor[]{new Player("Rawnblade", 10, new Vector(200,200)), 
+		player = new Player("Rawnblade", 10, new Vector(200,200));
+		actors = new Actor[]{player, 
 							 new Actor("Rusty Stranglechain", 10, new Vector(120,100)),
 							 new Actor("Gunther Boneguzzler", 10, new Vector(40,100)),
 							 new Actor("Pork Undertow", 10, new Vector(60,100)),
@@ -103,40 +106,24 @@ public class DebugState extends State{
 	public DrawableObject getCameraFollow(){
 		return cam.getFocus();
 	}
-	
-	/**
-	 * Returns the player's velocity based on user input
-	 * @return
-	 */
-	public Vector getPlayerVel(){
-		Vector ret = new Vector(0,0);
-		if(keys.get(KeyEvent.VK_W))
-			Vector.add(ret, (new Vector(0,-acc)));
-		if(keys.get(KeyEvent.VK_S))
-			Vector.add(ret, (new Vector(0,acc)));
-		if(keys.get(KeyEvent.VK_A))
-			Vector.add(ret, (new Vector(-acc,0)));
-		if(keys.get(KeyEvent.VK_D))
-			Vector.add(ret, (new Vector(acc,0)));
-		return ret;
-	}
 
 	//**************
 	//State stuff
 	//**************
 	
-	protected void update(double elapsedSeconds){		
-		Vector velocity = getPlayerVel();
+	protected void update(double elapsedSeconds){
 		if(keys.get(KeyEvent.VK_Q))
 			scale = scale*9/10.;
 		if(keys.get(KeyEvent.VK_E))
 			scale = scale*10/9.;
 		
-		for(Actor a:actors)
-			a.setInternalVelocity(new Vector(0,0));
+//		for(Actor a:actors)
+//			a.setInternalVelocity(new Vector(0,0));
+		player.setSpeed(acc/scale);
+		player.receiveInput(keys, clicks);
 		
 		if(activeActor > -1){
-			actors[activeActor].setInternalVelocity(velocity.scale(1/scale));
+//			actors[activeActor].setInternalVelocity(velocity.scale(1/scale));
 			if(keys.get(KeyEvent.VK_SPACE))
 				actors[activeActor].applyExternalVelocity(new Vector(actors[activeActor].getAngle()).scale(acc/(scale*2)));
 			if(clicks.get(MouseEvent.BUTTON1))
@@ -233,7 +220,7 @@ public class DebugState extends State{
 			g.drawString(String.format("%.4f", cam.scale()), GameClient.frameWidth/2-5, GameClient.frameHeight-30);
 			g.drawString(String.format("%d", ObjectManager.objectCount()), GameClient.frameWidth/2-5, GameClient.frameHeight-45);
 		}
-		
+		KeyBindings.getInputList(keys, clicks);
 		g.setStroke(pStroke);
 		g.setTransform(prev);
 	}

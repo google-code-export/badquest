@@ -1,12 +1,13 @@
 package world.tile;
 
+import graphics.Camera;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
 import util.Vector;
 import world.Room;
-import client.Camera;
 
 public class Water extends Tile {
 	

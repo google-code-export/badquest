@@ -1,11 +1,12 @@
 package gameObjects;
 
+import graphics.Camera;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
 import util.Vector;
-import client.Camera;
 
 public class DebugActor extends DrawableObject{
 	public DebugActor(Vector v){

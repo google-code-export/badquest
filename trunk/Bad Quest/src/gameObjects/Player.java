@@ -1,34 +1,89 @@
 package gameObjects;
 
+import graphics.Camera;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayDeque;
+import java.util.BitSet;
+import java.util.HashMap;
 
 import util.Vector;
-import client.Camera;
+import client.KeyBindings;
 
 public class Player extends Actor {	
 	private EquipmentModule rightHand,head;
 	
+	private ArrayDeque<PlayerInput> input;
+	private double speed = 225;
+	private boolean lock = false;
+	
 	public Player(String name, int r, Vector position){
 		super(name,r,position);
 		color = new Color(125,190,209).darker();
-		rightHand = new EquipmentModule(new Vector(Math.PI/2.5).scale(radius*1.5).add(position));
-		rightHand.loadEquipment(new DebugSword(new Vector(-Math.PI/2.5).scale(radius*1.5).add(position)));
-		head = new EquipmentModule(position, true);
+		
+		rightHand = new EquipmentModule(this, radius*1.5, Math.PI/2.5, Math.PI/6);
+		rightHand.loadEquipment(new DebugSword());
+		
+		head = new EquipmentModule(this);
 		head.loadEquipment(new DebugHelmet());
+		
+		input = new ArrayDeque<PlayerInput>();
 	}
-
-	public void drawPoly(double[] x, double[] y, Graphics2D g){
-		int[] px = new int[x.length];
-		int[] py = new int[y.length];
-		for(int i = 0; i < x.length; i++){
-			px[i] = (int)Math.round(x[i]);
-			py[i] = (int)Math.round(y[i]);
+	
+	public void setSpeed(double s){
+		speed = s;
+	}
+	
+	public void receiveInput(BitSet keys, BitSet clicks){
+		input = KeyBindings.getInputList(keys, clicks);
+	}
+	
+	@Override
+	public void update(double elapsedSeconds){		
+		//Add a block for player input
+		Vector inputVel = new Vector(0,0);
+		if(!lock){
+			for(PlayerInput pid:input){
+				switch(pid){
+				case MOVE_UP:
+					Vector.add(inputVel, new Vector(0,-speed));
+					break;
+				case MOVE_DOWN:
+					Vector.add(inputVel, new Vector(0,speed));
+					break;
+				case MOVE_RIGHT:
+					Vector.add(inputVel, new Vector(speed,0));
+					break;
+				case MOVE_LEFT:
+					Vector.add(inputVel, new Vector(-speed,0));
+					break;
+				case JUMP:
+					break;
+				case USE1:
+					rightHand.use();
+					break;
+				case USE2:
+					break;
+				case USE3:
+					break;
+				case USE4:
+					break;
+				default:
+					System.err.println("Unrecognized player input: " + pid);
+				}
+			}
 		}
 		
-		g.drawPolygon(px, py, x.length);
+		setInternalVelocity(inputVel);
+		
+		//Perform the Actor update
+		super.update(elapsedSeconds);
+		//Update equipment modules
+		rightHand.update(elapsedSeconds);
+		head.update(elapsedSeconds);
 	}
 	
 	@Override
@@ -52,16 +107,31 @@ public class Player extends Actor {
 		head.drawBody(g, elapsedSeconds, cam);
 	}
 	
-	@Override
-	public void update(double elapsedSeconds){
-		super.update(elapsedSeconds);
+	private static int enumCount = 0;
+	public static enum PlayerInput{
+		MOVE_UP,
+		MOVE_RIGHT,
+		MOVE_DOWN,
+		MOVE_LEFT,
+		JUMP,
+		USE1,
+		USE2,
+		USE3,
+		USE4;
 		
-		rightHand.setPosition(new Vector(Math.PI/2.5).scale(radius*1.5).rot(angle).add(position));
-		rightHand.move(elapsedSeconds);
-		rightHand.setAngle(angle + Math.PI/6);
+		public final int val;
+		private PlayerInput(){
+			val = enumCount++;
+		}
 		
-		head.setPosition(position);
-		head.setAngle(angle);
-		head.move(elapsedSeconds);
+		private static HashMap<Integer, PlayerInput> map = new HashMap<Integer, PlayerInput>();
+		static{
+			for(PlayerInput pid:PlayerInput.values())
+				map.put(pid.val,pid);
+		}
+		
+		public static PlayerInput getInputFromID(int pid){
+			return map.get(pid);
+		}
 	}
 }

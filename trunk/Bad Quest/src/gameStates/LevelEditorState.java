@@ -1,12 +1,13 @@
 package gameStates;
 
+import graphics.Camera;
+
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.BitSet;
 
 import util.Vector;
-import client.Camera;
 
 /**
  * Level editor, allows a user to load and save a level from or to file.

@@ -1,12 +1,13 @@
 package world.tile;
 
+import graphics.Camera;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.HashMap;
 
 import util.Vector;
 import world.Room;
-import client.Camera;
 
 public abstract class Tile {
 	protected Room owner;
