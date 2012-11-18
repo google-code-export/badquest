@@ -1,5 +1,6 @@
-package gameObjects;
+package gameObjects.equipment;
 
+import gameObjects.DrawableObject;
 import graphics.Camera;
 
 import java.awt.Graphics2D;

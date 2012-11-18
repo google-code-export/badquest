@@ -1,5 +1,6 @@
-package gameObjects;
+package gameObjects.equipment;
 
+import gameObjects.Actor;
 import graphics.Camera;
 
 import java.awt.Graphics2D;
@@ -30,6 +31,14 @@ public class EquipmentModule {
 		this.radius = radius;
 		this.angleOffset = angleOffset;
 		this.tilt = tilt;
+	}
+	
+	public EquipmentModule(Actor host, double radius, double angleOffset, double tilt, double maxDist){
+		this.host = host;
+		this.radius = radius;
+		this.angleOffset = angleOffset;
+		this.tilt = tilt;
+		this.maxDist = maxDist;
 	}
 	
 	public Actor getActor(){

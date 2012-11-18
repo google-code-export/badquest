@@ -1,4 +1,4 @@
-package gameObjects;
+package gameObjects.equipment;
 
 import graphics.Camera;
 
