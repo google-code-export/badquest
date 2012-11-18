@@ -2,6 +2,7 @@ package world;
 
 import gameObjects.Actor;
 import gameObjects.DrawableObject;
+import graphics.Camera;
 
 import java.awt.Graphics2D;
 import java.util.ArrayDeque;
@@ -12,7 +13,6 @@ import util.Vector;
 import world.tile.Stone;
 import world.tile.Tile;
 import world.tile.Wall;
-import client.Camera;
 
 public class Room implements Comparable<Room>{
 	private Tile[][] map;
@@ -173,9 +173,9 @@ public class Room implements Comparable<Room>{
 				t.update(elapsedSeconds);
 		
 		synchronized(entityMap){
-			for(Integer oid:entityMap.keySet())
-				if(entityMap.get(oid).isSolid())
-					collideWithSolids(entityMap.get(oid), elapsedSeconds);
+//			for(Integer oid:entityMap.keySet())
+//				if(entityMap.get(oid).isSolid())
+//					collideWithSolids(entityMap.get(oid), elapsedSeconds);
 			
 			for(Integer oid:entityMap.keySet())
 				entityMap.get(oid).update(elapsedSeconds);

@@ -1,11 +1,12 @@
 package gameObjects;
 
+import graphics.Camera;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
 import util.Vector;
-import client.Camera;
 
 public class Actor extends DrawableObject {
 	private String name = "default";

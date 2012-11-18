@@ -1,25 +1,59 @@
 package gameObjects;
 
+import graphics.Camera;
+
 import java.awt.Graphics2D;
 
 import util.SpringDampHelper;
 import util.Vector;
-import client.Camera;
 
 public class EquipmentModule {
-	private Vector position; //The expected position of his piece of equipment
+	private double radius; //Distance from center of the host body
+	private double angleOffset; //Angle offset of position relative to the host's angle
+	private double tilt;
+	private Actor host;
 	private Equipment cur;
 	
-	private boolean STRICT; //Strict follow
 	private SpringDampHelper spring = new SpringDampHelper(2.9, .08, 5);
+	private double maxDist = 20;
 	
-	public EquipmentModule(Vector position){
-		this.position = new Vector(position);
+	public EquipmentModule(Actor host){
+		this.host = host;
+		radius = 0;
+		angleOffset = 0;
+		tilt = 0;
+		maxDist = 0;
 	}
 	
-	public EquipmentModule(Vector position, boolean follow){
-		this.position = new Vector(position);
-		STRICT = follow;
+	public EquipmentModule(Actor host, double radius, double angleOffset, double tilt){
+		this.host = host;
+		this.radius = radius;
+		this.angleOffset = angleOffset;
+		this.tilt = tilt;
+	}
+	
+	public Actor getActor(){
+		return host;
+	}
+	
+	public double getRadius(){
+		return radius;
+	}
+	
+	public double getAngleOffset(){
+		return angleOffset;
+	}
+	
+	public double getTilt(){
+		return tilt;
+	}
+	
+	public void setRadius(double nextRadius){
+		radius = nextRadius;
+	}
+	
+	public void setAngleOffset(double angle){
+		angleOffset = angle;
 	}
 	
 	/**
@@ -27,25 +61,33 @@ public class EquipmentModule {
 	 * @param equip
 	 */
 	public void loadEquipment(Equipment equip){
+		if(cur != null)
+			cur.unregister();
 		cur = equip;
+		if(cur != null)
+			cur.registerWithModule(this);
 	}
 	
-	public void setPosition(Vector v){
-		position.setTo(v);
-	}
-	
-	public void setAngle(double a){
-		cur.setAngle(a);
+	public void use(){
+		//activate the equipment!
+		if(cur != null)
+			cur.activate();
 	}
 	
 	public void move(double elapsedSeconds){
+		Vector expectedPosition = host.getPosition().add(new Vector(host.getAngle()+angleOffset).scale(radius));
+		if(expectedPosition.dis2(cur.getPosition()) > maxDist*maxDist){
+			Vector clamp = cur.getPosition().sub(expectedPosition).norm().scale(maxDist);
+			cur.setPosition(expectedPosition.add(clamp));
+		}
+		Vector velocity = spring.getVelocity(expectedPosition, cur.getPosition());
+		cur.setInternalVelocity(velocity);
+		cur.setAngle(host.getAngle()+tilt);
+	}
+	
+	public void update(double elapsedSeconds){
 		if(cur != null){
-			if(STRICT){
-				cur.setPosition(position);
-			}else{
-				Vector velocity = spring.getVelocity(position, cur.getPosition());
-				cur.setInternalVelocity(velocity);
-			}
+			move(elapsedSeconds);
 			cur.update(elapsedSeconds);
 		}
 	}

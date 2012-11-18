@@ -1,11 +1,12 @@
 package gameObjects;
 
+import graphics.Camera;
+
 import java.awt.Graphics2D;
 
 import util.Geometry;
 import util.Vector;
 import world.Room;
-import client.Camera;
 
 public abstract class DrawableObject {
 	protected Vector position = new Vector(0,0);
@@ -193,6 +194,10 @@ public abstract class DrawableObject {
 	public void move(double elapsedSeconds){
 		double mag = externalVelocity.mag();
 		setExternalVelocity(externalVelocity.scale(Math.max((mag-dragPerSecond*elapsedSeconds)/mag,0)));
+		
+		if(solid && currentRoom != null)
+			currentRoom.collideWithSolids(this, elapsedSeconds);
+		
 		Vector.add(position, getVelocity().scale(elapsedSeconds));
 	}
 	public abstract void update(double elapsedSeconds);

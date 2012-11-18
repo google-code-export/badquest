@@ -1,5 +1,7 @@
 package gameObjects;
 
+import graphics.Camera;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -8,7 +10,6 @@ import java.awt.geom.AffineTransform;
 import util.Vector;
 import world.Room;
 import world.tile.Tile;
-import client.Camera;
 
 public class Portal extends DrawableObject {
 	private Room owner;

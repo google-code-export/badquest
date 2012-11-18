@@ -1,8 +1,9 @@
-package client;
+package graphics;
 
 import gameObjects.DrawableObject;
 import util.SpringDampHelper;
 import util.Vector;
+import client.GameClient;
 
 /**
  * Camera!

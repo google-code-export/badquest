@@ -1,10 +1,11 @@
 package world.tile;
 
+import graphics.Camera;
+
 import java.awt.Graphics2D;
 
 import util.Vector;
 import world.Room;
-import client.Camera;
 
 public class Void extends Tile {
 	public Void(int y, int x, Room owner){

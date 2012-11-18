@@ -1,5 +1,7 @@
 package gameObjects;
 
+import graphics.Camera;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -7,17 +9,53 @@ import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 
 import util.Vector;
-import client.Camera;
+import world.Room;
 
 public class DebugSword extends Equipment {
+	private boolean animating;
+	private double startAngle = 2*Math.PI/6;
+	private double angleOffset = -4*Math.PI/6;
 	
-	public DebugSword(Vector pos){
-		setPosition(pos);
+	private double animationTime = .15;
+	private double time = 0;
+	
+	public DebugSword(){
+		cycleTimer = .35;
 	}
 	
 	@Override
-	public void use() {
+	public void activate() {
+		if(cooldown <= 0){
+			//Create a damage volume
+			Room room = host.getActor().getCurrentRoom();
+			room.getRID();
+			triggerCycleCooldown();
+			animating = true;
+			time = 0;
+		}
+	}
+	
+	//TODO: Less hacky, please! At least don't make the object move twice per update
+	@Override
+	public void update(double elapsedSeconds) {
+		super.update(elapsedSeconds);
 		
+		if(time < animationTime){
+			time += elapsedSeconds;
+			animating &= time < animationTime;
+		}
+		
+		if(animating){
+			Actor actor = host.getActor();
+			double actorAngle = actor.getAngle();
+			Vector actorPos = actor.getPosition();
+			
+			double x = time/animationTime;
+			double offset = angleOffset*x;
+			
+			setAngle(actorAngle + startAngle + offset);
+			setPosition(actorPos.add(new Vector(actorAngle + startAngle + offset).scale(host.getRadius()+actor.getRadius()/2)));
+		}
 	}
 	
 	@Override
