@@ -9,6 +9,7 @@ import util.Vector;
 import world.Room;
 
 public abstract class DrawableObject {
+	protected String name = "default";
 	protected Vector position = new Vector(0,0);
 	protected Vector internalVelocity = new Vector(0,0);
 	protected Vector externalVelocity = new Vector(0,0);
@@ -56,6 +57,9 @@ public abstract class DrawableObject {
 	public double getAngle() {
 		return angle;
 	}
+	public String getName(){
+		return name;
+	}
 	public boolean isSolid() {
 		return solid;
 	}
@@ -86,6 +90,9 @@ public abstract class DrawableObject {
 	}
 	public void setAngle(double angle){
 		this.angle = angle;
+	}
+	public void setName(String name){
+		this.name = name;
 	}
 	public void setSolid(boolean solid) {
 		this.solid = solid;
@@ -204,6 +211,6 @@ public abstract class DrawableObject {
 	public abstract void drawBody(Graphics2D g, double elapsedSeconds, Camera cam);
 	
 	public String toString(){
-		return "Object "+OID;
+		return name + " (object "+OID+")";
 	}
 }

@@ -11,11 +11,11 @@ import util.Vector;
 import world.Room;
 
 
-public class WoodPlank extends Tile {
+public class WoodPlankH extends Tile {
 	private Color fill = new Color(117,101,53);
 	private Color outline = fill.darker();
-	public WoodPlank(int y, int x, Room owner){
-		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.WOOD_PLANK, owner);
+	public WoodPlankH(int y, int x, Room owner){
+		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.WOOD_PLANK_H, owner);
 	}
 	
 	@Override
@@ -43,8 +43,6 @@ public class WoodPlank extends Tile {
 			g.drawLine(Tile.SIZE/2, (2*i+1)*Tile.SIZE/4, Tile.SIZE/2, (2*i+2)*Tile.SIZE/4);
 			g.drawLine(Tile.SIZE, (2*i)*Tile.SIZE/4, Tile.SIZE, (2*i+1)*Tile.SIZE/4);
 			g.drawLine(0, (2*i)*Tile.SIZE/4, 0, (2*i+1)*Tile.SIZE/4);
-//			g.drawLine(Tile.SIZE/4, (2*i+1)*Tile.SIZE/4, Tile.SIZE/4, (2*i+2)*Tile.SIZE/4);
-//			g.drawLine(3*Tile.SIZE/4, (2*i)*Tile.SIZE/4, 3*Tile.SIZE/4, (2*i+1)*Tile.SIZE/4);
 		}
 		
 		g.setClip(null);

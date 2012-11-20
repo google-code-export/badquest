@@ -41,9 +41,13 @@ public abstract class Tile {
 	public static enum TileType{
 		VOID,
 		WALL,
+		WATER,
 		DIRT,
 		STONE,
-		WOOD_PLANK;
+		GLASS,
+		WOOD_PLANK_H,
+		WOOD_PLANK_V,
+		SMART;
 		
 		public final int val;
 		private TileType(){

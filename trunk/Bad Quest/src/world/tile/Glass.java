@@ -12,7 +12,7 @@ import world.Room;
 public class Glass extends Tile {
 	
 	public Glass(int y, int x, Room owner){
-		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.STONE, owner);
+		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.GLASS, owner);
 	}
 	
 	@Override

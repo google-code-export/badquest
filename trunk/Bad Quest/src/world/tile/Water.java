@@ -15,7 +15,7 @@ public class Water extends Tile {
 	double time = 0;
 	
 	public Water(int y, int x, Room owner){
-		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.STONE, owner);
+		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.WATER, owner);
 	}
 	
 	@Override

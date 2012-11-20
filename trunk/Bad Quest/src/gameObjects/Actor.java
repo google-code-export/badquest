@@ -1,5 +1,6 @@
 package gameObjects;
 
+import gameObjects.interfaces.Damageable;
 import graphics.Camera;
 
 import java.awt.Color;
@@ -8,13 +9,17 @@ import java.awt.geom.AffineTransform;
 
 import util.Vector;
 
-public class Actor extends DrawableObject {
-	private String name = "default";
+public class Actor extends DrawableObject implements Damageable{
 	protected Color color = Color.ORANGE;
 	
 	private Vector lookAt = new Vector(0,0);
 	
+	private final int maxHealth = 100;
+	private int currentHealth = maxHealth;
+	private Faction faction = Faction.HOSTILE;
+	
 	public Actor(){
+		
 	}
 	
 	public Actor(String name){
@@ -24,6 +29,7 @@ public class Actor extends DrawableObject {
 	public Actor(String name, int r){
 		this.name = name;
 		radius = r;
+		faction = Faction.NEUTRAL;
 	}
 	
 	public Actor(String name, int r, Vector position){
@@ -32,12 +38,8 @@ public class Actor extends DrawableObject {
 		this.position.setTo(position);
 	}
 	
-	public void setName(String name){
-		this.name = name;
-	}
-	
-	public String getName(){
-		return name;
+	public void setFaction(Faction f){
+		faction = f;
 	}
 	
 	public Vector getLookAt(){
@@ -50,11 +52,45 @@ public class Actor extends DrawableObject {
 		else
 			lookAt = new Vector(look);
 	}
+	
+	//Health stuff
+	
+	@Override
+	public void applyDamage(int amount) {
+		System.out.println(this + " taking " + amount + " damage!");
+		if(faction == Faction.NEUTRAL){
+			System.out.println(this + " turning hostile!");
+			faction = Faction.HOSTILE;
+		}
+		currentHealth -= amount;
+	}
+	
+	@Override
+	public int getCurrentHealth() {
+		return currentHealth;
+	}
+	
+	@Override
+	public Faction getFaction() {
+		return faction;
+	}
+	
+	@Override
+	public int getMaxHealth() {
+		return maxHealth;
+	}
+	
+	@Override
+	public boolean isDamageable(Faction f) {
+		return f == Faction.NEUTRAL || f != faction;
+	}
 
 	@Override
 	public void update(double elapsedSeconds){
 		if(lookAt != null)
 			angle = lookAt.sub(position).ang();
+		if(currentHealth <= 0)
+			kill();
 		move(elapsedSeconds);
 	}
 

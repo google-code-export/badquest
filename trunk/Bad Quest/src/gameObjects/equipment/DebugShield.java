@@ -17,20 +17,16 @@ public class DebugShield extends Equipment {
 	
 	private boolean up = false;
 	
-	public DebugShield(){
-		cycleTimer = .25;
-		
+	public DebugShield(){		
 		int[] x = new int[]{0,-1,-2,0,1,2,2,1,0,-2,-1,0};
 		int[] y = new int[]{-2,-6,-8,-8,-6,-2,2,6,8,8,6,2};
 		body = new Polygon(x,y,x.length);
+		name = "Debug Shield";
 	}
 	
 	@Override
 	public void activate() {
-		if(cooldown <= 0){
-			up = !up;
-			triggerCycleCooldown();
-		}
+		up = true;
 	}
 	
 	@Override
@@ -40,6 +36,7 @@ public class DebugShield extends Equipment {
 		if(up){
 			setAngle(host.getActor().getAngle());
 			setPosition(host.getActor().getPosition().add(new Vector(host.getActor().getAngle()).scale(host.getRadius())));
+			up = false;
 		}
 	}
 	
