@@ -30,6 +30,7 @@ public class Portal extends DrawableObject {
 		state = State.OFF;
 		radius = Tile.SIZE*.8;
 		setPosition(position);
+		name = "Portal";
 		init();
 	}
 	

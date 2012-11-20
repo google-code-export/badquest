@@ -1,28 +1,30 @@
 package world;
 
 import world.tile.Glass;
+import world.tile.Smart;
 import world.tile.Stone;
 import world.tile.Tile;
 import world.tile.Void;
 import world.tile.Wall;
 import world.tile.Water;
-import world.tile.WoodPlank;
+import world.tile.WoodPlankH;
+import world.tile.WoodPlankV;
 
 public class DebugRoomMaker {
 	private static String[][] prebuilt = new String[][]{{"################################################################################",
-														 "#......................wwwwwwwwwwww............................................#",
-														 "#......................#wwwwwwwwww#............................................#",
-														 "#......................pppppppppppp............................................#",
-														 "#......................#wwwwwwwwww#............................................#",
-														 "#.......####...........wwwwwwwwwwww............................................#",
-														 "#    ..    #...........wwwwwww########.........................................#",
-														 "#    ..ppppp............wwwwww#      #................  #..#  .................#",
-														 "     ..ppppp.............wwwww#      #................  #..#  .................#",
-														 "     ..    #...............www########...............  #..#  ..................#",
+														 "#............sssssssss.wwwwwwwwwwww............................................#",
+														 "#............sssssssss.#wwwwwwwwww#................................kpkpkpkpkpk.#",
+														 "#............sssssssss.pppppppppppp................................pkpkpkpkpkp.#",
+														 "#............sssssssss.#wwwwwwwwww#................................kpkpkpkpkpk.#",
+														 "#.......####.sssssssss.wwwwwwwwwwww................................pkpkpkpkpkp.#",
+														 "#   kk     #.sssssssss.wwwwwww########.............................kpkpkpkpkpk.#",
+														 "#   kkpppppp............wwwwww#      #................  #..#  .................#",
+														 "    kkpppppp.............wwwww#      #................  #..#  .................#",
+														 "    kk     #...............www########...............  #..#  ..................#",
 														 "#.......####.....gggg.......wwww..................... #..#  ...................#",
 														 "#...............gggggg..................................#  ....................#",
-														 "#...............gg  gg.........................................................#",
-														 "#...............gg  gg....................................######################",
+														 "#...............ggssgg.........................................................#",
+														 "#...............ggssgg....................................######################",
 														 "#...............gggggg....................................#gg#p#g####......#...#",
 														 "#................gggg.......wwwwg     ..     .............####p#gggg#......###g#",
 														 "#...#..#....................wwwwg            .............#pppp######..........#",
@@ -36,6 +38,15 @@ public class DebugRoomMaker {
 														 "ggwww####wwwgggg",
 														 "gggwwwwwwwwwwwgg",
 														 "gggggggggggggggg"},
+														{"ssssssssssssssss",
+														 "sswwwwwwwwwsssss",
+														 "sswww####wwwssss",
+														 "ssswwwwwwwwwwwss",
+														 "ssswwsssswwsssss",
+														 "ssswwsssswwsssss",
+														 "ssswwwwwwwwsssss",
+														 "ssswwwwwwwwsssss",
+														 "ssssssssssssssss"},
 														{"wwwwwwwwwwwwwwwwwwwwwww",
 														 "wwwwwwwwwwwwwwwwwwwwwww",
 														 "wwwwwwwwwwwwwwwwwwwwwww",
@@ -71,7 +82,13 @@ public class DebugRoomMaker {
 					map[i][j] = new Water(i,j,caller);
 					break;
 				case 'p':
-					map[i][j] = new WoodPlank(i,j,caller);
+					map[i][j] = new WoodPlankH(i,j,caller);
+					break;
+				case 'k':
+					map[i][j] = new WoodPlankV(i,j,caller);
+					break;
+				case 's':
+					map[i][j] = new Smart(i,j,caller);
 					break;
 				default:
 					map[i][j] = new Void(i,j,caller);

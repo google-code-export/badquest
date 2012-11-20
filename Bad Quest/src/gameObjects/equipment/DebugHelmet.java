@@ -19,6 +19,14 @@ public class DebugHelmet extends Equipment {
 		radius = 10;
 		one = new Color(2,99,193);
 		two = new Color(0,51,102);
+		name = "Debug Helmet";
+		init();
+	}
+	
+	public DebugHelmet(Color color){
+		radius = 10;
+		one = color;
+		two = color.darker();
 		init();
 	}
 	

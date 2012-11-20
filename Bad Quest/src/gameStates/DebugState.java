@@ -76,7 +76,7 @@ public class DebugState extends State{
 		
 		player = new Player("Rawnblade", 10, new Vector(200,200));
 		actors = new Actor[]{player, 
-							 new Actor("Rusty Stranglechain", 10, new Vector(120,100)),
+							 new Player("Rusty Stranglechain", 10, new Vector(120,100), new Color(.55f, .3f, .02f)),
 							 new Actor("Gunther Boneguzzler", 10, new Vector(40,100)),
 							 new Actor("Pork Undertow", 10, new Vector(60,100)),
 							 new Actor("Kurt Lioncrusher", 10, new Vector(80,100)),
@@ -119,11 +119,14 @@ public class DebugState extends State{
 		
 //		for(Actor a:actors)
 //			a.setInternalVelocity(new Vector(0,0));
-		player.setSpeed(acc/scale);
-		player.receiveInput(keys, clicks);
 		
 		if(activeActor > -1){
 //			actors[activeActor].setInternalVelocity(velocity.scale(1/scale));
+			if(actors[activeActor] instanceof Player){
+				((Player)actors[activeActor]).setSpeed(acc/scale);
+				((Player)actors[activeActor]).receiveInput(keys, clicks);
+			}
+			
 			if(keys.get(KeyEvent.VK_SPACE))
 				actors[activeActor].applyExternalVelocity(new Vector(actors[activeActor].getAngle()).scale(acc/(scale*2)));
 			if(clicks.get(MouseEvent.BUTTON1) || clicks.get(MouseEvent.BUTTON3))

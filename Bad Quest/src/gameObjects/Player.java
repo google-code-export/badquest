@@ -23,6 +23,7 @@ public class Player extends Actor {
 	private ArrayDeque<PlayerInput> input;
 	private double speed = 225;
 	private boolean lock = false;
+	private boolean inputFlag = false;
 	
 	public Player(String name, int r, Vector position){
 		super(name,r,position);
@@ -38,6 +39,25 @@ public class Player extends Actor {
 		equip[2].loadEquipment(new DebugHelmet());
 		
 		input = new ArrayDeque<PlayerInput>();
+		
+		setFaction(Faction.FRIENDLY);
+	}
+	
+	public Player(String name, int r, Vector position, Color color){
+		super(name,r,position);
+		this.color = color;
+		
+		equip[0] = new EquipmentModule(this, radius*1.5, Math.PI/2.5, Math.PI/6);
+		equip[0].loadEquipment(new DebugSword());
+		
+		equip[1] = new EquipmentModule(this, radius*1.4, -Math.PI/2, -Math.PI/1.9, 4);
+		equip[1].loadEquipment(new DebugShield());
+		
+		equip[2] = new EquipmentModule(this);
+		equip[2].loadEquipment(new DebugHelmet(color));
+		
+		input = new ArrayDeque<PlayerInput>();
+		setFaction(Faction.FRIENDLY);
 	}
 	
 	public void setSpeed(double s){
@@ -46,13 +66,14 @@ public class Player extends Actor {
 	
 	public void receiveInput(BitSet keys, BitSet clicks){
 		input = KeyBindings.getInputList(keys, clicks);
+		inputFlag = true;
 	}
 	
 	@Override
 	public void update(double elapsedSeconds){		
 		//Add a block for player input
 		Vector inputVel = new Vector(0,0);
-		if(!lock){
+		if(!lock && inputFlag){
 			for(PlayerInput pid:input){
 				switch(pid){
 				case MOVE_UP:
@@ -84,6 +105,8 @@ public class Player extends Actor {
 					System.err.println("Unrecognized player input: " + pid);
 				}
 			}
+			
+			inputFlag = false;
 		}
 		
 		setInternalVelocity(inputVel);
