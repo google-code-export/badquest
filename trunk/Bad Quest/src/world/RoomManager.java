@@ -83,4 +83,22 @@ public class RoomManager {
 		}
 		return RIDcounter++;
 	}
+	
+	/**
+	 * Remove a room from the room map. This method should only be called once all references to the room have been nullified.
+	 * @param q The RID of the room.
+	 * @return Returns true if the room was successfully removed, false otherwise.
+	 */
+	public static boolean removeRoomByID(int ID){
+		synchronized(rmap){
+			System.out.println("Removing room " + ID);
+			Room remove = rmap.remove(ID);
+			if(remove == null)
+				return false;
+			for(Integer x:remove.getEntityMap().keySet())
+				ObjectManager.getObjectByID(x).kill();
+			remove.clean();
+		}
+		return true;
+	}
 }
