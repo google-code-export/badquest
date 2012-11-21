@@ -34,6 +34,14 @@ public abstract class Tile {
 		return new Vector(center);
 	}
 	
+	/**
+	 * Call if the room's position changes somehow.
+	 */
+	public void updatePosition(int y, int x){
+		this.position = owner.getPosition().add(new Vector(x*SIZE, y*SIZE));
+		this.center = this.position.add(new Vector(SIZE/2.,SIZE/2.));
+	}
+	
 	public abstract void update(double elapsedSeconds);
 	public abstract void drawBody(Graphics2D g, double elapsedSeconds, Camera cam);
 	

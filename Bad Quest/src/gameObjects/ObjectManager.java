@@ -48,7 +48,7 @@ public class ObjectManager {
 	 * Remove an object from the object map. This method should only be called once the object has been removed
 	 * from all relevant lists and mappings.
 	 * @param q The OID of the object.
-	 * @return Returns true if the object was successfully remove, false otherwise.
+	 * @return Returns true if the object was successfully removed, false otherwise.
 	 */
 	public static boolean removeObjectByID(int ID){
 		synchronized(map){

@@ -87,6 +87,17 @@ public class Room implements Comparable<Room>{
 		return layer - currentLayer;
 	}
 	
+	public void setPosition(Vector v){
+		position = new Vector(v);
+		for(int i = 0; i < R; i++)
+			for(int j = 0; j < C; j++)
+				map[i][j].updatePosition(i,j);
+	}
+	
+	public void setLayer(double d){
+		layer = d;
+	}
+	
 	public void addEntity(DrawableObject obj){
 		obj.setCurrentRoom(this);
 		synchronized(entityMap){

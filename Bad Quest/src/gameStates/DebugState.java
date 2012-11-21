@@ -95,6 +95,7 @@ public class DebugState extends State{
 //		new Room(0, new Vector(300, -600), 3);
 //		new Room(0, new Vector(300, -1150), 4).addEntityAt(new Actor("Spot the Farseer",10), new Vector(Tile.SIZE*20, Tile.SIZE*5));
 		
+		cam.setPosition(player.getPosition());
 		roomList = RoomManager.getRoomList();
 		drawList = room.getEntityMap();
 	}
