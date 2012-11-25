@@ -1,5 +1,6 @@
 package world.tile;
 
+import gameAI.Node;
 import graphics.Camera;
 
 import java.awt.Color;
@@ -13,17 +14,24 @@ public abstract class Tile {
 	protected Room owner;
 	protected Color color = Color.gray;
 	protected Vector position,center;
+	protected Node node;
+	protected boolean floor = true;
 	public final static int SIZE = 24;
 	public final TileType TID;
-	public Tile(Vector position, TileType t, Room owner){
-		this.position = owner.getPosition().add(position);
+	public Tile(int x, int y, TileType t, Room owner){
+		this.position = owner.getPosition().add(new Vector(SIZE*x, SIZE*y));
 		this.center = this.position.add(new Vector(SIZE/2.,SIZE/2.));
 		TID = t;
 		this.owner = owner;
+		node = new Node(center, y*owner.C + x);
 	}
 	
 	public boolean isSolid(){
 		return false;
+	}
+	
+	public boolean hasFloor(){
+		return floor;
 	}
 	
 	public Vector getPosition(){
@@ -32,6 +40,10 @@ public abstract class Tile {
 	
 	public Vector getCenter(){
 		return new Vector(center);
+	}
+	
+	public Node getNode(){
+		return node;
 	}
 	
 	/**

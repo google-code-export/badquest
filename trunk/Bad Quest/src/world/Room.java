@@ -1,11 +1,13 @@
 package world;
 
+import gameAI.Node;
 import gameObjects.Actor;
 import gameObjects.DrawableObject;
 import graphics.Camera;
 
 import java.awt.Graphics2D;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 import util.Collision;
@@ -16,6 +18,7 @@ import world.tile.Wall;
 
 public class Room implements Comparable<Room>{
 	private Tile[][] map;
+	private ArrayList<Node>[] nodeGraph;
 	private TreeMap<Integer, DrawableObject> entityMap;
 	
 	private Vector position;
@@ -57,6 +60,7 @@ public class Room implements Comparable<Room>{
 		map[9][6] = new Wall(9,6,this);
 		
 		entityMap = new TreeMap<Integer, DrawableObject>();
+		buildNodeGraph();
 	}
 	
 	public Room(int selector, Vector v, double d){
@@ -64,11 +68,32 @@ public class Room implements Comparable<Room>{
 		position = new Vector(v);
 		layer = d;
 		
+		R = DebugRoomMaker.prebuiltRows(selector);
+		C = DebugRoomMaker.prebuiltCols(selector);
 		map = DebugRoomMaker.selectPrebuilt(selector,this);
-		R = map.length;
-		C = map[0].length;
 		
 		entityMap = new TreeMap<Integer, DrawableObject>();
+		buildNodeGraph();
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void buildNodeGraph(){
+		nodeGraph = new ArrayList[R*C];
+		
+		int[] dx = new int[]{-1,0,1,0};
+		int[] dy = new int[]{0,1,0,-1};
+		
+		for(int i = 0; i < R; i++)
+			for(int j = 0; j < C; j++){
+				nodeGraph[i*C+j] = new ArrayList<Node>();
+				for(int k = 0; k < 4; k++){
+					int nx = i+dx[k];
+					int ny = j+dy[k];
+					if(nx < 0 || nx >= R || ny < 0 || ny >= C || map[nx][ny].isSolid() || !map[nx][ny].hasFloor())
+						continue;
+					nodeGraph[i*C+j].add(map[nx][ny].getNode());
+				}
+			}
 	}
 	
 	public int getRID(){
@@ -87,6 +112,14 @@ public class Room implements Comparable<Room>{
 		return layer - currentLayer;
 	}
 	
+	public TreeMap<Integer, DrawableObject> getEntityMap(){
+		return entityMap;
+	}
+	
+	public ArrayList<Node>[] getNodeGraph(){
+		return nodeGraph;
+	}
+	
 	public void setPosition(Vector v){
 		position = new Vector(v);
 		for(int i = 0; i < R; i++)
@@ -96,6 +129,15 @@ public class Room implements Comparable<Room>{
 	
 	public void setLayer(double d){
 		layer = d;
+	}
+	
+	public Node getNearestNode(Vector p){
+		Node closest = null;
+		for(Tile[] ti:map)
+			for(Tile t:ti)
+				if(!t.isSolid() && t.hasFloor() && (closest == null || t.getCenter().dis2(p) < closest.getPosition().dis2(p)))
+					closest = t.getNode();
+		return closest;
 	}
 	
 	public void addEntity(DrawableObject obj){
@@ -128,10 +170,6 @@ public class Room implements Comparable<Room>{
 				entityList.add(entityMap.get(x));
 		}
 		return entityList;
-	}
-	
-	public TreeMap<Integer, DrawableObject> getEntityMap(){
-		return entityMap;
 	}
 	
 	//TODO: Consolidate into getEntitiesWithinCircle
@@ -206,6 +244,21 @@ public class Room implements Comparable<Room>{
 		for(int i = Math.max(top,0); i <= Math.min(bot,R-1); i++)
 			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++)
 				map[i][j].drawBody(g, elapsedSeconds, cam);
+		
+//		g.setColor(Color.cyan);
+//		for(int i = Math.max(top,0); i <= Math.min(bot,R-1); i++)
+//			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++){
+//				Node node = map[i][j].getNode();
+//				for(Node x:nodeGraph[node.n])
+//					g.drawLine((int)cam.xTranslatePosition(node.getPosition().x), (int)cam.yTranslatePosition(node.getPosition().y), (int)cam.xTranslatePosition((x.getPosition().x+node.getPosition().x)/2), (int)cam.yTranslatePosition((x.getPosition().y+node.getPosition().y)/2));
+//			}
+//		
+//		g.setColor(Color.cyan.darker());
+//		for(int i = Math.max(top,0); i <= Math.min(bot,R-1); i++)
+//			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++){
+//				Node node = map[i][j].getNode();
+//				g.fillOval((int)cam.xTranslatePosition(node.getPosition().x)-5, (int)cam.yTranslatePosition(node.getPosition().y)-5, 10, 10);
+//			}
 		
 		synchronized(entityMap){
 			for(Integer e:entityMap.keySet())

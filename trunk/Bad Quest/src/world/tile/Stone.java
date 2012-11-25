@@ -6,12 +6,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
-import util.Vector;
 import world.Room;
 
 public class Stone extends Tile{
 	public Stone(int y, int x, Room owner){
-		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.STONE, owner);
+		super(x, y, TileType.STONE, owner);
 		color = new Color(33,45,52);
 	}
 	

@@ -24,14 +24,14 @@ public class DebugRoomMaker {
 														 "#.......####.....gggg.......wwww..................... #..#  ...................#",
 														 "#...............gggggg..................................#  ....................#",
 														 "#...............ggssgg.........................................................#",
-														 "#...............ggssgg....................................######################",
-														 "#...............gggggg....................................#gg#p#g####......#...#",
-														 "#................gggg.......wwwwg     ..     .............####p#gggg#......###g#",
-														 "#...#..#....................wwwwg            .............#pppp######..........#",
-														 "    g..g     ...............wwwwg       ..................#ppppppppp#..........#",
-														 "    g..g     ...............ggg.g          ...............#ppppppppp#..........#",
-														 "    g..g     ....................             ............gpppppppppp..........#",
-														 "    gggg     .............................................gpppppppppp..........#",
+														 "#...............ggssgg............. ......................######################",
+														 "#...............gggggg.............  .....................#gg#p#g####......#...#",
+														 "#................gggg....wwwwwwwg     ..     .............####p#gggg#......###g#",
+														 "#...#..#................ww.wwwwwg            .............#pppp######..........#",
+														 "    g..g     .........www..wwwwwg       ..................#ppppppppp#..........#",
+														 "    g..g     ........ww...wwggg.g          ...............#ppppppppp#..........#",
+														 "    g..g     .......wwwwwwwww....             ............gpppppppppp..........#",
+														 "    gggg     ........ww..www.............. ...............gpppppppppp..........#",
 														 "             ###################################################################"},
 														{"gggggggggggggggg",
 														 "ggwwwwwwwwwggggg",
@@ -56,7 +56,13 @@ public class DebugRoomMaker {
 														 "wwwwwwwwwwwwwwwwwwwwwww",
 														 "wwwwwwwwwwwwwwwwwwwwwww",
 														 "wwwwwwwwwwwwwwwwwwwwwww",
-														 "wwwwwwwwwwwwwwwwwwwwwww",}};
+														 "wwwwwwwwwwwwwwwwwwwwwww",},
+														{"##########",
+														 "#........#",
+														 "#........#",
+														 "#........#",
+														 "#........#",
+														 "##########"}};
 									 
 	public static Tile[][] selectPrebuilt(int s, Room caller){
 		return make(prebuilt[s], caller);
@@ -96,5 +102,13 @@ public class DebugRoomMaker {
 			}
 		
 		return map;
+	}
+	
+	public static int prebuiltRows(int s){
+		return prebuilt[s].length;
+	}
+	
+	public static int prebuiltCols(int s){
+		return prebuilt[s][0].length();
 	}
 }

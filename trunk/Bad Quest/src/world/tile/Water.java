@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
-import util.Vector;
 import world.Room;
 
 public class Water extends Tile {
@@ -15,7 +14,8 @@ public class Water extends Tile {
 	double time = 0;
 	
 	public Water(int y, int x, Room owner){
-		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.WATER, owner);
+		super(x, y, TileType.WATER, owner);
+		floor = false;
 	}
 	
 	@Override

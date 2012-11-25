@@ -17,7 +17,7 @@ public class Smart extends Tile {
 	double brightness = 0;
 	double radius = 100;
 	public Smart(int y, int x, Room owner){
-		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.SMART, owner);
+		super(x, y, TileType.SMART, owner);
 		center = position.add(new Vector(Tile.SIZE/2,Tile.SIZE/2));
 	}
 	

@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 
-import util.Vector;
 import world.Room;
 
 
@@ -15,7 +14,7 @@ public class WoodPlankH extends Tile {
 	private Color fill = new Color(117,101,53);
 	private Color outline = fill.darker();
 	public WoodPlankH(int y, int x, Room owner){
-		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.WOOD_PLANK_H, owner);
+		super(x, y, TileType.WOOD_PLANK_H, owner);
 	}
 	
 	@Override
