@@ -1,6 +1,7 @@
 package gameStates;
 
 import gameObjects.Actor;
+import gameObjects.DebugEnemy;
 import gameObjects.DrawableObject;
 import gameObjects.ObjectManager;
 import gameObjects.Player;
@@ -75,12 +76,15 @@ public class DebugState extends State{
 		backbackground.addEntity(D);
 		
 		player = new Player("Rawnblade", 10, new Vector(200,200));
+		DebugEnemy follower = new DebugEnemy(10);
+		DebugEnemy forefollower = new DebugEnemy(10);
 		actors = new Actor[]{player, 
 							 new Player("Rusty Stranglechain", 10, new Vector(120,100), new Color(.55f, .3f, .02f)),
 							 new Actor("Gunther Boneguzzler", 10, new Vector(40,100)),
 							 new Actor("Pork Undertow", 10, new Vector(60,100)),
 							 new Actor("Kurt Lioncrusher", 10, new Vector(80,100)),
-							 new Actor("Horace Elbowdrum", 10, new Vector(100,100))};
+							 new Actor("Horace Elbowdrum", 10, new Vector(100,100)),
+							 follower};
 		
 		RoomManager.setRoom(room.getRID());
 		
@@ -90,10 +94,18 @@ public class DebugState extends State{
 		for(Actor a:actors)
 			room.addEntityAt(a,new Vector((x=x+21)-21, 4*Tile.SIZE));
 		
+		follower.setFollow(player);
+		forefollower.setFollow(player);
+		fore.addEntityAt(forefollower, new Vector(Tile.SIZE,Tile.SIZE));
+		
+		DebugEnemy[] masstest = new DebugEnemy[10];
+		for(int i = 0; i < 10; i++){
+			masstest[i] = new DebugEnemy(10);
+			masstest[i].setFollow(i==0?player:masstest[i-1]);
+			room.addEntityAt(masstest[i], new Vector(Tile.SIZE*20 + (i+20)*Tile.SIZE, Tile.SIZE*10));
+		}
+		
 		new Room(1, new Vector(-160, 200), 0);
-//		new Room(0, new Vector(300, -50), 4);
-//		new Room(0, new Vector(300, -600), 3);
-//		new Room(0, new Vector(300, -1150), 4).addEntityAt(new Actor("Spot the Farseer",10), new Vector(Tile.SIZE*20, Tile.SIZE*5));
 		
 		cam.setPosition(player.getPosition());
 		roomList = RoomManager.getRoomList();
@@ -147,11 +159,11 @@ public class DebugState extends State{
 		Actor move = null;
 		synchronized(drawList){
 			for(Integer oid:drawList.keySet()){
-				if(drawList.get(oid) instanceof Actor)
+				if(drawList.get(oid) instanceof Player)
 				for(Integer pid:drawList.keySet()){
 					if(drawList.get(pid) instanceof Portal){
 						Portal p = (Portal)drawList.get(pid);
-						Actor a = (Actor)drawList.get(oid);
+						Player a = (Player)drawList.get(oid);
 						if(p.getState() == Portal.State.ACTIVE && p.getPosition().dis2(a.getPosition()) <= p.getRadius()*p.getRadius()){
 							transfer = p;
 							move = a;

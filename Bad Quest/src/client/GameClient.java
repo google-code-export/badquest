@@ -45,7 +45,7 @@ public class GameClient {
 		gameFrame.addMouseListener(new GameStateManager.GSM_MouseListener());
 		gameFrame.addMouseMotionListener(new GameStateManager.GSM_MouseMotionListener());
 		
-		GameStateManager.pushState(new DebugState());		
+		GameStateManager.pushState(new DebugState());
 	}
 	
 	public void stopDraw()

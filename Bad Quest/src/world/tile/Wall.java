@@ -5,12 +5,11 @@ import graphics.Camera;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
-import util.Vector;
 import world.Room;
 
 public class Wall extends Tile {
 	public Wall(int y, int x, Room owner){
-		super(new Vector(x*Tile.SIZE,y*Tile.SIZE), TileType.WALL, owner);
+		super(x, y, TileType.WALL, owner);
 	}
 	
 	@Override

@@ -62,6 +62,9 @@ public class Vector {
 	public Vector scale(double s){
 		return new Vector(x*s, y*s);
 	}
+	public Vector scaleTo(double s){
+		return norm().scale(s);
+	}
 	public Vector rot(double t){ //Rotate t radians counter-clockwise
 		double c = Math.cos(t);
 		double s = Math.sin(t);	
