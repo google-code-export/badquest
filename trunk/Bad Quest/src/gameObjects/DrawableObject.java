@@ -13,7 +13,7 @@ public abstract class DrawableObject {
 	protected Vector position = new Vector(0,0);
 	protected Vector internalVelocity = new Vector(0,0);
 	protected Vector externalVelocity = new Vector(0,0);
-	protected double radius,angle,dragPerSecond = 1200;
+	protected double radius,angle,dragPerSecond = 1200,mass=1;
 	protected boolean moveable = true, solid = true, alive = true;
 	
 	protected Room currentRoom;
@@ -57,6 +57,9 @@ public abstract class DrawableObject {
 	public double getAngle() {
 		return angle;
 	}
+	public double getMass(){
+		return mass;
+	}
 	public String getName(){
 		return name;
 	}
@@ -90,6 +93,9 @@ public abstract class DrawableObject {
 	}
 	public void setAngle(double angle){
 		this.angle = angle;
+	}
+	public void setMass(double mass){
+		this.mass = mass;
 	}
 	public void setName(String name){
 		this.name = name;
@@ -200,7 +206,7 @@ public abstract class DrawableObject {
 	//Update stuff
 	public void move(double elapsedSeconds){
 		double mag = externalVelocity.mag();
-		setExternalVelocity(externalVelocity.scale(Math.max((mag-dragPerSecond*elapsedSeconds)/mag,0)));
+		setExternalVelocity(externalVelocity.scale(Math.max((mag-mass*dragPerSecond*elapsedSeconds)/mag,0)));
 		
 		if(solid && currentRoom != null)
 			currentRoom.collideWithSolids(this, elapsedSeconds);

@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.HashMap;
 
+import util.Geometry;
 import util.Vector;
 import world.Room;
 
@@ -16,8 +17,13 @@ public abstract class Tile {
 	protected Vector position,center;
 	protected Node node;
 	protected boolean floor = true;
+	
 	public final static int SIZE = 24;
 	public final TileType TID;
+	
+	private static int[] dx = new int[]{0,1,1,0};
+	private static int[] dy = new int[]{0,0,1,1};
+	
 	public Tile(int x, int y, TileType t, Room owner){
 		this.position = owner.getPosition().add(new Vector(SIZE*x, SIZE*y));
 		this.center = this.position.add(new Vector(SIZE/2.,SIZE/2.));
@@ -44,6 +50,19 @@ public abstract class Tile {
 	
 	public Node getNode(){
 		return node;
+	}
+	
+	public boolean intersectsSegment(Vector a, Vector b){
+		if(floor && !isSolid())
+			return false;
+		
+		for(int i = 0; i < 4; i++){
+			Vector c = getPosition().add(new Vector(dx[i] * Tile.SIZE, dy[i] * Tile.SIZE));
+			Vector d = getPosition().add(new Vector(dx[(i+1)%4] * Tile.SIZE, dy[(i+1)%4] * Tile.SIZE));
+			if(Geometry.segmentIntersect(a, b, c, d))
+				return true;
+		}
+		return false;
 	}
 	
 	/**

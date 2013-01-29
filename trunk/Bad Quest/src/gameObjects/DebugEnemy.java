@@ -4,7 +4,9 @@ import gameAI.Node;
 import gameAI.Pathfinding;
 import graphics.Camera;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayDeque;
 
 import util.Vector;
@@ -46,11 +48,17 @@ public class DebugEnemy extends Actor {
 			setInternalVelocity(new Vector(0,0));
 		}else{
 			timeToNextMove -= elapsedSeconds;
-			if(timeToNextMove <= 0){
+			
+			if(position.dis2(follow.getPosition()) < Math.pow(2.5 * (radius+follow.getRadius())/2, 2))
+				waypoints.clear();
+			else if(Pathfinding.isPathClear(this, follow.getPosition())){
+				waypoints.clear();
+				waypoints.add(new Node(follow.getPosition(), -1));
+			}else if(timeToNextMove <= 0){
 				timeToNextMove = moveClock;
 				waypoints = merge(Pathfinding.routeTo(currentRoom.getNearestNode(position), currentRoom.getNearestNode(follow.getPosition()), currentRoom.getNodeGraph()));
-//				System.out.println(this + " is moving! Path of length " + waypoints.size() + " generated.");
 			}
+			
 			if(!waypoints.isEmpty() && waypoints.peek().getPosition().dis2(position) < 10)
 				waypoints.remove();
 			if(!waypoints.isEmpty()){
@@ -65,7 +73,20 @@ public class DebugEnemy extends Actor {
 	
 	@Override
 	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam) {
-		// TODO Auto-generated method stub
+		AffineTransform prev = g.getTransform();
+		
 		super.drawBody(g, elapsedSeconds, cam);
+		
+		AffineTransform next = new AffineTransform();
+		next.translate(cam.xTranslatePosition(position.x), cam.yTranslatePosition(position.y));
+		next.scale(cam.xScale(), cam.yScale());
+		g.setTransform(next);
+		
+		if(!waypoints.isEmpty()){
+			g.setColor(Color.cyan);
+			g.drawLine(0, 0, (int)(waypoints.peek().getPosition().x-position.x), (int)(waypoints.peek().getPosition().y-position.y));
+		}
+		
+		g.setTransform(prev);
 	}
 }
