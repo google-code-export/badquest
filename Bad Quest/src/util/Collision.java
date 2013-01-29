@@ -105,6 +105,23 @@ public class Collision {
 		}
 	}
 	
+	public static void collideObjectWithObject(DrawableObject a, DrawableObject b){
+		Vector c = a.getPosition();
+		double R = a.getRadius();
+		Vector d = b.getPosition();
+		double r = b.getRadius();
+		
+		if(c.dis2(d) >= (R + r)*(R + r))
+			return;
+		
+		double nudge = (R + r)*(R + r) - c.dis2(d);
+		
+		a.stopMovingInDirection(d.sub(c));
+		b.stopMovingInDirection(c.sub(d));
+		a.applyExternalVelocity(c.sub(d).scaleTo(2*nudge/R));
+		b.applyExternalVelocity(d.sub(c).scaleTo(2*nudge/r));
+	}
+	
 	private static class Pair{
 		Vector hit;
 		double min;

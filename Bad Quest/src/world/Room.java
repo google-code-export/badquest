@@ -25,7 +25,7 @@ public class Room implements Comparable<Room>{
 	private double layer;
 	
 	public final int R,C;
-	private final int RID;
+	private final int RID;	
 	/**
 	 * Initialize a room with R row and C columns
 	 * @param R
@@ -198,8 +198,26 @@ public class Room implements Comparable<Room>{
 		return ret;
 	}
 	
+	/**
+	 * Given two points within the room, determine whether the path can be traversed
+	 * @param a
+	 * @param b
+	 * @return true if nothing blocks the path, such as void, wall, and water tiles
+	 */
+	public boolean isPathClear(Vector a, Vector b){
+		for(Tile[] row:map)
+			for(Tile t:row)
+				if(t.intersectsSegment(a, b))
+					return false;
+		return true;
+	}
+	
 	public void collideWithSolids(DrawableObject obj, double elapsedSeconds){
 		synchronized(entityMap){
+			for(Integer b:entityMap.keySet())
+				if(entityMap.get(b).isSolid() && obj.getOID() != b)
+					Collision.collideObjectWithObject(obj, entityMap.get(b));
+			
 			Collision.collideObjectWithRoom(map, obj, elapsedSeconds);
 		}
 	}
@@ -221,11 +239,7 @@ public class Room implements Comparable<Room>{
 			for(Tile t:row)
 				t.update(elapsedSeconds);
 		
-		synchronized(entityMap){
-//			for(Integer oid:entityMap.keySet())
-//				if(entityMap.get(oid).isSolid())
-//					collideWithSolids(entityMap.get(oid), elapsedSeconds);
-			
+		synchronized(entityMap){			
 			for(Integer oid:entityMap.keySet())
 				entityMap.get(oid).update(elapsedSeconds);
 		}

@@ -1,11 +1,19 @@
 package gameAI;
 
+import gameObjects.DrawableObject;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.PriorityQueue;
 
+import util.Vector;
+
 public class Pathfinding {
+	public static boolean isPathClear(DrawableObject cur, Vector target){
+		return cur.getCurrentRoom().isPathClear(cur.getPosition(), target);
+	}
+	
 	public static ArrayDeque<Node> routeTo(Node start, Node end, ArrayList<Node>[] g){
 		ArrayDeque<Node> ret = new ArrayDeque<Node>();
 		PriorityQueue<Pair> q = new PriorityQueue<Pair>();
@@ -32,7 +40,7 @@ public class Pathfinding {
 			for(Node x:g[pos.n]){
 				double nd = d + x.dis(pos);
 				double nh = x.dis(end);
-				if(nd + nh < dist[x.n]){
+				if(nd + nh < dist[x.n] || (nd + nh == dist[x.n] && Math.random() > .5)){
 					dist[x.n] = nd + nh;
 					q.add(new Pair(x, nd, nh));
 					prev[x.n] = pos; 
