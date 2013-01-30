@@ -122,7 +122,7 @@ public class Collision {
 		Vector p = c.sub(a).project(b.sub(a));
 		double s = p.mag();
 		double y = Math.sqrt(Math.pow((R+r), 2) - h*h);
-		double x = Math.max(0, s-y-extensionEPS);
+		double x = s-y;
 		
 		return new Pair(a.add(b.sub(a).scaleTo(x)), x);
 	}
