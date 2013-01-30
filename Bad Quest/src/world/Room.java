@@ -214,10 +214,7 @@ public class Room implements Comparable<Room>{
 	
 	public void collideWithSolids(DrawableObject obj, double elapsedSeconds){
 		synchronized(entityMap){
-			for(Integer b:entityMap.keySet())
-				if(entityMap.get(b).isSolid() && obj.getOID() != b)
-					Collision.collideObjectWithObject(obj, entityMap.get(b));
-			
+			Collision.collideObjectWithObjects(obj, getEntityList(), elapsedSeconds);
 			Collision.collideObjectWithRoom(map, obj, elapsedSeconds);
 		}
 	}
