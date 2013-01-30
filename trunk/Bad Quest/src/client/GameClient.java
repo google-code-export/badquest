@@ -127,7 +127,6 @@ public class GameClient {
 		             
 		             GameStateManager.draw(graphics, elapsedTime);
 		             
-		             
 		             // Dispose the graphics
 		             graphics.dispose();
 

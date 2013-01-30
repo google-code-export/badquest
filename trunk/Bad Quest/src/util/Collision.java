@@ -105,21 +105,58 @@ public class Collision {
 		}
 	}
 	
-	public static void collideObjectWithObject(DrawableObject a, DrawableObject b){
-		Vector c = a.getPosition();
-		double R = a.getRadius();
-		Vector d = b.getPosition();
-		double r = b.getRadius();
+	public static Pair objectObjectCollision(DrawableObject A, DrawableObject B, double elapsedSeconds){
+		Vector a = A.getPosition();
+		Vector c = B.getPosition();
+		Vector b = a.add(A.getVelocity().scale(elapsedSeconds));
 		
-		if(c.dis2(d) >= (R + r)*(R + r))
-			return;
+		double r = A.getRadius();
+		double R = B.getRadius();
 		
-		double nudge = (R + r)*(R + r) - c.dis2(d);
+		double h = Geometry.plsDist(a, b, c);
 		
-		a.stopMovingInDirection(d.sub(c));
-		b.stopMovingInDirection(c.sub(d));
-		a.applyExternalVelocity(c.sub(d).scaleTo(2*nudge/R));
-		b.applyExternalVelocity(d.sub(c).scaleTo(2*nudge/r));
+		//If the distance from object b to object a's path is greater than the sum of their radii, there's no collision.
+		if(h >= A.getRadius() + B.getRadius() || c.sub(a).dot(b.sub(a)) <= 0)
+			return new Pair(null, 1e17);
+		
+		Vector p = c.sub(a).project(b.sub(a));
+		double s = p.mag();
+		double y = Math.sqrt(Math.pow((R+r), 2) - h*h);
+		double x = Math.max(0, s-y-extensionEPS);
+		
+		return new Pair(a.add(b.sub(a).scaleTo(x)), x);
+	}
+	
+	public static void collideObjectWithObjects(DrawableObject obj, ArrayDeque<DrawableObject> entityList, double elapsedSeconds){
+		boolean changed = true;
+		int counter = 0;
+		while(changed){
+			if(counter >= MAX_COLLISIONS){
+				obj.stopMoving();
+				break;
+			}
+			
+			Pair best = new Pair(null,1e17);
+			DrawableObject hit = null;
+			
+			for(DrawableObject e:entityList){
+				if(e.getOID() != obj.getOID() && e.isSolid()){
+					Pair test = objectObjectCollision(obj, e, elapsedSeconds);
+					if(test.min < best.min){
+						hit = e;
+						best = test;
+					}
+				}
+			}
+			
+			if(best.hit == null)
+				changed = false;
+			else{
+				hit.applyExternalVelocity(hit.getPosition().sub(best.hit).scaleTo(obj.getRadius()));
+				obj.stopMovingInDirection(hit.getPosition().sub(best.hit));
+			}
+			counter++;
+		}
 	}
 	
 	private static class Pair{
