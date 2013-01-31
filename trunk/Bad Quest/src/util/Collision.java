@@ -30,7 +30,7 @@ public class Collision {
 			if(intersect != null){
 				double scale = Geometry.findScale(obj.getPosition(), nextPos, intersect);
 				double tileScale = Geometry.findScale(a,b,intersect);
-				if(tileScale >= 0 && tileScale <= 1 && scale < min && scale >= 0){
+				if(tileScale >= 0 && tileScale <= 1 && scale < min && scale >= 0 && b.sub(a).cross(obj.getPosition().sub(a)) > 0){
 					min = scale;
 					hit = intersect.sub(shift);
 				}

@@ -44,6 +44,9 @@ public class DebugEnemy extends Actor {
 	
 	@Override
 	public void update(double elapsedSeconds) {
+		if(follow != null && follow.isDead())
+			follow = null;
+		
 		if(follow == null){
 			setInternalVelocity(new Vector(0,0));
 		}else{
