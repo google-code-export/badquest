@@ -92,7 +92,7 @@ public class DebugState extends State{
 		
 		int x = 41;
 		for(Actor a:actors)
-			room.addEntityAt(a,new Vector((x=x+21)-21, 4*Tile.SIZE));
+			room.addEntityAt(a,new Vector((x=x+Tile.SIZE)-Tile.SIZE, 4*Tile.SIZE));
 		
 		follower.setFollow(player);
 		forefollower.setFollow(player);
@@ -101,8 +101,8 @@ public class DebugState extends State{
 		DebugEnemy[] masstest = new DebugEnemy[10];
 		for(int i = 0; i < 10; i++){
 			masstest[i] = new DebugEnemy(10);
-//			masstest[i].setFollow(i==0?player:masstest[i-1]);
-			masstest[i].setFollow(player);
+			masstest[i].setFollow(i==0?player:masstest[i-1]);
+//			masstest[i].setFollow(player);
 			room.addEntityAt(masstest[i], new Vector(Tile.SIZE*20 + (i+20)*Tile.SIZE, Tile.SIZE*10));
 		}
 		
@@ -268,6 +268,9 @@ public class DebugState extends State{
 			activeActor = e.getKeyCode()-KeyEvent.VK_1;
 			changeActiveRoom(actors[activeActor].getCurrentRoom());
 		}
+		
+		if(activeActor != -1 && keys.get(KeyEvent.VK_T))
+			actors[activeActor].setSolid(!actors[activeActor].isSolid());
 		
 		super.keyPressed(e);
 	}
