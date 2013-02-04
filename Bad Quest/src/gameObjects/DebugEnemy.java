@@ -16,7 +16,7 @@ public class DebugEnemy extends Actor {
 	
 	double moveSpeed = 75;
 	double moveClock = .5;
-	double timeToNextMove = Math.random()/2.;
+	double timeToNextMove = Math.random()*moveClock;
 	
 	DrawableObject follow; //The target this object will pathfind to
 	
@@ -27,19 +27,6 @@ public class DebugEnemy extends Actor {
 	
 	public void setFollow(DrawableObject d){
 		follow = d;
-	}
-	
-	private ArrayDeque<Node> merge(ArrayDeque<Node> next){
-		if(waypoints.isEmpty())
-			return next;
-		ArrayDeque<Node> merge = new ArrayDeque<Node>();
-		Node hit = waypoints.getFirst();
-		while(!next.isEmpty()){
-			if(next.peek().n == hit.n)
-				return next;
-			merge.add(next.remove());
-		}
-		return merge;
 	}
 	
 	@Override
@@ -59,7 +46,7 @@ public class DebugEnemy extends Actor {
 				waypoints.add(new Node(follow.getPosition(), -1));
 			}else if(timeToNextMove <= 0){
 				timeToNextMove = moveClock;
-				waypoints = merge(Pathfinding.routeTo(currentRoom.getNearestNode(position), currentRoom.getNearestNode(follow.getPosition()), currentRoom.getNodeGraph()));
+				waypoints = Pathfinding.routeTo(position, currentRoom.getNodesInTileRadius(position,2.013), currentRoom.getNearestNode(follow.getPosition()), currentRoom.getNodeGraph());
 			}
 			
 			if(!waypoints.isEmpty() && waypoints.peek().getPosition().dis2(position) < 10)
@@ -88,6 +75,8 @@ public class DebugEnemy extends Actor {
 		if(!waypoints.isEmpty()){
 			g.setColor(Color.cyan);
 			g.drawLine(0, 0, (int)(waypoints.peek().getPosition().x-position.x), (int)(waypoints.peek().getPosition().y-position.y));
+//			for(Node w:waypoints)
+//				g.drawOval((int)(w.getPosition().x-position.x), (int)(w.getPosition().y-position.y),5,5);
 		}
 		
 		g.setTransform(prev);
