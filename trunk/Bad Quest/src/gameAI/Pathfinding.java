@@ -14,7 +14,7 @@ public class Pathfinding {
 		return cur.getCurrentRoom().isPathClear(cur.getPosition(), target);
 	}
 	
-	public static ArrayDeque<Node> routeTo(Node start, Node end, ArrayList<Node>[] g){
+	public static ArrayDeque<Node> routeTo(Vector c, ArrayDeque<Node> start, Node end, ArrayList<Node>[] g){
 		ArrayDeque<Node> ret = new ArrayDeque<Node>();
 		PriorityQueue<Pair> q = new PriorityQueue<Pair>();
 		
@@ -22,8 +22,12 @@ public class Pathfinding {
 		Arrays.fill(dist, 1e17);
 		Node[] prev = new Node[g.length];
 		
-		q.add(new Pair(start, 0, start.dis(end)));
-		dist[start.n] = q.peek().w();
+		for(Node s:start){
+			double d = c.dis(s.getPosition());
+			double h = s.dis(end);
+			q.add(new Pair(s, d, h));
+			dist[s.n] = d+h;
+		}
 		
 		//A*
 		while(!q.isEmpty()){

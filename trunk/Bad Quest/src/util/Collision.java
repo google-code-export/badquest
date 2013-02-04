@@ -3,6 +3,7 @@ package util;
 import gameObjects.DrawableObject;
 
 import java.util.ArrayDeque;
+import java.util.TreeSet;
 
 import world.tile.Tile;
 
@@ -130,6 +131,7 @@ public class Collision {
 	public static void collideObjectWithObjects(DrawableObject obj, ArrayDeque<DrawableObject> entityList, double elapsedSeconds){
 		boolean changed = true;
 		int counter = 0;
+		TreeSet<Integer> contact = new TreeSet<Integer>();
 		while(changed){
 			if(counter >= MAX_COLLISIONS){
 				obj.stopMoving();
@@ -152,7 +154,10 @@ public class Collision {
 			if(best.hit == null)
 				changed = false;
 			else{
-				hit.applyExternalVelocity(hit.getPosition().sub(best.hit).scaleTo(obj.getRadius()));
+				if(!contact.contains(hit.getOID())){
+					hit.applyExternalVelocity(hit.getPosition().sub(best.hit).scaleTo(obj.getVelocity().mag()*obj.getRadius() / (obj.getRadius() + hit.getRadius())));
+					contact.add(hit.getOID());
+				}
 				obj.stopMovingInDirection(hit.getPosition().sub(best.hit));
 			}
 			counter++;

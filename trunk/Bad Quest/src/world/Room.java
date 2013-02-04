@@ -131,6 +131,17 @@ public class Room implements Comparable<Room>{
 		layer = d;
 	}
 	
+	public ArrayDeque<Node> getNodesInTileRadius(Vector p, double r){
+		ArrayDeque<Node> set = new ArrayDeque<Node>();
+		for(Tile[] ti:map)
+			for(Tile t:ti)
+				if(!t.isSolid() && t.hasFloor() && t.getCenter().dis2(p) < r*Tile.SIZE*Tile.SIZE && isPathClear(t.getCenter(), p))
+					set.add(t.getNode());
+		if(set.isEmpty())
+			set.add(getNearestNode(p));
+		return set;
+	}
+	
 	public Node getNearestNode(Vector p){
 		Node closest = null;
 		for(Tile[] ti:map)
