@@ -54,10 +54,11 @@ public class DebugEnemy extends Actor {
 			
 			if(!waypoints.isEmpty() && canSkip){
 				int cnt = 0;
-				Node next = waypoints.peek();
+				Node next = null;
 				while(waypoints.size() > 1 && Pathfinding.isPathClear(this, waypoints.peek().getPosition()) && cnt++ < skipAhead)
 					next = waypoints.remove();
-				waypoints.addFirst(next);
+				if(next != null)
+					waypoints.addFirst(next);
 				canSkip = false;
 			}
 			
