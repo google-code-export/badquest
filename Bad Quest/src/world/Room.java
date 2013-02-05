@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import util.Collision;
+import util.Geometry;
 import util.Vector;
 import world.tile.Stone;
 import world.tile.Tile;
@@ -216,9 +217,19 @@ public class Room implements Comparable<Room>{
 	 * @return true if nothing blocks the path, such as void, wall, and water tiles
 	 */
 	public boolean isPathClear(Vector a, Vector b){
+		return isPathClear(a,b,0);
+	}
+	
+	/**
+	 * Given two points within the room and a path radius, determine whether the path can be traversed
+	 * @param a
+	 * @param b
+	 * @return true if nothing blocks the path, such as void, wall, and water tiles
+	 */
+	public boolean isPathClear(Vector a, Vector b, double R){
 		for(Tile[] row:map)
 			for(Tile t:row)
-				if(t.intersectsSegment(a, b))
+				if(t.intersectsSegment(a, b, R))
 					return false;
 		return true;
 	}

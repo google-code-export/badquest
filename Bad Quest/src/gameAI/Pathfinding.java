@@ -11,7 +11,7 @@ import util.Vector;
 
 public class Pathfinding {
 	public static boolean isPathClear(DrawableObject cur, Vector target){
-		return cur.getCurrentRoom().isPathClear(cur.getPosition(), target);
+		return cur.getCurrentRoom().isPathClear(cur.getPosition(), target, cur.getRadius());
 	}
 	
 	public static ArrayDeque<Node> routeTo(Vector c, ArrayDeque<Node> start, Node end, ArrayList<Node>[] g){
