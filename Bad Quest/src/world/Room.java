@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import util.Collision;
-import util.Geometry;
 import util.Vector;
 import world.tile.Stone;
 import world.tile.Tile;

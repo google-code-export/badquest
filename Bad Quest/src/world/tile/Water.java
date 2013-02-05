@@ -12,25 +12,14 @@ import world.Room;
 
 public class Water extends Tile {
 	
-	double period = 2;
-	double fluxPeriod = 2;
+	double period = 12;
+	double fluxPeriod = 6;
 	double time = 0;
 	double fluxTime = 0;
 	
 	public Water(int y, int x, Room owner){
 		super(x, y, TileType.WATER, owner);
-//		if((x+y)%2==1)
-//			time = period/2;
 		floor = false;
-	}
-	
-	double a = 1.067;
-	double b = -1.6;
-	double c = 1.5333;
-	double d = 0;
-	public double getShift(){
-		double x = time/period;
-		return a * Math.pow(x, 3) + b * Math.pow(x, 2) + c * x + d;
 	}
 	
 	@Override
@@ -45,33 +34,33 @@ public class Water extends Tile {
 		Stroke pStroke = g.getStroke();
 		
 		g.translate(cam.xTranslatePosition(position.x), cam.yTranslatePosition(position.y));
-		g.scale(cam.scale(), cam.scale());
-		g.setClip(0, 0, Tile.SIZE, Tile.SIZE);
-		
-//		double shift = time/period * 2 * Tile.SIZE;
-		double shift = getShift() * Tile.SIZE;
+//		g.scale(cam.scale(), cam.scale());
+		int scaledTile = (int)Math.ceil(Tile.SIZE * cam.scale());
+		g.setClip(0, 0, scaledTile, scaledTile);
+
+		double shift = (Math.pow(Math.cos(time/period * 2 * Math.PI),1) + 1)/2 * scaledTile;
 		
 		g.setColor(new Color(30,100,200,255));
-		g.fillRect(0, 0, Tile.SIZE+1, Tile.SIZE+1);
+		g.fillRect(0, 0, scaledTile+1, scaledTile+1);
 		
 		g.setColor(new Color(20,128,255,255));
 		
-		g.setStroke(new BasicStroke((float)(Math.pow(Math.abs(fluxTime-fluxPeriod/2)/(fluxPeriod/2),2))+.5f));
+		g.setStroke(new BasicStroke((float)(((Math.pow(Math.abs(fluxTime-fluxPeriod/2)/(fluxPeriod/2),2))+.5f)*cam.scale())));
 		
-//		g.drawArc((int)Math.round(0+shift), (int)Math.round(0), Tile.SIZE, Tile.SIZE, 270, 90);
-//		g.drawArc((int)Math.round(-Tile.SIZE/2. + shift), (int)Math.round(-Tile.SIZE/2.), Tile.SIZE, Tile.SIZE, 270, 90);
+//		g.drawArc((int)Math.round(0+shift), (int)Math.round(0), scaledTile, scaledTile, 270, 90);
+//		g.drawArc((int)Math.round(-scaledTile/2. + shift), (int)Math.round(-scaledTile/2.), scaledTile, scaledTile, 270, 90);
 //		
-//		g.drawArc((int)Math.round(-Tile.SIZE/2. + shift), (int)Math.round(Tile.SIZE/2.), Tile.SIZE, Tile.SIZE, 90, 90);
-//		g.drawArc((int)Math.round(-Tile.SIZE + shift), (int)Math.round(0), Tile.SIZE, Tile.SIZE, 90, 90);
+//		g.drawArc((int)Math.round(-scaledTile/2. + shift), (int)Math.round(scaledTile/2.), scaledTile, scaledTile, 90, 90);
+//		g.drawArc((int)Math.round(-scaledTile + shift), (int)Math.round(0), scaledTile, scaledTile, 90, 90);
 //		
-//		g.drawArc((int)Math.round(-2 * Tile.SIZE + shift), (int)Math.round(0), Tile.SIZE, Tile.SIZE, 270, 90);
-//		g.drawArc((int)Math.round(-2.5 * Tile.SIZE + shift), (int)Math.round(-Tile.SIZE/2.), Tile.SIZE, Tile.SIZE, 270, 90);
+//		g.drawArc((int)Math.round(-2 * scaledTile + shift), (int)Math.round(0), scaledTile, scaledTile, 270, 90);
+//		g.drawArc((int)Math.round(-2.5 * scaledTile + shift), (int)Math.round(-scaledTile/2.), scaledTile, scaledTile, 270, 90);
 		
-		g.drawArc((int)Math.round(-Tile.SIZE*3/2.+shift), -Tile.SIZE/2, Tile.SIZE, Tile.SIZE, 270, 90);
-		g.drawArc((int)Math.round(-Tile.SIZE/2.+shift), Tile.SIZE/2, Tile.SIZE, Tile.SIZE, 90, 90);
+		g.drawArc((int)Math.round(-scaledTile*3/2.+shift), -(int)Math.round(scaledTile/2.), scaledTile, scaledTile, 270, 90);
+		g.drawArc((int)Math.round(-scaledTile/2.+shift), (int)Math.round(scaledTile/2.), scaledTile, scaledTile, 90, 90);
 		
-		g.drawArc((int)Math.round(-Tile.SIZE/2.+shift), -Tile.SIZE/2, Tile.SIZE, Tile.SIZE, 270, 90);
-		g.drawArc((int)Math.round(Tile.SIZE/2.+shift), Tile.SIZE/2, Tile.SIZE, Tile.SIZE, 90, 90);
+		g.drawArc((int)Math.round(-scaledTile/2.+shift), -(int)Math.round(scaledTile/2.), scaledTile, scaledTile, 270, 90);
+		g.drawArc((int)Math.round(scaledTile/2.+shift), (int)Math.round(scaledTile/2.), scaledTile, scaledTile, 90, 90);
 		
 		g.setStroke(pStroke);
 		g.setClip(null);
