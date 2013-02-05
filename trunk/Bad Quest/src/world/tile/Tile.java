@@ -15,6 +15,7 @@ public abstract class Tile {
 	protected Room owner;
 	protected Color color = Color.gray;
 	protected Vector position,center;
+	protected int x,y; //The row and column of this tile relative to the room's top left corner
 	protected Node node;
 	protected boolean floor = true;
 	
@@ -27,6 +28,8 @@ public abstract class Tile {
 	public Tile(int x, int y, TileType t, Room owner){
 		this.position = owner.getPosition().add(new Vector(SIZE*x, SIZE*y));
 		this.center = this.position.add(new Vector(SIZE/2.,SIZE/2.));
+		this.x = x;
+		this.y = y;
 		TID = t;
 		this.owner = owner;
 		node = new Node(center, y*owner.C + x);
@@ -52,14 +55,34 @@ public abstract class Tile {
 		return node;
 	}
 	
-	public boolean intersectsSegment(Vector a, Vector b){
+	/**
+	 * Returns the 4 corner points of this Tile.
+	 * @return an array of size 4 with the corner points of this tile in the order of top left, top right, bottom right, bottom left
+	 */
+	public Vector[] getCardinalPoints(){
+		Vector[] ret = new Vector[4];
+		for(int i = 0; i < 4; i++)
+			ret[i] = getPosition().add(new Vector(dx[i] * Tile.SIZE, dy[i] * Tile.SIZE));
+		return ret;
+	}
+	
+	/**
+	 * Returns whether or not a segment with some radius intersects this Tile.
+	 * @param a The starting point of the segment.
+	 * @param b The ending point of the segment.
+	 * @param R The radius of the segment.
+	 * @return True if the segment intersects this Tile and the Tile is an obstruction, false otherwise.
+	 */
+	public boolean intersectsSegment(Vector a, Vector b, double R){
 		if(floor && !isSolid())
 			return false;
 		
+		Vector[] p = getCardinalPoints();
+		
 		for(int i = 0; i < 4; i++){
-			Vector c = getPosition().add(new Vector(dx[i] * Tile.SIZE, dy[i] * Tile.SIZE));
-			Vector d = getPosition().add(new Vector(dx[(i+1)%4] * Tile.SIZE, dy[(i+1)%4] * Tile.SIZE));
-			if(Geometry.segmentIntersect(a, b, c, d))
+			Vector c = p[i];
+			Vector d = p[(i+1)%4];
+			if(Geometry.segmentIntersect(a, b, c, d) || Geometry.plsDist(a, b, p[i]) <= R)
 				return true;
 		}
 		return false;

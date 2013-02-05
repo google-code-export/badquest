@@ -12,12 +12,12 @@ import world.tile.WoodPlankV;
 
 public class DebugRoomMaker {
 	private static String[][] prebuilt = new String[][]{{"################################################################################",
-														 "#............sssssssss.wwwwwwwwwwww............................................#",
-														 "#............sssssssss.#wwwwwwwwww#................................kpkpkpkpkpk.#",
-														 "#............sssssssss.pppppppppppp................................pkpkpkpkpkp.#",
-														 "#............sssssssss.#wwwwwwwwww#................................kpkpkpkpkpk.#",
-														 "#.......####.sssssssss.wwwwwwwwwwww................................pkpkpkpkpkp.#",
-														 "#   kk     #.sssssssss.wwwwwww########.............................kpkpkpkpkpk.#",
+														 "#............sssssssss.wwwwwwwwwwww............#.....#..#.....#.#..............#",
+														 "#............sssssssss.#wwwwwwwwww#............#..#..#..#.#.#......kpkpkpkpkpk.#",
+														 "#............sssssssss.pppppppppppp............#..#...........#.###pkpkpkpkpkp.#",
+														 "#............sssssssss.#wwwwwwwwww#............#..##########.##.#..kpkpkpkpkpk.#",
+														 "#.......####.sssssssss.wwwwwwwwwwww........................#.......pkpkpkpkpkp.#",
+														 "#   kk     #.sssssssss.wwwwwww########.....................#.......kpkpkpkpkpk.#",
 														 "#   kkpppppp............wwwwww#      #................  #..#  .................#",
 														 "    kkpppppp.............wwwww#      #................  #..#  .................#",
 														 "    kk     #...............www########...............  #..#  ..................#",
