@@ -9,16 +9,13 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayDeque;
 
-import util.Vector;
 import world.Room;
 
 public class Smart extends Tile {
-	Vector center;
 	double brightness = 0;
 	double radius = 100;
 	public Smart(int y, int x, Room owner){
 		super(x, y, TileType.SMART, owner);
-		center = position.add(new Vector(Tile.SIZE/2,Tile.SIZE/2));
 	}
 	
 	@Override

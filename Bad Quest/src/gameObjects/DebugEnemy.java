@@ -4,7 +4,6 @@ import gameAI.Node;
 import gameAI.Pathfinding;
 import graphics.Camera;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayDeque;
@@ -88,10 +87,10 @@ public class DebugEnemy extends Actor {
 		g.setTransform(next);
 		
 		if(!waypoints.isEmpty()){
-			g.setColor(Color.cyan);
-			g.drawLine(0, 0, (int)(waypoints.peek().getPosition().x-position.x), (int)(waypoints.peek().getPosition().y-position.y));
-			for(Node w:waypoints)
-				g.drawOval((int)(w.getPosition().x-position.x), (int)(w.getPosition().y-position.y),5,5);
+//			g.setColor(Color.cyan);
+//			g.drawLine(0, 0, (int)(waypoints.peek().getPosition().x-position.x), (int)(waypoints.peek().getPosition().y-position.y));
+//			for(Node w:waypoints)
+//				g.drawOval((int)(w.getPosition().x-position.x), (int)(w.getPosition().y-position.y),5,5);
 		}
 		
 		g.setTransform(prev);

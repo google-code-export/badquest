@@ -56,10 +56,10 @@ public class Water extends Tile {
 //		g.drawArc((int)Math.round(-2 * scaledTile + shift), (int)Math.round(0), scaledTile, scaledTile, 270, 90);
 //		g.drawArc((int)Math.round(-2.5 * scaledTile + shift), (int)Math.round(-scaledTile/2.), scaledTile, scaledTile, 270, 90);
 		
-		g.drawArc((int)Math.round(-scaledTile*3/2.+shift), -(int)Math.round(scaledTile/2.), scaledTile, scaledTile, 270, 90);
+		g.drawArc((int)Math.round(-scaledTile*3/2.+shift), -(int)Math.floor(scaledTile/2.), scaledTile, scaledTile, 270, 90);
 		g.drawArc((int)Math.round(-scaledTile/2.+shift), (int)Math.round(scaledTile/2.), scaledTile, scaledTile, 90, 90);
 		
-		g.drawArc((int)Math.round(-scaledTile/2.+shift), -(int)Math.round(scaledTile/2.), scaledTile, scaledTile, 270, 90);
+		g.drawArc((int)Math.round(-scaledTile/2.+shift), -(int)Math.floor(scaledTile/2.), scaledTile, scaledTile, 270, 90);
 		g.drawArc((int)Math.round(scaledTile/2.+shift), (int)Math.round(scaledTile/2.), scaledTile, scaledTile, 90, 90);
 		
 		g.setStroke(pStroke);

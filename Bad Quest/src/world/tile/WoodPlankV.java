@@ -11,8 +11,9 @@ import world.Room;
 
 
 public class WoodPlankV extends Tile {
-	private Color fill = new Color(117,101,53);
-	private Color outline = fill.darker();
+	private Color[] full = {new Color(0x5D2F17), new Color(0x7E502F)};
+	private Color[] half = {new Color(0x5A3316), new Color(0x7C4A25)};
+	private Color outline = new Color(0x3E2813);
 	public WoodPlankV(int y, int x, Room owner){
 		super(x, y, TileType.WOOD_PLANK_V, owner);
 	}
@@ -32,10 +33,21 @@ public class WoodPlankV extends Tile {
 		g.translate(Tile.SIZE/2, Tile.SIZE/2);
 		g.rotate(Math.PI/2);
 		g.translate(-Tile.SIZE/2, -Tile.SIZE/2);
-		g.setClip(0, 0, Tile.SIZE, Tile.SIZE);
+		g.setClip(0, 0, Tile.SIZE, Tile.SIZE+1);
 		
-		g.setColor(fill);
-		g.fillRect(0,0,Tile.SIZE+1,Tile.SIZE+1);
+		g.setColor(full[(x+y)%2]);
+		g.fillRect(0,0,Tile.SIZE+1,Tile.SIZE/4+1);
+		
+		g.setColor(full[(x+y+1)%2]);
+		g.fillRect(0,Tile.SIZE/2,Tile.SIZE+1,Tile.SIZE/4+1);
+		
+		g.setColor(half[(x+y)%2]);
+		g.fillRect(0, Tile.SIZE/4, Tile.SIZE/2, Tile.SIZE/4);
+		g.fillRect(Tile.SIZE/2, 3*Tile.SIZE/4, Tile.SIZE/2+1, Tile.SIZE/4);
+		
+		g.setColor(half[(x+y+1)%2]);
+		g.fillRect(Tile.SIZE/2, Tile.SIZE/4, Tile.SIZE/2+1, Tile.SIZE/4);
+		g.fillRect(0, 3*Tile.SIZE/4, Tile.SIZE/2, Tile.SIZE/4);
 		
 		g.setColor(outline);
 		for(int i = 0; i < 5; i++)
