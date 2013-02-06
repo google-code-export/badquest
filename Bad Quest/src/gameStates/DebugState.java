@@ -110,7 +110,7 @@ public class DebugState extends State{
 		}
 		
 		room.addEntity(rock);
-		new Room(1, new Vector(-160, 200), 0);
+		new Room(5, new Vector(-160, 560), 0);
 		
 		cam.setPosition(player.getPosition());
 		roomList = RoomManager.getRoomList();

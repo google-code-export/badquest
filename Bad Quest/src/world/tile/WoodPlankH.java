@@ -32,10 +32,10 @@ public class WoodPlankH extends Tile {
 		g.scale(cam.scale(), cam.scale());
 		g.setClip(0, 0, Tile.SIZE+1, Tile.SIZE);
 		
-		g.setColor(full[(x+y)%2]);
+		g.setColor(full[(Integer.bitCount(x^y))%2]);
 		g.fillRect(0,0,Tile.SIZE+1,Tile.SIZE/4+1);
 		
-		g.setColor(full[(x+y+1)%2]);
+		g.setColor(full[(Integer.bitCount(x^y)+1)%2]);
 		g.fillRect(0,Tile.SIZE/2,Tile.SIZE+1,Tile.SIZE/4+1);
 		
 		g.setColor(half[(x+y)%2]);
