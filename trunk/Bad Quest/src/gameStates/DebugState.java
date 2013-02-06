@@ -6,6 +6,7 @@ import gameObjects.DrawableObject;
 import gameObjects.ObjectManager;
 import gameObjects.Player;
 import gameObjects.Portal;
+import gameObjects.DebugBall;
 import graphics.Camera;
 import graphics.DimmerGraphics;
 
@@ -98,14 +99,17 @@ public class DebugState extends State{
 		forefollower.setFollow(player);
 		fore.addEntityAt(forefollower, new Vector(Tile.SIZE,Tile.SIZE));
 		
+		DebugBall rock = new DebugBall(new Vector(651,350),13);
+		
 		DebugEnemy[] masstest = new DebugEnemy[10];
 		for(int i = 0; i < 10; i++){
 			masstest[i] = new DebugEnemy(10);
 //			masstest[i].setFollow(i==0?player:masstest[i-1]);
-			masstest[i].setFollow(player);
+			masstest[i].setFollow(rock);
 			room.addEntityAt(masstest[i], new Vector(Tile.SIZE*20 + (i+20)*Tile.SIZE, Tile.SIZE*10));
 		}
 		
+		room.addEntity(rock);
 		new Room(1, new Vector(-160, 200), 0);
 		
 		cam.setPosition(player.getPosition());
