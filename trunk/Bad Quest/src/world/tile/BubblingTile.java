@@ -67,19 +67,22 @@ public abstract class BubblingTile extends Tile {
 			bubbles.add(new Bubble());
 		}
 	}
-
+	
+	double scaledTile;
 	@Override
 	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam) {
 		AffineTransform prev = g.getTransform();
 		
 		g.translate(cam.xTranslatePosition(position.x), cam.yTranslatePosition(position.y));
-		g.scale(cam.scale(), cam.scale());
-		g.setClip(0, 0, Tile.SIZE, Tile.SIZE);
+//		g.scale(cam.scale(), cam.scale());
+		scaledTile = Tile.SIZE*cam.scale();
 		
-		RadialGradientPaint paint = new RadialGradientPaint(Tile.SIZE/2, Tile.SIZE/2, Tile.SIZE * .666667f, fractions, new Color[]{mix(in,out), mix(out,in)});
+		g.setClip(0, 0, (int)Math.ceil(scaledTile), (int)Math.ceil(scaledTile));
+		
+		RadialGradientPaint paint = new RadialGradientPaint((float)scaledTile/2f, (float)scaledTile/2f, (float)scaledTile * .666667f, fractions, new Color[]{mix(in,out), mix(out,in)});
 		
 		g.setPaint(paint);
-		g.fillRect(0,0,Tile.SIZE+1,Tile.SIZE+1);
+		g.fillRect(0,0,(int)Math.round(scaledTile+1),(int)Math.round(scaledTile+1));
 		
 		for(Bubble bubble:bubbles)
 			bubble.drawBody(g, elapsedSeconds, cam);
@@ -135,11 +138,11 @@ public abstract class BubblingTile extends Tile {
 			AffineTransform prev = g.getTransform();
 			
 			g.setColor(c1);
-			g.fillOval((int)(position.x-radius), (int)(position.y-radius), (int)(2*radius), (int)(2*radius));
+			g.fillOval((int)((position.x-radius)*cam.scale()), (int)((position.y-radius)*cam.scale()), (int)(2*radius*cam.scale()), (int)(2*radius*cam.scale()));
 			
 			if(popping){
 				g.setColor(c2);
-				g.fillOval((int)(position.x-sRadius), (int)(position.y-sRadius), (int)(2*sRadius), (int)(2*sRadius));
+				g.fillOval((int)((position.x-sRadius)*cam.scale()), (int)((position.y-sRadius)*cam.scale()), (int)(2*sRadius*cam.scale()), (int)(2*sRadius*cam.scale()));
 			}
 			
 			g.setTransform(prev);
