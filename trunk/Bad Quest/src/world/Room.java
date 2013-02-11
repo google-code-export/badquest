@@ -5,15 +5,21 @@ import gameObjects.Actor;
 import gameObjects.DrawableObject;
 import graphics.Camera;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.TreeMap;
 
 import util.Collision;
+import util.Geometry;
 import util.Vector;
+import world.tile.Lava;
 import world.tile.Stone;
 import world.tile.Tile;
+import world.tile.Tile.TileType;
+import world.tile.Void;
 import world.tile.Wall;
 
 public class Room implements Comparable<Room>{
@@ -71,6 +77,73 @@ public class Room implements Comparable<Room>{
 		R = DebugRoomMaker.prebuiltRows(selector);
 		C = DebugRoomMaker.prebuiltCols(selector);
 		map = DebugRoomMaker.selectPrebuilt(selector,this);
+		
+		entityMap = new TreeMap<Integer, DrawableObject>();
+		buildNodeGraph();
+	}
+	
+	public Room(boolean rect, int radius, Vector v, double d){
+		RID = RoomManager.register(this);
+		position = new Vector(v);
+		layer = d;
+		
+		R = radius;
+		C = radius;
+		map = new Tile[R][C];
+		
+		for(int i = 0; i < R; i++)
+			for(int j = 0; j < C; j++){
+				if(Math.pow(i+.5-R/2.,2) + Math.pow(j+.5-C/2.,2) <= R*C/4.)
+					map[i][j] = new Stone(i, j, this, new Color(0x3D0000));
+				else
+					map[i][j] = rect?new Wall(i,j,this,new Color(0x96613F)):new Void(i,j,this);
+			}
+		
+		for(int i = 0; i < R; i++)
+			for(int j = 0; j < C; j++){
+				if(!rect && Math.pow(i+.5-R/2.,2) + Math.pow(j+.5-C/2.,2) <= R*C/16.)
+					map[i][j] = new Lava(i, j, this);
+			}
+		
+		boolean[][] visited = new boolean[R][C];
+		int[] dx = {-1,0,1,0};
+		int[] dy = {0,1,0,-1};
+		LinkedList<Integer> q = new LinkedList<Integer>();
+		for(int i = 0; i < R; i++){
+			for(int j = 0; j < C; j++)
+				if(!visited[i][j] && map[i][j].TID == TileType.VOID){
+					q.add(i);
+					q.add(j);
+					visited[i][j] = true;
+					while(!q.isEmpty()){
+						int x = q.remove();
+						int y = q.remove();
+						for(int k = 0; k < 4; k++){
+							int nx = x + dx[k];
+							int ny = y + dy[k];
+							if(nx < 0 || nx >= R || ny < 0 || ny >= C || visited[nx][ny])
+								continue;
+							if(map[nx][ny].TID == TileType.STONE){
+								map[nx][ny] = new Wall(nx, ny, this,new Color(0x96613F));
+								continue;
+							}else if(map[nx][ny].TID == TileType.VOID){
+								q.add(nx);
+								q.add(ny);
+								visited[nx][ny] = true;
+							}
+						}
+					}
+				}
+			
+			if(map[0][i].TID == TileType.STONE)
+				map[0][i] = new Wall(0,i,this,new Color(0x96613F));
+			if(map[i][0].TID == TileType.STONE)
+				map[i][0] = new Wall(i,0,this,new Color(0x96613F));
+			if(map[R-1][i].TID == TileType.STONE)
+				map[R-1][i] = new Wall(R-1,i,this,new Color(0x96613F));
+			if(map[i][C-1].TID == TileType.STONE)
+				map[i][C-1] = new Wall(i,C-1,this,new Color(0x96613F));
+		}
 		
 		entityMap = new TreeMap<Integer, DrawableObject>();
 		buildNodeGraph();
@@ -223,13 +296,22 @@ public class Room implements Comparable<Room>{
 	 * Given two points within the room and a path radius, determine whether the path can be traversed
 	 * @param a
 	 * @param b
+	 * @param r The radius of the path
 	 * @return true if nothing blocks the path, such as void, wall, and water tiles
 	 */
-	public boolean isPathClear(Vector a, Vector b, double R){
+	public boolean isPathClear(Vector a, Vector b, double r){
 		for(Tile[] row:map)
 			for(Tile t:row)
-				if(t.intersectsSegment(a, b, R))
+				if(t.intersectsSegment(a, b, r))
 					return false;
+		
+		//Intersect along the room's bounding box
+		int[] dx = {0,1,1,0};
+		int[] dy = {0,0,1,1};
+		for(int i = 0; i < 4; i++)
+			if(Geometry.segmentIntersect(a, b, position.add(new Vector(dx[i]*Tile.SIZE*C, dy[i]*Tile.SIZE*R)), position.add(new Vector(dx[(i+1)%4]*Tile.SIZE*C, dy[(i+1)%4]*Tile.SIZE*R))))
+				return false;
+		
 		return true;
 	}
 	

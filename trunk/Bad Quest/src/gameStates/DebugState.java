@@ -33,8 +33,8 @@ import client.KeyBindings;
 public class DebugState extends State{
 	Room room = new Room(0,new Vector(400,0),0);
 	Room fore = new Room(1,new Vector(-50,-50), 0);
-	Room background = new Room(50,20,1);
-	Room backbackground = new Room(50,50,2);
+	Room background = new Room(false, 30, new Vector(-100,0),1);
+	Room backbackground = new Room(true,50,new Vector(-300,0),2);
 	ArrayList<Room> roomList = RoomManager.getRoomList();
 	
 	Player player;
@@ -110,7 +110,6 @@ public class DebugState extends State{
 		}
 		
 		room.addEntity(rock);
-		new Room(5, new Vector(-160, 560), 0);
 		
 		cam.setPosition(player.getPosition());
 		roomList = RoomManager.getRoomList();

@@ -2,6 +2,7 @@ package world.tile;
 
 import graphics.Camera;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
@@ -10,6 +11,11 @@ import world.Room;
 public class Wall extends Tile {
 	public Wall(int y, int x, Room owner){
 		super(x, y, TileType.WALL, owner);
+	}
+	
+	public Wall(int y, int x, Room owner, Color c){
+		super(x, y, TileType.WALL, owner);
+		color = c;
 	}
 	
 	@Override
