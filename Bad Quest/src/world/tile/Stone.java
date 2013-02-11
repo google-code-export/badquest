@@ -14,6 +14,11 @@ public class Stone extends Tile{
 		color = new Color(33,45,52);
 	}
 	
+	public Stone(int y, int x, Room owner, Color c){
+		super(x, y, TileType.STONE, owner);
+		color = c;
+	}
+	
 	@Override
 	public void update(double elapsedSeconds) {
 	

@@ -84,7 +84,27 @@ public class DebugRoomMaker {
 														 "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
 														 "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
 														 "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
-														 "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"}};
+														 "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"},
+														 {"       ######       ",
+														  "     ##......##     ",
+														  "   ##..........##   ",
+														  "  #..............#  ",
+														  "  #..............#  ",
+														  " #................# ",
+														  " #................# ",
+														  "#..................#",
+														  "#..................#",
+														  "#..................#",
+														  "#..................#",
+														  "#..................#",
+														  "#..................#",
+														  " #................# ",
+														  " #................# ",
+														  "  #..............#  ",
+														  "  #..............#  ",
+														  "   ##..........##   ",
+														  "     ##......##     ",
+														  "       ######       ",}};
 									 
 	public static Tile[][] selectPrebuilt(int s, Room caller){
 		return make(prebuilt[s], caller);
