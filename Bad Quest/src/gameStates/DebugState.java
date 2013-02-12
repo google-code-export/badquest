@@ -33,7 +33,7 @@ import client.KeyBindings;
 public class DebugState extends State{
 	Room room = new Room(0,new Vector(400,0),0);
 	Room fore = new Room(1,new Vector(-50,-50), 0);
-	Room background = new Room(false, 30, new Vector(-100,0),1);
+	Room background = new Room(false,30, new Vector(-100,0),1);
 	Room backbackground = new Room(true,50,new Vector(-300,0),2);
 	ArrayList<Room> roomList = RoomManager.getRoomList();
 	
