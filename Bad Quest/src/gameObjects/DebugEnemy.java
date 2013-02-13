@@ -2,6 +2,8 @@ package gameObjects;
 
 import gameAI.Node;
 import gameAI.Pathfinding;
+import gameObjects.equipment.EquipmentModule;
+import gameObjects.equipment.HornedHelmet;
 import graphics.Camera;
 
 import java.awt.Graphics2D;
@@ -11,6 +13,7 @@ import java.util.ArrayDeque;
 import util.Vector;
 
 public class DebugEnemy extends Actor {
+	EquipmentModule helmet;
 	ArrayDeque<Node> waypoints;
 	
 	double moveSpeed = 75;
@@ -24,6 +27,9 @@ public class DebugEnemy extends Actor {
 	public DebugEnemy(int r){
 		super("Pathfinder", r);
 		waypoints = new ArrayDeque<Node>();
+		
+		helmet = new EquipmentModule(this);
+		helmet.loadEquipment(new HornedHelmet());
 	}
 	
 	public void setFollow(DrawableObject d){
@@ -73,6 +79,7 @@ public class DebugEnemy extends Actor {
 		}
 		
 		super.update(elapsedSeconds);
+		helmet.update(elapsedSeconds);
 	}
 	
 	@Override
@@ -94,5 +101,7 @@ public class DebugEnemy extends Actor {
 		}
 		
 		g.setTransform(prev);
+		
+		helmet.drawBody(g, elapsedSeconds, cam);
 	}
 }

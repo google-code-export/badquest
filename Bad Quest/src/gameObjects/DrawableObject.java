@@ -177,6 +177,31 @@ public abstract class DrawableObject {
 	}
 	
 	/**
+	 * Round off an array of doubles to integral values
+	 * @param x
+	 * @return
+	 */
+	protected int[] roundOff(double[] x){
+		int[] ret = new int[x.length];
+		for(int i = 0; i < ret.length; i++)
+			ret[i] = (int)Math.round(x[i]);
+		return ret;
+	}
+	
+	/**
+	 * Draw the outline of a polygon using floating point vertices and the current graphics context.
+	 */
+	protected void drawPoly(Vector[] p, Graphics2D g){
+		double[] x = new double[p.length];
+		double[] y = new double[p.length];
+		for(int i = 0; i < p.length; i++){
+			x[i] = p[i].x;
+			y[i] = p[i].y;
+		}
+		drawPoly(x,y,g);
+	}
+	
+	/**
 	 * Draw the outline of a polygon using floating point vertices and the current graphics context.
 	 */
 	protected void drawPoly(double[] x, double[] y, Graphics2D g){
@@ -189,18 +214,24 @@ public abstract class DrawableObject {
 	/**
 	 * Fill a polygon using floating point vertices and the current graphics context.
 	 */
+	protected void fillPoly(Vector[] p, Graphics2D g){
+		double[] x = new double[p.length];
+		double[] y = new double[p.length];
+		for(int i = 0; i < p.length; i++){
+			x[i] = p[i].x;
+			y[i] = p[i].y;
+		}
+		fillPoly(x,y,g);
+	}
+	
+	/**
+	 * Fill a polygon using floating point vertices and the current graphics context.
+	 */
 	protected void fillPoly(double[] x, double[] y, Graphics2D g){
 		int[] px = roundOff(x);
 		int[] py = roundOff(y);
 		
 		g.fillPolygon(px, py, x.length);
-	}
-	
-	protected int[] roundOff(double[] x){
-		int[] ret = new int[x.length];
-		for(int i = 0; i < ret.length; i++)
-			ret[i] = (int)Math.round(x[i]);
-		return ret;
 	}
 	
 	//Update stuff
