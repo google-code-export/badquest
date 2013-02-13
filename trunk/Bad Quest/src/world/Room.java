@@ -283,6 +283,32 @@ public class Room implements Comparable<Room>{
 	}
 	
 	/**
+	 * Retrieve a list of entities intersecting or contained within a circular arc
+	 * @param center The center point of the arc
+	 * @param start The starting point of the arc (the arc will be treated as having radius |start-center|)
+	 * @param a The angular extension of the arc in the counter-clockwise direction
+	 * @return
+	 */
+	public ArrayDeque<DrawableObject> getEntitiesIntersectingArc(Vector center, Vector start, double a){
+		ArrayDeque<DrawableObject> ret = new ArrayDeque<DrawableObject>();
+		
+		double r = start.sub(center).mag();
+		Vector end = start.sub(center).rot(a).add(center);
+		
+		synchronized(entityMap){
+			for(Integer x:entityMap.keySet()){
+				DrawableObject obj = entityMap.get(x);
+				if(obj.getPosition().dis2(center) <= Math.pow(r+obj.getRadius(),2) && //Obj and the circle intersect
+				   start.sub(center).cross(obj.getPosition().sub(center)) < 0 && //Obj is to the left of start
+				   end.sub(center).cross(obj.getPosition().sub(center)) > 0)     //Obj is to the right of end
+					ret.add(entityMap.get(x));
+			}
+		}
+		
+		return ret;
+	}
+	
+	/**
 	 * Given two points within the room, determine whether the path can be traversed
 	 * @param a
 	 * @param b

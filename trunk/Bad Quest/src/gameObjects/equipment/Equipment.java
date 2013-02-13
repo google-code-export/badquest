@@ -38,14 +38,10 @@ public abstract class Equipment extends DrawableObject {
 		if(cooldown > 0)
 			cooldown -= elapsedSeconds;
 	}
-
-	@Override
-	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam){
-		
-	}
 	
 	/**
 	 * Do stuff, equipment specific
 	 */
 	public abstract void activate();
+	public abstract void drawBody(Graphics2D g, double elapsedSeconds, Camera cam);
 }

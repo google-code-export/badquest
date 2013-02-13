@@ -85,15 +85,12 @@ public class Portal extends DrawableObject {
 	public void update(double elapsedSeconds) {
 		if(state == State.INACTIVE && !owner.actorWithinCircle(position, radius+Tile.SIZE/2))
 			state = State.ACTIVE;
-//		if(state == State.ACTIVE)
-//			angle = (angle + angularVelocity*elapsedSeconds)%(2*Math.PI);
+		if(state == State.ACTIVE)
+			angle = (angle + angularVelocity*elapsedSeconds)%(2*Math.PI);
 	}
 	
 	@Override
 	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam) {
-		if(state == State.ACTIVE)
-		angle = (angle + angularVelocity*elapsedSeconds)%(2*Math.PI);
-		
 		AffineTransform prev = g.getTransform();
 		
 		g.translate(cam.xTranslatePosition(position.x), cam.yTranslatePosition(position.y));

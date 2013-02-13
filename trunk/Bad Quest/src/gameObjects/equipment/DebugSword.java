@@ -23,7 +23,7 @@ public class DebugSword extends Equipment {
 	private double animationTime = .15;
 	private double time = 0;
 	
-	private int damage = 50;
+	private int damage = 5;
 	
 //	private Polygon hilt;
 //	private Polygon blade;
@@ -40,7 +40,12 @@ public class DebugSword extends Equipment {
 			Actor actor = host.getActor();
 			Room room = actor.getCurrentRoom();
 			
-			ArrayDeque<DrawableObject> obj = room.getEntitiesWithinCircle(actor.getPosition().add(new Vector(actor.getAngle()).scale(host.getRadius())), 20);
+			Vector center = actor.getPosition();
+			Vector start = center.add(new Vector(actor.getAngle() + startAngle).scaleTo(actor.getRadius()+20));
+			
+//			ArrayDeque<DrawableObject> obj = room.getEntitiesWithinCircle(actor.getPosition().add(new Vector(actor.getAngle()).scale(host.getRadius())), 20);
+			ArrayDeque<DrawableObject> obj = room.getEntitiesIntersectingArc(center,start,angleOffset);
+			
 			for(DrawableObject d:obj)
 				if(d instanceof Damageable){
 					Damageable ref = (Damageable)d;
@@ -81,6 +86,23 @@ public class DebugSword extends Equipment {
 	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam) {
 		AffineTransform prev = g.getTransform();
 		Stroke pStroke = g.getStroke();
+		
+//		Actor actor = host.getActor();
+//		Vector center = actor.getPosition();
+//		int rad = (int)(actor.getRadius()+20);
+//		Vector start = new Vector(actor.getAngle() + startAngle).scaleTo(actor.getRadius()+20);
+//		Vector end = start.rot(angleOffset);
+//		
+//		g.translate(cam.xTranslatePosition(center.x), cam.yTranslatePosition(center.y));
+//		g.rotate(angle);
+//		g.scale(cam.scale(), cam.scale());
+//		g.setColor(Color.white);
+//		g.drawLine(0, 0, (int)start.x, (int)start.y);
+//		g.drawLine(0, 0, (int)end.x, (int)end.y);
+//		g.drawArc(-rad, -rad, 2*rad, 2*rad, 360-(int)Math.toDegrees(actor.getAngle()+startAngle), (int)Math.toDegrees(-angleOffset));
+//		g.drawOval(-20, -20, 40, 40);
+//		
+//		g.setTransform(prev);
 		
 		g.translate(cam.xTranslatePosition(position.x), cam.yTranslatePosition(position.y));
 		g.rotate(angle);
