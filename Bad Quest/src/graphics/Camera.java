@@ -1,6 +1,13 @@
 package graphics;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+
+import gameObjects.Actor;
 import gameObjects.DrawableObject;
+import gameObjects.ObjectManager;
 import util.SpringDampHelper;
 import util.Vector;
 import client.GameClient;
@@ -185,5 +192,25 @@ public class Camera {
 		}
 		
 		position = position.add(velocity.scale(elapsedSeconds)).add(shakeOffset);
+	}
+	
+	public void draw(Graphics2D g, double elapsedSeconds){
+		g.setColor(Color.WHITE);
+		g.setStroke(new BasicStroke(2.f));
+		g.drawLine(GameClient.frameWidth/2, GameClient.frameHeight/2-20, GameClient.frameWidth/2, GameClient.frameHeight/2+20);
+		g.drawLine(GameClient.frameWidth/2-20, GameClient.frameHeight/2, GameClient.frameWidth/2+20, GameClient.frameHeight/2);
+		
+		g.drawRect(GameClient.frameWidth/2-150, 30, 300, 40);
+		FontMetrics f = g.getFontMetrics();
+		g.drawString(String.format("%.2f", 1/elapsedSeconds), GameClient.frameWidth-(int)(f.getStringBounds("Following", g).getWidth()+10), 45);
+		g.drawString("Following", GameClient.frameWidth/2-(int)(f.getStringBounds("Following", g).getWidth()/2), 45);
+		if(getFocus() != null){
+			if(getFocus() instanceof Actor)
+				g.drawString(((Actor)(getFocus())).getName(), GameClient.frameWidth/2-(int)(f.getStringBounds(((Actor)(getFocus())).getName(), g).getWidth()/2), 62);
+			g.drawString(String.format("(%.4f, %.4f)", getFocus().getPosition().x, getFocus().getPosition().y), GameClient.frameWidth/2+5, GameClient.frameHeight/2-7);
+			g.drawString(String.format("(%.4f, %.4f)", getFocus().getVelocity().x, getFocus().getVelocity().y), GameClient.frameWidth/2+5, GameClient.frameHeight/2+15);
+			g.drawString(String.format("%.4f", scale()), GameClient.frameWidth/2-5, GameClient.frameHeight-30);
+			g.drawString(String.format("%d", ObjectManager.objectCount()), GameClient.frameWidth/2-5, GameClient.frameHeight-45);
+		}
 	}
 }
