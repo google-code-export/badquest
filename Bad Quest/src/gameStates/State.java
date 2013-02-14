@@ -39,19 +39,6 @@ public abstract class State {
 	}
 	
 	/**
-	 * Draws this state followed by each of its children.
-	 * @param g
-	 * @param elapsedSeconds
-	 */
-	protected final void drawAll(Graphics2D g, double elapsedSeconds){
-		draw(g, elapsedSeconds);
-		synchronized(children){
-			for(State s:children)
-				s.drawAll(g, elapsedSeconds);
-		}
-	}
-	
-	/**
 	 * Updates this state followed by each of its children.
 	 * @param elapsedSeconds
 	 */
@@ -67,6 +54,19 @@ public abstract class State {
 				next.add(cur);
 			}
 			children = next;
+		}
+	}
+	
+	/**
+	 * Draws this state followed by each of its children.
+	 * @param g
+	 * @param elapsedSeconds
+	 */
+	protected final void drawAll(Graphics2D g, double elapsedSeconds){
+		draw(g, elapsedSeconds);
+		synchronized(children){
+			for(State s:children)
+				s.drawAll(g, elapsedSeconds);
 		}
 	}
 	
@@ -230,7 +230,7 @@ public abstract class State {
 	
 	protected void keyTyped(KeyEvent e){		
 	}
-	
-	protected abstract void draw(Graphics2D g, double elapsedSeconds);
+
 	protected abstract void update(double elapsedSeconds);
+	protected abstract void draw(Graphics2D g, double elapsedSeconds);
 }
