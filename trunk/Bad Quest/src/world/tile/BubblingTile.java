@@ -133,7 +133,7 @@ public abstract class BubblingTile extends Tile {
 			}
 		}
 
-		//Only called from the parent tile, current camera position and scaling are set.
+		//Only called from the parent tile. Current camera position and scaling are set.
 		public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam) {
 			AffineTransform prev = g.getTransform();
 			

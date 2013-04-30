@@ -30,6 +30,8 @@ public abstract class Equipment extends DrawableObject {
 	
 	protected final void unregister(){
 		host = null;
+		kill();
+		delete();
 	}
 	
 	@Override

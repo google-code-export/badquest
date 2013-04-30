@@ -41,9 +41,8 @@ public class DebugSword extends Equipment {
 			Room room = actor.getCurrentRoom();
 			
 			Vector center = actor.getPosition();
-			Vector start = center.add(new Vector(actor.getAngle() + startAngle).scaleTo(actor.getRadius()+20));
+			Vector start = center.add(new Vector(actor.getAngle() + startAngle).scaleTo(host.getRadius()+actor.getRadius()/2+10));
 			
-//			ArrayDeque<DrawableObject> obj = room.getEntitiesWithinCircle(actor.getPosition().add(new Vector(actor.getAngle()).scale(host.getRadius())), 20);
 			ArrayDeque<DrawableObject> obj = room.getEntitiesIntersectingArc(center,start,angleOffset);
 			
 			for(DrawableObject d:obj)
@@ -89,20 +88,20 @@ public class DebugSword extends Equipment {
 		
 //		Actor actor = host.getActor();
 //		Vector center = actor.getPosition();
-//		int rad = (int)(actor.getRadius()+20);
+//		int rad = (int)(host.getRadius()+actor.getRadius()/2+14);
 //		Vector start = new Vector(actor.getAngle() + startAngle).scaleTo(actor.getRadius()+20);
 //		Vector end = start.rot(angleOffset);
 //		
 //		g.translate(cam.xTranslatePosition(center.x), cam.yTranslatePosition(center.y));
-//		g.rotate(angle);
+////		g.rotate(angle);
 //		g.scale(cam.scale(), cam.scale());
 //		g.setColor(Color.white);
 //		g.drawLine(0, 0, (int)start.x, (int)start.y);
 //		g.drawLine(0, 0, (int)end.x, (int)end.y);
 //		g.drawArc(-rad, -rad, 2*rad, 2*rad, 360-(int)Math.toDegrees(actor.getAngle()+startAngle), (int)Math.toDegrees(-angleOffset));
 //		g.drawOval(-20, -20, 40, 40);
-//		
-//		g.setTransform(prev);
+		
+		g.setTransform(prev);
 		
 		g.translate(cam.xTranslatePosition(position.x), cam.yTranslatePosition(position.y));
 		g.rotate(angle);
