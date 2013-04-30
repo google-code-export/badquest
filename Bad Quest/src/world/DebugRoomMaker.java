@@ -10,6 +10,7 @@ import world.tile.Tile;
 import world.tile.Void;
 import world.tile.Wall;
 import world.tile.Water;
+import world.tile.Wire;
 import world.tile.WoodPlankH;
 import world.tile.WoodPlankV;
 
@@ -19,10 +20,10 @@ public class DebugRoomMaker {
 														 "#............sssssssss.#wwwwwwwwww#............#..#.d#.d#.#.#......kpkpkpkpkpk.#",
 														 "#............sssssssss.pppppppppppp............#..#ddd.dd.....#.###pkpkpkpkpkp.#",
 														 "#............sssssssss.#wwwwwwwwww#............#..##########.##.#..kpkpkpkpkpk.#",
-														 "#.......####.sssssssss.wwwwwwwwwwww........................#.......pkpkpkpkpkp.#",
-														 "#   kkbbbbb#.sssssssss.wwwwwww########.....................#.......kpkpkpkpkpk.#",
-														 "#   kkpppppp............wwwwww#      #................  #..#  .................#",
-														 "#   kkpppppp.............wwwww#      #................  #..#  .................#",
+														 "#.......####.xxxxxxxxx.wwwwwwwwwwww........................#.......pkpkpkpkpkp.#",
+														 "#   kkbbbbb#.xxxxxxxxx.wwwwwww########.....................#.......kpkpkpkpkpk.#",
+														 "#   kkpppppp.xxxx xxxx..wwwwww#      #................  #..#  .................#",
+														 "#   kkpppppp...xxxxx.....wwwww#      #................  #..#  .................#",
 														 "#   kklllll#...............www########...............  #..#  ..................#",
 														 "#..ddddd####.....gggg.......wwww..................... #..#  ...................#",
 														 "#.dddddddddd....ggllgg..................................#  ....................#",
@@ -147,6 +148,9 @@ public class DebugRoomMaker {
 					break;
 				case 'b':
 					map[i][j] = new Spring(i,j,caller);
+					break;
+				case 'x':
+					map[i][j] = new Wire(i,j,caller);
 					break;
 				default:
 					map[i][j] = new Void(i,j,caller);

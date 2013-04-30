@@ -60,6 +60,13 @@ public class Player extends Actor {
 		setFaction(Faction.FRIENDLY);
 	}
 	
+	@Override
+	public void kill() {
+		for(EquipmentModule module:equip)
+			module.loadEquipment(null);
+		super.kill();
+	}
+	
 	public void setSpeed(double s){
 		speed = s;
 	}

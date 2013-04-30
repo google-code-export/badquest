@@ -7,6 +7,9 @@ import graphics.Camera;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -293,15 +296,25 @@ public class Room implements Comparable<Room>{
 		ArrayDeque<DrawableObject> ret = new ArrayDeque<DrawableObject>();
 		
 		double r = start.sub(center).mag();
-		Vector end = start.sub(center).rot(a).add(center);
+		
+		double startAngle = Math.toDegrees(start.sub(center).ang());
+		double angularExtent = Math.toDegrees(a);
+		
+		Arc2D.Double arcShape = new Arc2D.Double(center.x-r, center.y-r, 2*r, 2*r, 360-startAngle, -angularExtent, Arc2D.PIE);
+		Area area = new Area(arcShape);
 		
 		synchronized(entityMap){
 			for(Integer x:entityMap.keySet()){
 				DrawableObject obj = entityMap.get(x);
-				if(obj.getPosition().dis2(center) <= Math.pow(r+obj.getRadius(),2) && //Obj and the circle intersect
-				   start.sub(center).cross(obj.getPosition().sub(center)) < 0 && //Obj is to the left of start
-				   end.sub(center).cross(obj.getPosition().sub(center)) > 0)     //Obj is to the right of end
-					ret.add(entityMap.get(x));
+
+				Vector pos = obj.getPosition();
+				double R = obj.getRadius();
+				Ellipse2D.Double test = new Ellipse2D.Double(pos.x-R, pos.y-R, 2*R, 2*R);
+				Area testArea = new Area(test);
+				
+				testArea.intersect(area);
+				if(!testArea.isEmpty())
+					ret.add(obj);
 			}
 		}
 		

@@ -32,6 +32,12 @@ public class DebugEnemy extends Actor {
 		helmet.loadEquipment(new HornedHelmet());
 	}
 	
+	@Override
+	public void kill() {
+		helmet.loadEquipment(null);
+		super.kill();
+	}
+	
 	public void setFollow(DrawableObject d){
 		follow = d;
 	}

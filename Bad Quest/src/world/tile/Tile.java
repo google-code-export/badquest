@@ -109,6 +109,7 @@ public abstract class Tile {
 		GLASS,
 		WOOD_PLANK_H,
 		WOOD_PLANK_V,
+		WIRE,
 		SMART,
 		LAVA,
 		SPRING;
