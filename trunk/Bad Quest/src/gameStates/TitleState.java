@@ -35,7 +35,7 @@ public class TitleState extends State {
 	Camera cam = new Camera(new Vector(0,0));
 	double camVel = 200;
 	
-	AudioClip title = Applet.newAudioClip(this.getClass().getClassLoader().getResource("resources/audio/dankasheck.wav"));
+	AudioClip title = Applet.newAudioClip(this.getClass().getClassLoader().getResource("resources/audio/quartet.mid"));
 	
 	public TitleState(){
 		keys = new BitSet();

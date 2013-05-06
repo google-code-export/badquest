@@ -2,6 +2,7 @@ package util;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 
 public class Geometry {
 	static double EPS = 1e-9;
@@ -13,48 +14,18 @@ public class Geometry {
 	 * @return The set of points on the hull of p.
 	 */
 	public static Vector[] hull(Vector[] p){
-		int n = p.length;
-		Vector[] b = new Vector[n];
-		Vector[] u = new Vector[n];
-		Arrays.sort(p);
-		int bi = 1,ui = 1;
-		b[0] = p[0];
-		b[1] = p[1];
-		//Compute lower component
-		for(int i = 2; i < n; i++){
-			while(bi >= 1){
-				Vector bot = b[bi].sub(b[bi-1]);
-				Vector top = p[i].sub(b[bi]);
-				if(top.cross(bot) <= EPS)
-					break;
-				bi--;
-			}
-			bi++;
-			b[bi] = p[i];
-		}
-		u[0] = p[n-1];
-		u[1] = p[n-2];
-		ui = 1;
-		//Compute upper component
-		for(int i = n-3; i >= 0; i--){
-			while(ui >= 1){
-				Vector bot = u[ui].sub(u[ui-1]);
-				Vector top = p[i].sub(u[ui]);
-				if(top.cross(bot) <= EPS)
-					break;
-				ui--;
-			}
-			ui++;
-			u[ui] = p[i]; 
-		}
-		//Stitch together top and bottom components
-		int unique = ui + bi;
-		Vector[] hull = new Vector[unique];	
-		for(int i = 0; i <= bi; i++)
-			hull[i] = b[i];
-		for(int j = 1; j < ui; j++)
-			hull[bi+j] = u[j];
-		return hull;
+		int n = p.length; Arrays.sort(p);
+		Deque<Vector> b = new ArrayDeque<Vector>(), u = new ArrayDeque<Vector>();
+		for(int i = 0; i < n; b.add(p[i++]))
+			while(b.size() > 1 && rightTurn(p[i], null, b));
+		for(int i = n-1; i >= 0; u.add(p[i--]))
+			while(u.size() > 1 && rightTurn(p[i], null, u));
+		u.removeFirst(); u.removeLast(); b.addAll(u);
+		return b.toArray(new Vector[0]);
+	}
+	
+	public static boolean rightTurn(Vector p, Vector r, Deque<Vector> h){
+		return (p.sub(r = h.removeLast()).cross(r.sub(h.getLast())) > EPS) ? true : !h.add(r);
 	}
 	
 	/**
@@ -147,19 +118,6 @@ public class Geometry {
 	}
 	
 	/**
-	 * Finds the value of s in the equation P = A + (B-A)*s. Assumes P lies on line AB.
-	 * @param a Point A on line AB.
-	 * @param b Point B on line AB.
-	 * @param p The point to solve for, assumed to be on line AB.
-	 * @return The scaling of p.
-	 */
-	public static double findScale(Vector a, Vector b, Vector p){
-		Vector c = b.sub(a);
-		Vector d = p.sub(a);
-		return Math.signum(c.dot(d)) * d.mag()/c.mag();
-	}
-	
-	/**
      * @param a The start of segment AB.
  	 * @param b The end of segment AB.
 	 * @param p The point to be tested.
@@ -173,6 +131,19 @@ public class Geometry {
 		if(p.sub(b).dot(d.scale(-1)) < 0)
 			return p.dis(b);
 		return Math.abs(c.cross(d))/d.mag();
+	}
+	
+	/**
+	 * Finds the value of s in the equation P = A + (B-A)*s. Assumes P lies on line AB.
+	 * @param a Point A on line AB.
+	 * @param b Point B on line AB.
+	 * @param p The point to solve for, assumed to be on line AB.
+	 * @return The scaling of p.
+	 */
+	public static double findScale(Vector a, Vector b, Vector p){
+		Vector c = b.sub(a);
+		Vector d = p.sub(a);
+		return Math.signum(c.dot(d)) * d.mag()/c.mag();
 	}
 	
 	/**

@@ -48,25 +48,25 @@ public class Room implements Comparable<Room>{
 		this.C = C;
 		position = new Vector(0,0);
 		
-		map = new Tile[R][C];
-		for(int i = 0; i < R; i++)
-			for(int j = 0; j < C; j++)
-				map[i][j] = new Stone(i,j,this);
-		for(int i = 0; i < R; i++){
-			map[i][0] = new Wall(i,0,this);
-			map[i][C-1] = new Wall(i,C-1,this);
-		}
-		for(int i = 0; i < C; i++){
-			map[0][i] = new Wall(0,i,this);
-			map[R-1][i] = new Wall(R-1,i,this);
-		}
-		
-		map[7][5] = new Wall(7,5,this);
-		map[7][6] = new Wall(7,6,this);
-		map[7][7] = new Wall(7,7,this);
-		map[8][7] = new Wall(8,7,this);
-		map[9][7] = new Wall(9,7,this);
-		map[9][6] = new Wall(9,6,this);
+		map = DebugRoomGenerator.makeRoom(this, R, C, 0);
+//		for(int i = 0; i < R; i++)
+//			for(int j = 0; j < C; j++)
+//				map[i][j] = new Stone(i,j,this);
+//		for(int i = 0; i < R; i++){
+//			map[i][0] = new Wall(i,0,this);
+//			map[i][C-1] = new Wall(i,C-1,this);
+//		}
+//		for(int i = 0; i < C; i++){
+//			map[0][i] = new Wall(0,i,this);
+//			map[R-1][i] = new Wall(R-1,i,this);
+//		}
+//		
+//		map[7][5] = new Wall(7,5,this);
+//		map[7][6] = new Wall(7,6,this);
+//		map[7][7] = new Wall(7,7,this);
+//		map[8][7] = new Wall(8,7,this);
+//		map[9][7] = new Wall(9,7,this);
+//		map[9][6] = new Wall(9,6,this);
 		
 		entityMap = new TreeMap<Integer, DrawableObject>();
 		buildNodeGraph();
