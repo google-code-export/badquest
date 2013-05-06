@@ -30,6 +30,7 @@ public class DebugState extends State{
 	Room fore = new Room(1,new Vector(-50,-50), 0);
 	Room background = new Room(false,30,new Vector(-100,0),1);
 	Room backbackground = new Room(true,50,new Vector(-300,0),2);
+	Room backgroundGen = new Room(20, 40, 1);
 	ArrayList<Room> roomList = RoomManager.getRoomList();
 	
 	Player player;
@@ -50,6 +51,8 @@ public class DebugState extends State{
 	public DebugState(){
 		keys = new BitSet();
 		clicks = new BitSet();
+		
+		backgroundGen.setPosition(new Vector(700,-200));
 		
 		Portal A = new Portal(room, new Vector(500,50));
 		Portal B = new Portal(background, new Vector(50,200));
