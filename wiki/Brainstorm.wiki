@@ -38,3 +38,5 @@ This page exists for jotting down any ideas that are had. An idea will take the 
   Idea taken from Stone Crawl, a dagger or other weapon that has a chance of opening a rift to "the abyss," sucking any nearby actors or enemies into it. So, it has a chance to make the current fight trivially easy, but perhaps the player has to traverse the abyss later. Of course, he'd then have to encounter everything he sent to the abyss!
   * *Insect/Beetle*
   Played around with the horned helmet a little bit, was able to breathe a little life into the enemies wearing it by rotating the helmet by a tiny offset on each frame. The jitteryness reminded me of a beetle or something, and flipping the horns was not too far off from wings. I think I could have a decent-looking insect enemy with minimal effort, just jotting it down here for future reference.
+  * *Key-per of Closed Doors*
+  This guy might be fun to include, in addition to his arch nemesis.
