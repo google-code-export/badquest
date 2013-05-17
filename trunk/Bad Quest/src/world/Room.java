@@ -172,6 +172,47 @@ public class Room implements Comparable<Room>{
 			}
 	}
 	
+	/**
+	 * Update the node graph at and around map[r][c]
+	 * @param r
+	 * @param c
+	 */
+	public void updateNodeGraph(int r, int c){
+		int[] dx = new int[]{-1,0,1,0,0};
+		int[] dy = new int[]{0,1,0,-1,0};
+		
+		for(int d = 0; d < dx.length; d++){
+			int cx = r+dx[d];
+			int cy = c+dy[d];
+			
+			if(cx < 0 || cx >= R || cy < 0 || cy >= C)
+				continue;
+			
+			nodeGraph[cx*C+cy] = new ArrayList<Node>();
+			
+			for(int k = 0; k < 4; k++){
+				int nx = cx+dx[k];
+				int ny = cy+dy[k];
+				if(nx < 0 || nx >= R || ny < 0 || ny >= C || map[nx][ny].isSolid() || !map[nx][ny].hasFloor())
+					continue;
+				nodeGraph[cx*C+cy].add(map[nx][ny].getNode());
+			}
+		}
+	}
+	
+	/**
+	 * Change the tile at (r, c) to t
+	 * @param r
+	 * @param c
+	 * @param t
+	 */
+	public void updateTile(int r, int c, Tile t){
+		if(r < 0 || r >= R || c < 0 || c >= C)
+			return;
+		map[r][c] = t;
+		updateNodeGraph(r, c);
+	}
+	
 	public int getRID(){
 		return RID;
 	}
@@ -201,6 +242,7 @@ public class Room implements Comparable<Room>{
 		for(int i = 0; i < R; i++)
 			for(int j = 0; j < C; j++)
 				map[i][j].updatePosition(i,j);
+		buildNodeGraph();
 	}
 	
 	public void setLayer(double d){
@@ -398,20 +440,20 @@ public class Room implements Comparable<Room>{
 			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++)
 				map[i][j].drawBody(g, elapsedSeconds, cam);
 		
-//		g.setColor(Color.cyan);
-//		for(int i = Math.max(top,0); i <= Math.min(bot,R-1); i++)
-//			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++){
-//				Node node = map[i][j].getNode();
-//				for(Node x:nodeGraph[node.n])
-//					g.drawLine((int)cam.xTranslatePosition(node.getPosition().x), (int)cam.yTranslatePosition(node.getPosition().y), (int)cam.xTranslatePosition((x.getPosition().x+node.getPosition().x)/2), (int)cam.yTranslatePosition((x.getPosition().y+node.getPosition().y)/2));
-//			}
-//		
-//		g.setColor(Color.cyan.darker());
-//		for(int i = Math.max(top,0); i <= Math.min(bot,R-1); i++)
-//			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++){
-//				Node node = map[i][j].getNode();
-//				g.fillOval((int)cam.xTranslatePosition(node.getPosition().x)-5, (int)cam.yTranslatePosition(node.getPosition().y)-5, 10, 10);
-//			}
+		g.setColor(Color.cyan);
+		for(int i = Math.max(top,0); i <= Math.min(bot,R-1); i++)
+			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++){
+				Node node = map[i][j].getNode();
+				for(Node x:nodeGraph[node.n])
+					g.drawLine((int)cam.xTranslatePosition(node.getPosition().x), (int)cam.yTranslatePosition(node.getPosition().y), (int)cam.xTranslatePosition((x.getPosition().x+node.getPosition().x)/2), (int)cam.yTranslatePosition((x.getPosition().y+node.getPosition().y)/2));
+			}
+		
+		g.setColor(Color.cyan.darker());
+		for(int i = Math.max(top,0); i <= Math.min(bot,R-1); i++)
+			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++){
+				Node node = map[i][j].getNode();
+				g.fillRect((int)cam.xTranslatePosition(node.getPosition().x)-5, (int)cam.yTranslatePosition(node.getPosition().y)-5, 10, 10);
+			}
 		
 		synchronized(entityMap){
 			for(Integer e:entityMap.keySet())

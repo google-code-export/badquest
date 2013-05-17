@@ -19,6 +19,7 @@ public class DebugBall extends DrawableObject {
 		this.radius = radius/2;
 		solid = true;
 		mass = .001;
+		name = "Moon";
 		try{
 			moon = ImageIO.read(this.getClass().getResource("/resources/img/Moon.png"));
 		}catch(Exception e){
