@@ -44,6 +44,7 @@ public class GraphicsOverride {
 			reader.nextLine(); //}
 			reader.nextLine(); //blank
 		}
+		reader.close();
 	}
 	
 /*
