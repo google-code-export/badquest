@@ -8,7 +8,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import util.DisjointSet;
-import world.tile.Dirt;
 import world.tile.Stone;
 import world.tile.Tile;
 import world.tile.Tile.TileType;
@@ -21,23 +20,23 @@ public class DebugRoomGenerator {
 	static double bendicity = .1;
 	static double doorsPerWall = .7;
 	public static Tile[][] makeRoom(Room caller, int R, int C, long seed){
-		Random rand = new Random(seed);
+		Random rand = new Random(seed+3);
 		Tile[][] ret = new Tile[R][C];
 		
 		for(int i = 0; i < R; i++)
 			for(int j = 0; j < C; j++)
-				ret[i][j] = new Wall(j, i, caller);
+				ret[i][j] = new Wall(i, j, caller);
 		
 		for(int i = 1; i < R-1; i++)
 			for(int j = 1; j < C-1; j++)
-				ret[i][j] = new Stone(j, i, caller);
+				ret[i][j] = new Stone(i, j, caller);
 		
 		LinkedList<Integer> bends = new LinkedList<Integer>(); 
 		
 		int height = rand.nextInt(R-2*minWallLength)+minWallLength;
 		double chance = -bendDist;
 		for(int i = 1; i < C-1; i++){
-			ret[height][i] = new Wall(i,height,caller);
+			ret[height][i] = new Wall(height,i,caller);
 			chance += bendicity;
 			
 			//We're bending!
@@ -51,17 +50,17 @@ public class DebugRoomGenerator {
 					bends.add(height); bends.add(i);
 					int to = rand.nextInt(height-2*minWallLength+1)+minWallLength;
 					for(; height > to; height--)
-						ret[height][i] = new Wall(i,height,caller);
+						ret[height][i] = new Wall(height,i,caller);
 					bends.add(height); bends.add(i);
 				}else if(canBendDown){
 					bends.add(height); bends.add(i);
 					int to = rand.nextInt(R-height-2*minWallLength)+height+minWallLength;
 					for(; height < to; height++)
-						ret[height][i] = new Wall(i,height,caller);
+						ret[height][i] = new Wall(height,i,caller);
 					bends.add(height); bends.add(i);
 				}
 				
-				ret[height][i] = new Dirt(i,height,caller);
+				ret[height][i] = new Wall(height,i,caller);
 			}
 		}
 		

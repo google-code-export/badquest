@@ -3,6 +3,7 @@ package gameStates;
 import gameObjects.Actor;
 import gameObjects.DebugBall;
 import gameObjects.DebugEnemy;
+import gameObjects.Door;
 import gameObjects.DrawableObject;
 import gameObjects.Player;
 import gameObjects.Portal;
@@ -24,18 +25,21 @@ import util.Vector;
 import world.Room;
 import world.RoomManager;
 import world.tile.Tile;
+import world.tile.Wall;
+import world.tile.Wire;
 
 public class DebugState extends State{
-	Room room = new Room(0,new Vector(400,0),0);
+//	Room room = new Room(0,new Vector(400,0),0);
+	Room room = new Room(21, 50, 0);
 	Room fore = new Room(1,new Vector(-50,-50), 0);
 	Room background = new Room(false,30,new Vector(-100,0),1);
 	Room backbackground = new Room(true,50,new Vector(-300,0),2);
-	Room backgroundGen = new Room(20, 40, 1);
+//	Room backgroundGen = new Room(20, 40, 1);
 	ArrayList<Room> roomList = RoomManager.getRoomList();
 	
 	Player player;
 	Actor[] actors;
-	TreeMap<Integer, DrawableObject> drawList; 
+	TreeMap<Integer, DrawableObject> drawList;
 	Camera cam = new Camera(new Vector(0,0));
 	
 	BitSet keys; //Set of active keyboard presses
@@ -52,7 +56,8 @@ public class DebugState extends State{
 		keys = new BitSet();
 		clicks = new BitSet();
 		
-		backgroundGen.setPosition(new Vector(700,-200));
+		room.setPosition(new Vector(400,0));
+//		backgroundGen.setPosition(new Vector(700,-200));
 		
 		Portal A = new Portal(room, new Vector(500,50));
 		Portal B = new Portal(background, new Vector(50,200));
@@ -71,6 +76,8 @@ public class DebugState extends State{
 		background.addEntity(B);
 		background.addEntity(C);
 		backbackground.addEntity(D);
+		
+		room.addEntity(new Door());
 		
 		player = new Player("Rawnblade", 10, new Vector(200,200));
 		DebugEnemy follower = new DebugEnemy(10);
@@ -102,7 +109,7 @@ public class DebugState extends State{
 			masstest[i] = new DebugEnemy(10);
 //			masstest[i].setFollow(i==0?player:masstest[i-1]);
 			masstest[i].setFollow(rock);
-			room.addEntityAt(masstest[i], new Vector(Tile.SIZE*20 + (i+20)*Tile.SIZE, Tile.SIZE*10));
+			room.addEntityAt(masstest[i], new Vector(Tile.SIZE*20 + (i+20)*Tile.SIZE, Tile.SIZE*9));
 		}
 		
 		room.addEntity(rock);
@@ -124,11 +131,24 @@ public class DebugState extends State{
 	//State stuff
 	//**************
 	
+	static double TOGGLE = 0;
 	protected void update(double elapsedSeconds){
 		if(keys.get(KeyEvent.VK_Q))
 			scale = scale*9/10.;
 		if(keys.get(KeyEvent.VK_E))
 			scale = scale*10/9.;
+		
+		TOGGLE += elapsedSeconds;
+		if(TOGGLE >= 1){
+			room.updateTile(0, 1, new Wire(0,1,room));
+			room.updateTile(6, 7, new Wire(6,7,room));
+			room.updateTile(7, 7, new Wire(7,7,room));
+			TOGGLE = 0;
+		}else if(TOGGLE >= .5){
+			room.updateTile(0, 1, new Wall(0,1,room));
+			room.updateTile(6, 7, new Wall(6,7,room));
+			room.updateTile(7, 7, new Wall(7,7,room));
+		}
 		
 //		for(Actor a:actors)
 //			a.setInternalVelocity(new Vector(0,0));

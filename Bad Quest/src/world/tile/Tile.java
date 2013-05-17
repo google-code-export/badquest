@@ -31,7 +31,7 @@ public abstract class Tile {
 		this.x = x;
 		this.y = y;
 		TID = t;
-		this.owner = owner;
+		this.owner = owner;	
 		node = new Node(center, y*owner.C + x);
 	}
 	
@@ -92,8 +92,9 @@ public abstract class Tile {
 	 * Call if the room's position changes somehow.
 	 */
 	public void updatePosition(int y, int x){
-		this.position = owner.getPosition().add(new Vector(x*SIZE, y*SIZE));
-		this.center = this.position.add(new Vector(SIZE/2.,SIZE/2.));
+		position = owner.getPosition().add(new Vector(x*SIZE, y*SIZE));
+		center = this.position.add(new Vector(SIZE/2.,SIZE/2.));
+		node = new Node(center, y*owner.C + x);
 	}
 	
 	public abstract void update(double elapsedSeconds);

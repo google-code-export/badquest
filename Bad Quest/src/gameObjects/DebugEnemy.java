@@ -43,6 +43,12 @@ public class DebugEnemy extends Actor {
 	}
 	
 	@Override
+	public void setPosition(Vector v){
+		super.setPosition(v);
+		helmet.move(0);
+	}
+	
+	@Override
 	public void update(double elapsedSeconds) {
 		if(follow != null && follow.isDead())
 			follow = null;
