@@ -5,6 +5,7 @@ import gameObjects.DebugBall;
 import gameObjects.DebugEnemy;
 import gameObjects.Door;
 import gameObjects.DrawableObject;
+import gameObjects.Keyper;
 import gameObjects.Player;
 import gameObjects.Portal;
 import graphics.Camera;
@@ -29,8 +30,8 @@ import world.tile.Wall;
 import world.tile.Wire;
 
 public class DebugState extends State{
-//	Room room = new Room(0,new Vector(400,0),0);
-	Room room = new Room(21, 50, 0);
+	Room room = new Room(0,new Vector(400,0),0);
+//	Room room = new Room(21, 50, 0);
 	Room fore = new Room(1,new Vector(-50,-50), 0);
 	Room background = new Room(false,30,new Vector(-100,0),1);
 	Room backbackground = new Room(true,50,new Vector(-300,0),2);
@@ -113,6 +114,7 @@ public class DebugState extends State{
 		}
 		
 		room.addEntity(rock);
+		room.addEntityAt(new Keyper("Ralph"), new Vector(Tile.SIZE*5, Tile.SIZE*5));
 		
 		cam.setPosition(player.getPosition());
 		roomList = RoomManager.getRoomList();

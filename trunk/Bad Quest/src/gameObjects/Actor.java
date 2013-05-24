@@ -12,7 +12,7 @@ import util.Vector;
 public class Actor extends DrawableObject implements Damageable{
 	protected Color color = Color.ORANGE;
 	
-	private Vector lookAt = new Vector(0,0);
+	private Vector lookAt = null;
 	
 	private final int maxHealth = 100;
 	private int currentHealth = maxHealth;
@@ -87,7 +87,7 @@ public class Actor extends DrawableObject implements Damageable{
 
 	@Override
 	public void update(double elapsedSeconds){
-		if(lookAt != null)
+		if(lookAt != null && lookAt.sub(position).mag2() > 1e-3)
 			angle = lookAt.sub(position).ang();
 		if(currentHealth <= 0)
 			kill();

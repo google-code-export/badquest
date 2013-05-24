@@ -54,7 +54,7 @@ public class DebugEnemy extends Actor {
 			follow = null;
 		
 		if(follow == null){
-			setInternalVelocity(new Vector(0,0));
+			setInternalVelocity(Vector.ZERO);
 		}else{
 			timeToNextMove -= elapsedSeconds;
 			
@@ -87,7 +87,7 @@ public class DebugEnemy extends Actor {
 				setInternalVelocity(waypoints.peek().getPosition().sub(position).scaleTo(moveSpeed));
 				setLookAt(position.add(internalVelocity));
 			}else
-				setInternalVelocity(new Vector(0,0));
+				setInternalVelocity(Vector.ZERO);
 		}
 		
 		super.update(elapsedSeconds);

@@ -22,6 +22,24 @@ public class Door extends DrawableObject implements Interactive{
 		solid = false;
 	}
 	
+	public void bindToTile(Tile t){
+		if(control != null)
+			control.setBlocked(false);
+		
+		control = t;
+		
+		if(control == null)
+			return;
+		
+		setPosition(control.getCenter());
+		control.setBlocked(!open);
+	}
+	
+	public void updateControl(){
+		control.setBlocked(!open);
+		//update node graph about our tile
+	}
+	
 	public void interact(){
 		open = !open;
 	}
@@ -29,8 +47,8 @@ public class Door extends DrawableObject implements Interactive{
 	public void update(double elapsedSeconds){
 		if(control == null)
 			open = true;
-		else if(open == control.isSolid())
-			; //toggle control
+		else if(open == control.isBlocked())
+			control.setBlocked(!open); //toggle control
 	}
 
 	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam){

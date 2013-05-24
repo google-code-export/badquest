@@ -82,7 +82,7 @@ public class Collision {
 			for(int i = 0; i < map.length; i++)
 				for(int j = 0; j < map[i].length; j++){
 					Vector center = map[i][j].getCenter();
-					if(!map[i][j].isSolid() || center.sub(obj.getPosition()).mag2() > check)
+					if(!map[i][j].obstructed() || center.sub(obj.getPosition()).mag2() > check)
 						continue;
 					Pair ret = objectTileCollision(obj, map[i][j], elapsedSeconds);
 					if(ret.min < best.min)

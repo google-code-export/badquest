@@ -11,21 +11,18 @@ import world.Room;
 public class Wall extends Tile {
 	public Wall(int y, int x, Room owner){
 		super(x, y, TileType.WALL, owner);
+		solid = true;
 	}
 	
 	public Wall(int y, int x, Room owner, Color c){
 		super(x, y, TileType.WALL, owner);
 		color = c;
-	}
-	
-	@Override
-	public boolean isSolid() {
-		return true;
+		solid = true;
 	}
 	
 	@Override
 	public void update(double elapsedSeconds) {
-	
+		
 	}
 	
 	@Override

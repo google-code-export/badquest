@@ -17,7 +17,9 @@ public abstract class Tile {
 	protected Vector position,center;
 	protected int x,y; //The row and column of this tile relative to the room's top left corner
 	protected Node node;
-	protected boolean floor = true;
+	protected boolean floor = true,
+			          solid = false,
+			          blocked = false;
 	
 	public final static int SIZE = 24;
 	public final TileType TID;
@@ -35,8 +37,20 @@ public abstract class Tile {
 		node = new Node(center, y*owner.C + x);
 	}
 	
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
+	}
+	
+	public boolean obstructed(){
+		return isBlocked() || isSolid();
+	}
+	
+	public boolean isBlocked() {
+		return blocked;
+	}
+	
 	public boolean isSolid(){
-		return false;
+		return solid || blocked;
 	}
 	
 	public boolean hasFloor(){
@@ -67,14 +81,14 @@ public abstract class Tile {
 	}
 	
 	/**
-	 * Returns whether or not a segment with some radius intersects this Tile.
+	 * Returns whether or not a segment with some radius is obstructed by this Tile.
 	 * @param a The starting point of the segment.
 	 * @param b The ending point of the segment.
 	 * @param R The radius of the segment.
 	 * @return True if the segment intersects this Tile and the Tile is an obstruction, false otherwise.
 	 */
 	public boolean intersectsSegment(Vector a, Vector b, double R){
-		if(floor && !isSolid())
+		if(floor && !obstructed())
 			return false;
 		
 		Vector[] p = getCardinalPoints();
