@@ -23,7 +23,7 @@ public class DebugSword extends Equipment {
 	private double animationTime = .15;
 	private double time = 0;
 	
-	private int damage = 5;
+	private int damage = 40;
 	
 //	private Polygon hilt;
 //	private Polygon blade;
