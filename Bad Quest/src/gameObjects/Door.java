@@ -1,5 +1,6 @@
 package gameObjects;
 
+import gameObjects.interfaces.Damageable;
 import gameObjects.interfaces.Interactive;
 import graphics.Camera;
 
@@ -9,7 +10,7 @@ import java.awt.geom.AffineTransform;
 
 import world.tile.Tile;
 
-public class Door extends DrawableObject implements Interactive{
+public class Door extends DrawableObject implements Interactive, Damageable{
 	private boolean open = false;
 	private Tile control;
 	
@@ -17,9 +18,14 @@ public class Door extends DrawableObject implements Interactive{
 	private Color door = new Color(0x4A2A12);
 	
 	public Door(){
-		open = false;
+		open = true;
 		moveable = false;
 		solid = false;
+		radius = Tile.SIZE/2;
+	}
+	
+	public boolean isOpen(){
+		return open;
 	}
 	
 	public void bindToTile(Tile t){
@@ -33,15 +39,44 @@ public class Door extends DrawableObject implements Interactive{
 		
 		setPosition(control.getCenter());
 		control.setBlocked(!open);
+		updateControl();
 	}
 	
 	public void updateControl(){
 		control.setBlocked(!open);
-		//update node graph about our tile
+		getCurrentRoom().updateNodeGraph(control.getRow(), control.getCol());
 	}
 	
 	public void interact(){
 		open = !open;
+		if(control != null)
+			updateControl();
+	}
+	
+	@Override
+	public void applyDamage(int amount){
+		if(amount > 0)
+			interact();
+	}
+	
+	@Override
+	public int getCurrentHealth(){
+		return 1;
+	}
+	
+	@Override
+	public Faction getFaction(){
+		return Faction.NEUTRAL;
+	}
+	
+	@Override
+	public int getMaxHealth(){
+		return 1;
+	}
+	
+	@Override
+	public boolean isDamageable(Faction f){
+		return true;
 	}
 
 	public void update(double elapsedSeconds){

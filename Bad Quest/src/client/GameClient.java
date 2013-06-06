@@ -1,6 +1,6 @@
 package client;
 
-import gameStates.DebugState;
+import gameStates.AIDemoState;
 import gameStates.GameStateManager;
 
 import java.awt.Color;
@@ -45,7 +45,7 @@ public class GameClient {
 		gameFrame.addMouseListener(new GameStateManager.GSM_MouseListener());
 		gameFrame.addMouseMotionListener(new GameStateManager.GSM_MouseMotionListener());
 		
-		GameStateManager.pushState(new DebugState());
+		GameStateManager.pushState(new AIDemoState());
 	}
 	
 	public void stopDraw()

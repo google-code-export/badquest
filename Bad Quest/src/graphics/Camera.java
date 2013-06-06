@@ -80,6 +80,10 @@ public class Camera {
 		scale = s;
 	}
 	
+	public double getScale(){
+		return scale;
+	}
+	
 	/**
 	 * Translates cx from world coordinates to camera coordinates
 	 * @param cx
@@ -99,11 +103,11 @@ public class Camera {
 	}
 	
 	public double xScale(){
-		return scale;
+		return getScale();
 	}
 	
 	public double yScale(){
-		return scale;
+		return getScale();
 	}
 	
 	public double scale(){

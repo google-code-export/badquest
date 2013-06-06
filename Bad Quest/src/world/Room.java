@@ -201,6 +201,18 @@ public class Room implements Comparable<Room>{
 	}
 	
 	/**
+	 * Retrieve the tile at (r, c). Returns null if there is no such tile.
+	 * @param r
+	 * @param c
+	 * @param t
+	 */
+	public Tile getTileAt(int r, int c){
+		if(r < 0 || r >= R || c < 0 || c >= C)
+			return null;
+		return map[r][c];
+	}
+	
+	/**
 	 * Change the tile at (r, c) to t
 	 * @param r
 	 * @param c
@@ -260,6 +272,17 @@ public class Room implements Comparable<Room>{
 		return set;
 	}
 	
+	public ArrayDeque<Node> getNodesInTileRing(Vector p, double interiorRadius, double exteriorRadius){
+		ArrayDeque<Node> set = new ArrayDeque<Node>();
+		for(Tile[] ti:map)
+			for(Tile t:ti)
+				if(!t.obstructed() && t.hasFloor() && t.getCenter().dis2(p) < exteriorRadius*Tile.SIZE*Tile.SIZE && t.getCenter().dis2(p) > interiorRadius*Tile.SIZE*Tile.SIZE && isPathClear(t.getCenter(), p))
+					set.add(t.getNode());
+		if(set.isEmpty())
+			set.add(getNearestNode(p));
+		return set;
+	}
+	
 	public Node getNearestNode(Vector p){
 		Node closest = null;
 		for(Tile[] ti:map)
@@ -284,6 +307,21 @@ public class Room implements Comparable<Room>{
 	public void addEntityAt(DrawableObject obj, Vector v){
 		obj.setPosition(getPosition().add(v));
 		addEntity(obj);
+	}
+	
+	/**
+	 * Add a drawable object to this Room at the specified tile
+	 * @param obj
+	 * @param r The row coordinate, between 0 and R-1, inclusive
+	 * @param c The tile coordinate, between 0 and C-1, inclusive
+	 * @throws Exception 
+	 */
+	public void addEntityAt(DrawableObject obj, int r, int c){
+		if(r < 0 || r >= R || c < 0 || c >= C){
+			System.err.println("Adding " + obj + " to " + this + " at invalid coordinates: ("+r+", "+c+") when bounded by ("+R+", "+C+")");
+			return;
+		}
+		addEntityAt(obj,map[r][c].getCenter());
 	}
 	
 	public void removeEntity(int OID){

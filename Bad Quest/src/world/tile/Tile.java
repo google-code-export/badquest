@@ -57,6 +57,14 @@ public abstract class Tile {
 		return floor;
 	}
 	
+	public int getRow(){
+		return y;
+	}
+	
+	public int getCol(){
+		return x;
+	}
+	
 	public Vector getPosition(){
 		return new Vector(position);
 	}

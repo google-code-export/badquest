@@ -1,13 +1,13 @@
-package gameAI.states;
+package gameAI.actions;
 
 import util.Vector;
 import gameAI.behaviors.Behavior;
 import gameObjects.Actor;
 
-public abstract class State {
+public abstract class Action {
 	protected Behavior parent;
 	protected Actor host;
-	public State(Behavior parent){
+	public Action(Behavior parent){
 		this.parent = parent;
 		this.host = parent.getHost();
 	}
@@ -24,6 +24,6 @@ public abstract class State {
 	 * Called before update, checks conditions to determine whether the parent behavior should transition to a new State
 	 * @return
 	 */
-	public abstract State transition();
+	public abstract Action transition();
 	public abstract void update(double elapsedSeconds);
 }

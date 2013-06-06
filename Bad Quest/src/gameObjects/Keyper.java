@@ -5,13 +5,19 @@ import java.awt.Graphics2D;
 
 import gameAI.behaviors.Behavior;
 import gameAI.behaviors.KeyperClosedBehavior;
+import gameAI.behaviors.KeyperOpenBehavior;
 import gameObjects.equipment.DebugHelmet;
 import gameObjects.equipment.EquipmentModule;
+import gameObjects.equipment.HornedHelmet;
+import gameObjects.interfaces.Ambulatory;
 import graphics.Camera;
 
-public class Keyper extends Actor {
+public class Keyper extends Actor implements Ambulatory{
 	private Behavior brain;
 	private EquipmentModule head;
+	
+	private double moveSpeed = 50;
+	
 	public Keyper(){
 		super("Key-per of... what?", 8);
 		brain = new KeyperClosedBehavior(this);
@@ -20,10 +26,32 @@ public class Keyper extends Actor {
 	}
 	
 	public Keyper(String name){
-		super(name, 8);
+		super(name, 10);
 		brain = new KeyperClosedBehavior(this);
 		head = new EquipmentModule(this);
 		head.loadEquipment(new DebugHelmet(Color.gray));
+	}
+	
+	public Keyper(String name, int type){
+		super(name, 10);
+		
+		head = new EquipmentModule(this);
+		if(type == 0){
+			head.loadEquipment(new DebugHelmet(new Color(167,80,0)));
+			brain = new KeyperClosedBehavior(this);
+		}else{
+			head.loadEquipment(new HornedHelmet());
+			brain = new KeyperOpenBehavior(this);
+		}
+	}
+	
+	public Behavior getBrain(){
+		return brain;
+	}
+	
+	@Override
+	public double getMaxSpeed(){
+		return moveSpeed;
 	}
 	
 	@Override
