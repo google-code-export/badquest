@@ -20,7 +20,7 @@ public class SpringDampHelper {
 	}
 	
 	public void setVelocity(Vector v){
-		velocity.setTo(v);
+		velocity = new Vector(v);
 	}
 	
 	public Vector getVelocity(Vector base, Vector position){

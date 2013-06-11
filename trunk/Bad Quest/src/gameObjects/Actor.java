@@ -35,7 +35,7 @@ public class Actor extends DrawableObject implements Damageable{
 	public Actor(String name, int r, Vector position){
 		this.name = name;
 		radius = r;
-		this.position.setTo(position);
+		setPosition(position);
 	}
 	
 	public void setFaction(Faction f){

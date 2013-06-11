@@ -6,7 +6,7 @@ public class Vector {
 	 */
 	public static final Vector ZERO = new Vector(0,0);
 	
-	public double x,y;
+	public final double x,y;
 	
 	//Constructors
 	/**
@@ -14,7 +14,8 @@ public class Vector {
 	 * @param v
 	 */
 	public Vector(Vector v){
-		setTo(v);
+		x = v.x;
+		y = v.y;
 	}
 	/**
 	 * Returns a Vector with the given dimensions.
@@ -34,36 +35,6 @@ public class Vector {
 		y = Math.sin(angle);
 	}
 	
-	//Static methods
-	/**
-	 * Add vector b to vector a, store in a
-	 * @param a
-	 * @param b
-	 */
-	public static void add(Vector a, Vector b){
-		a.x = a.x+b.x;
-		a.y = a.y+b.y;
-	}
-	
-	/**
-	 * Subtract vector b from vector a, store in a
-	 * @param a
-	 * @param b
-	 */
-	public static void sub(Vector a, Vector b){
-		a.x = a.x-b.x;
-		a.y = a.y-b.y;
-	}
-	
-	//Object stuff
-	/**
-	 * Sets this vector's elements equivalent to those in v.
-	 * @param v
-	 */
-	public void setTo(Vector v){
-		x = v.x;
-		y = v.y;
-	}
 	/**
 	 * Sorts by x, then by y. If either coordinate is within 1e-9 of its counterpart in p, the coordinate is deemed identical.
 	 * @param p

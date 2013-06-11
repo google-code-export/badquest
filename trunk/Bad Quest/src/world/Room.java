@@ -261,11 +261,22 @@ public class Room implements Comparable<Room>{
 		layer = d;
 	}
 	
+	public ArrayDeque<Node> getAllNodesInTileRadius(Vector p, double r){
+		ArrayDeque<Node> set = new ArrayDeque<Node>();
+		for(Tile[] ti:map)
+			for(Tile t:ti)
+				if(!t.obstructed() && t.hasFloor() && t.getCenter().dis2(p) < r*r*Tile.SIZE*Tile.SIZE)
+					set.add(t.getNode());
+		if(set.isEmpty())
+			set.add(getNearestNode(p));
+		return set;
+	}
+	
 	public ArrayDeque<Node> getNodesInTileRadius(Vector p, double r){
 		ArrayDeque<Node> set = new ArrayDeque<Node>();
 		for(Tile[] ti:map)
 			for(Tile t:ti)
-				if(!t.obstructed() && t.hasFloor() && t.getCenter().dis2(p) < r*Tile.SIZE*Tile.SIZE && isPathClear(t.getCenter(), p))
+				if(!t.obstructed() && t.hasFloor() && t.getCenter().dis2(p) < r*r*Tile.SIZE*Tile.SIZE && isPathClear(t.getCenter(), p))
 					set.add(t.getNode());
 		if(set.isEmpty())
 			set.add(getNearestNode(p));
@@ -276,7 +287,7 @@ public class Room implements Comparable<Room>{
 		ArrayDeque<Node> set = new ArrayDeque<Node>();
 		for(Tile[] ti:map)
 			for(Tile t:ti)
-				if(!t.obstructed() && t.hasFloor() && t.getCenter().dis2(p) < exteriorRadius*Tile.SIZE*Tile.SIZE && t.getCenter().dis2(p) > interiorRadius*Tile.SIZE*Tile.SIZE && isPathClear(t.getCenter(), p))
+				if(!t.obstructed() && t.hasFloor() && t.getCenter().dis2(p) < exteriorRadius*exteriorRadius*Tile.SIZE*Tile.SIZE && t.getCenter().dis2(p) > interiorRadius*interiorRadius*Tile.SIZE*Tile.SIZE && isPathClear(t.getCenter(), p))
 					set.add(t.getNode());
 		if(set.isEmpty())
 			set.add(getNearestNode(p));
@@ -478,20 +489,20 @@ public class Room implements Comparable<Room>{
 			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++)
 				map[i][j].drawBody(g, elapsedSeconds, cam);
 		
-//		g.setColor(Color.cyan);
-//		for(int i = Math.max(top,0); i <= Math.min(bot,R-1); i++)
-//			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++){
-//				Node node = map[i][j].getNode();
-//				for(Node x:nodeGraph[node.n])
-//					g.drawLine((int)cam.xTranslatePosition(node.getPosition().x), (int)cam.yTranslatePosition(node.getPosition().y), (int)cam.xTranslatePosition((x.getPosition().x+node.getPosition().x)/2), (int)cam.yTranslatePosition((x.getPosition().y+node.getPosition().y)/2));
-//			}
-//		
-//		g.setColor(Color.cyan.darker());
-//		for(int i = Math.max(top,0); i <= Math.min(bot,R-1); i++)
-//			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++){
-//				Node node = map[i][j].getNode();
-//				g.fillRect((int)cam.xTranslatePosition(node.getPosition().x)-5, (int)cam.yTranslatePosition(node.getPosition().y)-5, 10, 10);
-//			}
+		g.setColor(Color.cyan);
+		for(int i = Math.max(top,0); i <= Math.min(bot,R-1); i++)
+			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++){
+				Node node = map[i][j].getNode();
+				for(Node x:nodeGraph[node.n])
+					g.drawLine((int)cam.xTranslatePosition(node.getPosition().x), (int)cam.yTranslatePosition(node.getPosition().y), (int)cam.xTranslatePosition((x.getPosition().x+node.getPosition().x)/2), (int)cam.yTranslatePosition((x.getPosition().y+node.getPosition().y)/2));
+			}
+		
+		g.setColor(Color.cyan.darker());
+		for(int i = Math.max(top,0); i <= Math.min(bot,R-1); i++)
+			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++){
+				Node node = map[i][j].getNode();
+				g.fillRect((int)cam.xTranslatePosition(node.getPosition().x)-5, (int)cam.yTranslatePosition(node.getPosition().y)-5, 10, 10);
+			}
 		
 		synchronized(entityMap){
 			for(Integer e:entityMap.keySet())

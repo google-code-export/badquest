@@ -42,7 +42,7 @@ public class Camera {
 	 * @param pos
 	 */
 	public Camera(Vector pos){
-		position.setTo(pos);
+		position = new Vector(pos);
 		scale = DEFAULT_SCALE;
 	}
 	
@@ -52,7 +52,7 @@ public class Camera {
 	 * @param scale
 	 */
 	public Camera(Vector pos, double scale){
-		position.setTo(pos);
+		position = new Vector(pos);
 		this.scale = scale;
 	}
 	
@@ -60,8 +60,8 @@ public class Camera {
 		return position;
 	}
 	
-	public void setPosition(Vector v){
-		position.setTo(v);
+	public void setPosition(Vector pos){
+		position = new Vector(pos);
 	}
 	
 	public void follow(DrawableObject follow){
@@ -175,7 +175,7 @@ public class Camera {
 		if(follow != null){
 			velocity = spring.getVelocity(follow.getPosition(), position);
 		}else{
-			Vector.add(velocity, velocity.scale(-dragPerSecond*elapsedSeconds));
+			velocity = velocity.add(velocity.scale(-dragPerSecond*elapsedSeconds));
 		}
 		
 		Vector shakeOffset = new Vector(0,0);

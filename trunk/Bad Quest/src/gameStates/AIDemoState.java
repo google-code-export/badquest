@@ -1,5 +1,7 @@
 package gameStates;
 
+import gameAI.behaviors.KeyperClosedBehavior;
+import gameAI.behaviors.KeyperOpenBehavior;
 import gameObjects.Door;
 import gameObjects.Keyper;
 import gameObjects.Player;
@@ -98,8 +100,8 @@ public class AIDemoState extends State{
 		room.drawAll(g, elapsedSeconds, cam);
 		cam.draw(g, elapsedSeconds);
 		g.setColor(Color.white);
-		g.drawString(String.format("%s: %s",open,open.getBrain().getCurrentAction().getClass().getSimpleName()), GameClient.frameWidth/2-40, GameClient.frameHeight/2+160);
-		g.drawString(String.format("%s: %s",closed,closed.getBrain().getCurrentAction().getClass().getSimpleName()), GameClient.frameWidth/2-40, GameClient.frameHeight/2+180);
+		g.drawString(String.format("%s: %s %s",open,open.getBrain().getCurrentAction().getClass().getSimpleName(),((KeyperOpenBehavior)open.getBrain()).target), GameClient.frameWidth/2-40, GameClient.frameHeight/2+160);
+		g.drawString(String.format("%s: %s %s",closed,closed.getBrain().getCurrentAction().getClass().getSimpleName(),((KeyperClosedBehavior)closed.getBrain()).target), GameClient.frameWidth/2-40, GameClient.frameHeight/2+180);
 	}
 	
 	@Override

@@ -13,12 +13,12 @@ import gameObjects.Door;
 import gameObjects.DrawableObject;
 import gameObjects.Keyper;
 
-public class KeyperClosedBehavior extends Behavior {
+public class KeyperClosedBehavior extends Behavior{
 	Keyper host;
 	double visionRadius = 80;
 	double fov = Math.toRadians(135);
 	
-	Door target;
+	public Door target;
 	
 	public KeyperClosedBehavior(Keyper host){
 		super(host);
@@ -26,7 +26,7 @@ public class KeyperClosedBehavior extends Behavior {
 	}
 	
 	@Override
-	protected void init() {
+	protected void init(){
 		setCurrentAction(new Wander(this));
 	}
 	
@@ -57,15 +57,20 @@ public class KeyperClosedBehavior extends Behavior {
 			if(target != null)
 				setCurrentAction(new MoveTo(this, target.getPosition()));
 		}else if(currentAction instanceof Idle){
-			if(target != null && target.getPosition().dis2(getPosition()) > 2*Tile.SIZE*Tile.SIZE){
+			if(target == null || !target.isOpen()){
+				target = null;
+				if(!((Idle)currentAction).hasNext())
+					setCurrentAction(new Wander(this));
+			}else if(target != null && target.getPosition().dis2(getPosition()) > 2*Tile.SIZE*Tile.SIZE){
 				setCurrentAction(new MoveTo(this, target.getPosition()));
-			}else if(target != null && !target.isOpen()){
-				setCurrentAction(new Wander(this));
 			}else if(target != null){
 				setCurrentAction(new Interact(this, target));
 			}
 		}else if(currentAction instanceof Interact){
-			if(target.getPosition().dis2(getPosition()) > 2.5*Tile.SIZE*Tile.SIZE)
+			if(!target.isOpen()){
+				target = null;
+				setCurrentAction(new Wander(this));
+			}else if(target.getPosition().dis2(getPosition()) > 2.5*Tile.SIZE*Tile.SIZE)
 				setCurrentAction(new MoveTo(this, target.getPosition()));
 		}
 	}

@@ -23,7 +23,7 @@ public class Interact extends Action{
 
 	@Override
 	public void update(double elapsedSeconds){
-		host.setAngle(((DrawableObject)target).getPosition().sub(parent.getPosition()).ang());
+		host.setLookAt(((DrawableObject)target).getPosition());
 		wait.update(elapsedSeconds);
 		if(wait.getTimeSpentIdle() > 1.5){
 			done = true;
