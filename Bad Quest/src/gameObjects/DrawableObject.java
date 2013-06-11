@@ -72,21 +72,21 @@ public abstract class DrawableObject {
 	
 	//Sets
 	public void setPosition(Vector v){
-		position.setTo(v);
+		position = new Vector(v);
 	}
 	public void setInternalVelocity(Vector v){
 		if(!moveable){
 			System.err.println("Moving an immovable object!");
 			return;
 		}
-		internalVelocity.setTo(v);
+		internalVelocity = new Vector(v);
 	}
 	public void setExternalVelocity(Vector v){
 		if(!moveable){
 			System.err.println("Moving an immovable object!");
 			return;
 		}
-		externalVelocity.setTo(v);
+		externalVelocity = new Vector(v);
 	}
 	public void setRadius(double radius){
 		this.radius = radius;
@@ -108,7 +108,7 @@ public abstract class DrawableObject {
 	}
 	
 	public void applyExternalVelocity(Vector vel){
-		Vector.add(externalVelocity, vel);
+		externalVelocity = externalVelocity.add(vel);
 	}
 	
 	public void stopMoving(){
@@ -242,7 +242,7 @@ public abstract class DrawableObject {
 		if(solid && currentRoom != null)
 			currentRoom.collideWithSolids(this, elapsedSeconds);
 		
-		Vector.add(position, getVelocity().scale(elapsedSeconds));
+		position = position.add(getVelocity().scale(elapsedSeconds));
 	}
 	public abstract void update(double elapsedSeconds);
 	public abstract void drawBody(Graphics2D g, double elapsedSeconds, Camera cam);

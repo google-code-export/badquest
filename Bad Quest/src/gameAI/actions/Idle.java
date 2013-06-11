@@ -8,6 +8,7 @@ public class Idle extends Action{
 	private double timeSpentIdle = 0, timeToWait = -1;
 	public Idle(Behavior parent){
 		super(parent);
+		host.setInternalVelocity(Vector.ZERO);
 	}
 	
 	/**
@@ -20,6 +21,10 @@ public class Idle extends Action{
 		super(parent);
 		timeToWait = waitTime;
 		this.next = next;
+	}
+	
+	public boolean hasNext(){
+		return next != null;
 	}
 	
 	public double getTimeSpentIdle(){

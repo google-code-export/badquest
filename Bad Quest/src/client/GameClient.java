@@ -18,6 +18,7 @@ public class GameClient {
 	
 	final long updateCapNanos = (long)(1e9/60);
 	final float nanoSecondsPerSecond = 1e9f;
+	final double timeScale = 1;
 	
 	public final static int frameWidth = 1280;
 	public final static int frameHeight = 720;
@@ -109,7 +110,7 @@ public class GameClient {
 			 prevUpdateTimeNano = currTimeNano;
 			 
 			 //Update here
-			 GameStateManager.update(elapsedTime);
+			 GameStateManager.update(elapsedTime*timeScale);
 			 
 		     // Render single frame
 		     do {
@@ -125,7 +126,7 @@ public class GameClient {
 		             graphics.clearRect(0, 0, gameFrame.getWidth(), gameFrame.getHeight());
 		             
 		             
-		             GameStateManager.draw(graphics, elapsedTime);
+		             GameStateManager.draw(graphics, elapsedTime*timeScale);
 		             
 		             // Dispose the graphics
 		             graphics.dispose();

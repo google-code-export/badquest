@@ -14,6 +14,72 @@ public class Pathfinding {
 		return cur.getCurrentRoom().isPathClear(cur.getPosition(), target, cur.getRadius());
 	}
 	
+	public static ArrayDeque<Node> routeTo(Vector c, ArrayDeque<Node> startList, ArrayDeque<Node> endList, ArrayList<Node>[] g){
+		ArrayDeque<Node> ret = new ArrayDeque<Node>();
+		PriorityQueue<Pair> q = new PriorityQueue<Pair>();
+		
+		boolean[] end = new boolean[g.length];
+		double[] dist = new double[g.length];
+		Arrays.fill(dist, 1e17);
+		Node[] prev = new Node[g.length];
+		
+		Vector avg = Vector.ZERO;
+		for(Node e:endList){
+			avg = avg.add(e.getPosition());
+			end[e.n] = true;
+		}
+		
+		avg.scale(1./endList.size());
+		
+		for(Node s:startList){
+			double d = c.dis(s.getPosition());
+			double h = s.getPosition().dis(avg);
+			q.add(new Pair(s, d, h));
+			dist[s.n] = d+h;
+		}
+		
+		Node landed = null;
+		
+		//A*
+		while(!q.isEmpty()){
+			Pair cur = q.remove();
+			Node pos = cur.node;
+			double d = cur.d;
+			
+			if(dist[pos.n] < cur.w())
+				continue;
+			
+			if(end[pos.n]){
+				landed = pos;
+				break;
+			}
+			
+			for(Node x:g[pos.n]){
+				double nd = d + x.dis(pos);
+				double nh = x.getPosition().dis(avg);
+				if(nd + nh < dist[x.n] || (nd + nh == dist[x.n] && Math.random() > .5)){
+					dist[x.n] = nd + nh;
+					q.add(new Pair(x, nd, nh));
+					prev[x.n] = pos; 
+				}
+			}
+		}
+		
+		if(landed == null)
+			return ret;
+		
+		//Build node path
+		ret.add(landed);
+		int p = landed.n;
+		while(prev[p] != null){
+			ret.addFirst(prev[p]);
+			p = prev[p].n;
+		}
+		
+		//Return node path
+		return ret;
+	}
+	
 	public static ArrayDeque<Node> routeTo(Vector c, ArrayDeque<Node> start, Node end, ArrayList<Node>[] g){
 		ArrayDeque<Node> ret = new ArrayDeque<Node>();
 		PriorityQueue<Pair> q = new PriorityQueue<Pair>();

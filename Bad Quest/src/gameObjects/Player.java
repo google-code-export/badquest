@@ -84,16 +84,16 @@ public class Player extends Actor {
 			for(PlayerInput pid:input){
 				switch(pid){
 				case MOVE_UP:
-					Vector.add(inputVel, new Vector(0,-speed));
+					inputVel = inputVel.add(new Vector(0,-speed));
 					break;
 				case MOVE_DOWN:
-					Vector.add(inputVel, new Vector(0,speed));
+					inputVel = inputVel.add(new Vector(0,speed));
 					break;
 				case MOVE_RIGHT:
-					Vector.add(inputVel, new Vector(speed,0));
+					inputVel = inputVel.add(new Vector(speed,0));
 					break;
 				case MOVE_LEFT:
-					Vector.add(inputVel, new Vector(-speed,0));
+					inputVel = inputVel.add(new Vector(-speed,0));
 					break;
 				case JUMP:
 					break;

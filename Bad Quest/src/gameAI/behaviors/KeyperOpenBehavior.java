@@ -13,7 +13,8 @@ public class KeyperOpenBehavior extends Behavior{
 	double visionRadius = 80;
 	double fov = Math.toRadians(135);
 	
-	Door target;
+	public Door target;
+	
 	public KeyperOpenBehavior(Keyper host){
 		super(host);
 	}
@@ -22,9 +23,16 @@ public class KeyperOpenBehavior extends Behavior{
 	protected void init(){
 		setCurrentAction(new Wander(this));
 	}
-
+	
+	String prev = "";
+	
 	@Override
 	public void checkTransitions(double elapsedSeconds){
+//		if(!currentAction.getClass().getSimpleName().equals(prev)){
+//			prev = currentAction.getClass().getSimpleName();
+//			System.out.println(prev);
+//		}
+		
 		setCurrentAction(currentAction.transition());
 		
 		Room room = getRoom();
@@ -50,15 +58,20 @@ public class KeyperOpenBehavior extends Behavior{
 			if(target != null)
 				setCurrentAction(new MoveTo(this, target.getPosition()));
 		}else if(currentAction instanceof Idle){
-			if(target != null && target.getPosition().dis2(getPosition()) > 2.5*Tile.SIZE*Tile.SIZE){
+			if(target == null || target.isOpen()){
+				target = null;
+				if(!((Idle)currentAction).hasNext())
+					setCurrentAction(new Wander(this));
+			}else if(target != null && target.getPosition().dis2(getPosition()) > 2.5*Tile.SIZE*Tile.SIZE){
 				setCurrentAction(new MoveTo(this, target.getPosition()));
-			}else if(target != null && target.isOpen()){
-				setCurrentAction(new Wander(this));
 			}else if(target != null){
 				setCurrentAction(new Interact(this, target));
 			}
 		}else if(currentAction instanceof Interact){
-			if(target.getPosition().dis2(getPosition()) > 2.5*Tile.SIZE*Tile.SIZE)
+			if(target.isOpen()){
+				target = null;
+				setCurrentAction(new Wander(this));
+			}else if(target.getPosition().dis2(getPosition()) > 2.5*Tile.SIZE*Tile.SIZE)
 				setCurrentAction(new MoveTo(this, target.getPosition()));
 		}
 	}

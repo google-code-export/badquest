@@ -64,7 +64,7 @@ public class GameStateManager {
 		}
 	}
 	
-	public static void update(float elapsedSeconds)
+	public static void update(double elapsedSeconds)
 	{
 		State top;
 		
@@ -87,7 +87,7 @@ public class GameStateManager {
 		}
 	}
 	
-	public static void draw(Graphics2D g, float elapsedSeconds)
+	public static void draw(Graphics2D g, double elapsedSeconds)
 	{
 		State top;
 		

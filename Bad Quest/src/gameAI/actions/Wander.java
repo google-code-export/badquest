@@ -5,7 +5,10 @@ import gameAI.behaviors.Behavior;
 
 import java.util.ArrayList;
 
+import util.Vector;
+
 public class Wander extends Action{
+	private Vector goTo;
 	private MoveTo currentWalk;
 	private boolean done;
 	
@@ -14,11 +17,16 @@ public class Wander extends Action{
 		
 		try{
 			ArrayList<Node> potential = new ArrayList<Node>();
-			potential.addAll(parent.getRoom().getNodesInTileRing(host.getPosition(), 10, 20));		
-			currentWalk = new MoveTo(parent, potential.get((int)(Math.random()*potential.size())).getPosition());
+			potential.addAll(parent.getRoom().getNodesInTileRadius(host.getPosition(), 8));
+			goTo = potential.get((int)(Math.random()*potential.size())).getPosition();
+			currentWalk = new MoveTo(parent, goTo);
 		}catch(Exception e){
 			done = true;
 		}
+	}
+	
+	public Vector target(){
+		return goTo;
 	}
 	
 	@Override
