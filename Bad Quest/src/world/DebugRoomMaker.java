@@ -112,23 +112,27 @@ public class DebugRoomMaker {
 		  "#lllllllllllllllllll#",
 		  "#lllllllllllllllllll#",
 		  "#lllllllllllllllllll#",
-		  "#lll###x##x##x###lll#",
+		  "#lll###L##L##L###lll#",
 		  "#lll#...........#lll#",
 		  "#lll#...........#lll#",
-		  "#lllx...........xlll#",
-		  "#lll#...##x##...#lll#",
+		  "#lllL...........Llll#",
+		  "#lll#...##L##...#lll#",
 		  "#lll#...#...#...#lll#",
-		  "#lllx...x...x...xlll#",
+		  "#lllL...L...L...Llll#",
 		  "#lll#...#...#...#lll#",
-		  "#lll#...##x##...#lll#",
-		  "#lllx...........xlll#",
+		  "#lll#...##L##...#lll#",
+		  "#lllL...........Llll#",
 		  "#lll#...........#lll#",
 		  "#lll#...........#lll#",
-		  "#lll###x##x##x###lll#",
-		  "#lllllllllllllllllll#",
-		  "#lllllllllllllllllll#",
-		  "#lllllllllllllllllll#",
-		  "#####################",},
+		  "#lll###L##L##L###lll#",
+		  "#llllllllLLLllllllll#",
+		  "#llllllllLLLllllllll#",
+		  "#llllllllLLLllllllll#",
+		  "##########L##########",
+		  "        #...#        ",
+		  "        #...#        ",
+		  "        #...#        ",
+		  "        #####        "},
 		 };
 									 
 	public static Tile[][] selectPrebuilt(int s, Room caller){
@@ -174,6 +178,9 @@ public class DebugRoomMaker {
 					break;
 				case 'x':
 					map[i][j] = new Wire(i,j,caller);
+					break;
+				case 'L':
+					map[i][j] = new Wire(i,j,caller,new Lava(i,j,caller));
 					break;
 				default:
 					map[i][j] = new Void(i,j,caller);

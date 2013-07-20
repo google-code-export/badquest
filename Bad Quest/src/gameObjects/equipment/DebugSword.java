@@ -101,6 +101,27 @@ public class DebugSword extends Equipment {
 //		g.drawArc(-rad, -rad, 2*rad, 2*rad, 360-(int)Math.toDegrees(actor.getAngle()+startAngle), (int)Math.toDegrees(-angleOffset));
 //		g.drawOval(-20, -20, 40, 40);
 		
+//		{
+//			g.translate(cam.xTranslatePosition(host.getActor().getPosition().x), cam.yTranslatePosition(host.getActor().getPosition().y));
+//			g.scale(cam.scale(), cam.scale());
+//			Actor actor = host.getActor();
+//			Room room = actor.getCurrentRoom();
+//			
+//			Vector center = actor.getPosition();
+//			Vector start = center.add(new Vector(actor.getAngle() + startAngle).scaleTo(host.getRadius()+actor.getRadius()/2+10));
+//			
+//			double r = start.sub(center).mag();
+//			double startAngle = Math.toDegrees(start.sub(center).ang());
+//			double angularExtent = Math.toDegrees(angleOffset);
+//			
+////			ArrayDeque<DrawableObject> obj = room.getEntitiesIntersectingArc(center,start,angleOffset);
+//			Arc2D.Double arcShape = new Arc2D.Double(-r, -r, 2*r, 2*r, 360-startAngle, -angularExtent, Arc2D.PIE);
+//			Area area = new Area(arcShape);
+//			
+//			g.setColor(Color.red);
+//			g.draw(area);
+//		}
+		
 		g.setTransform(prev);
 		
 		g.translate(cam.xTranslatePosition(position.x), cam.yTranslatePosition(position.y));

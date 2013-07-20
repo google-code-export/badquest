@@ -16,7 +16,7 @@ public class MoveTo extends Action{
 	
 	double margin = Tile.SIZE*1.25;
 	double moveClock = .5;
-	double timeToNextMove = Math.random()*moveClock;
+	double timeToNextMove = 0;
 	double skipAhead = 4;
 	boolean canSkip = false;
 	boolean canReach = true;
@@ -41,8 +41,8 @@ public class MoveTo extends Action{
 	public void update(double elapsedSeconds){
 		timeToNextMove -= elapsedSeconds;
 		
-//		if(parent instanceof KeyperClosedBehavior)
-//		System.out.println(host + " " + waypoints + " " + host.getInternalVelocity());
+//		if(parent instanceof FollowerBehavior)
+//			System.out.println(host + " " + waypoints + " " + host.getInternalVelocity() + " " + canReach);
 		
 		if(Pathfinding.isPathClear(host, target)){
 			waypoints.clear();
@@ -52,6 +52,8 @@ public class MoveTo extends Action{
 //			waypoints = Pathfinding.routeTo(parent.getPosition(), parent.getRoom().getNodesInTileRadius(parent.getPosition(),2.013), parent.getRoom().getNearestNode(target), parent.getRoom().getNodeGraph());
 //			System.out.println(host + " " + parent.getRoom().getAllNodesInTileRadius(target,2.013));
 			waypoints = Pathfinding.routeTo(parent.getPosition(), parent.getRoom().getNodesInTileRadius(parent.getPosition(),2.013), parent.getRoom().getAllNodesInTileRadius(target,1.013), parent.getRoom().getNodeGraph());
+			while(!waypoints.isEmpty() && waypoints.peek().getPosition().dis2(parent.getPosition()) < 10)
+				waypoints.remove();
 			canReach &= !waypoints.isEmpty();
 		}
 		

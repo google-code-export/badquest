@@ -1,5 +1,6 @@
 package gameObjects;
 
+import gameObjects.interfaces.Ambulatory;
 import gameObjects.interfaces.Damageable;
 import graphics.Camera;
 
@@ -9,7 +10,7 @@ import java.awt.geom.AffineTransform;
 
 import util.Vector;
 
-public class Actor extends DrawableObject implements Damageable{
+public class Actor extends DrawableObject implements Damageable, Ambulatory{
 	protected Color color = Color.ORANGE;
 	
 	private Vector lookAt = null;
@@ -83,6 +84,11 @@ public class Actor extends DrawableObject implements Damageable{
 	@Override
 	public boolean isDamageable(Faction f) {
 		return f == Faction.NEUTRAL || f != faction;
+	}
+	
+	@Override
+	public double getMaxSpeed(){
+		return 75;
 	}
 
 	@Override

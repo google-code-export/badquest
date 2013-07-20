@@ -1,8 +1,8 @@
 package gameAI.actions;
 
-import util.Vector;
 import gameAI.behaviors.Behavior;
 import gameObjects.Actor;
+import util.Vector;
 
 public abstract class Action {
 	protected Behavior parent;

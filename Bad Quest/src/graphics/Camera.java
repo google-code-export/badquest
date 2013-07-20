@@ -1,13 +1,14 @@
 package graphics;
 
+import gameObjects.Actor;
+import gameObjects.DrawableObject;
+import gameObjects.ObjectManager;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 
-import gameObjects.Actor;
-import gameObjects.DrawableObject;
-import gameObjects.ObjectManager;
 import util.SpringDampHelper;
 import util.Vector;
 import client.GameClient;

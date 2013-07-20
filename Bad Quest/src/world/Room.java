@@ -3,7 +3,9 @@ package world;
 import gameAI.Node;
 import gameObjects.Actor;
 import gameObjects.DrawableObject;
+import gameObjects.Portal;
 import graphics.Camera;
+import graphics.DimmerGraphics;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -254,6 +256,11 @@ public class Room implements Comparable<Room>{
 		for(int i = 0; i < R; i++)
 			for(int j = 0; j < C; j++)
 				map[i][j].updatePosition(i,j);
+//		synchronized(entityMap){
+//			for(Integer x:entityMap.keySet()){
+//				DrawableObject d = entityMap.get(x);
+//			}
+//		}
 		buildNodeGraph();
 	}
 	
@@ -332,7 +339,7 @@ public class Room implements Comparable<Room>{
 			System.err.println("Adding " + obj + " to " + this + " at invalid coordinates: ("+r+", "+c+") when bounded by ("+R+", "+C+")");
 			return;
 		}
-		addEntityAt(obj,map[r][c].getCenter());
+		addEntityAt(obj,map[r][c].getCenter().sub(getPosition()));
 	}
 	
 	public void removeEntity(int OID){
@@ -377,6 +384,21 @@ public class Room implements Comparable<Room>{
 	}
 	
 	/**
+	 * Retrieve a list of entities intersecting the specified circle
+	 * @param p the center of the circle
+	 * @param r the radius of the circle
+	 */
+	public ArrayDeque<DrawableObject> getEntitiesIntersectingCircle(Vector p, double r){
+		ArrayDeque<DrawableObject> ret = new ArrayDeque<DrawableObject>();
+		synchronized(entityMap){
+			for(Integer x:entityMap.keySet())
+				if(entityMap.get(x).getPosition().dis2(p) <= Math.pow(entityMap.get(x).getRadius() + r, 2))
+					ret.add(entityMap.get(x));
+		}
+		return ret;
+	}
+	
+	/**
 	 * Retrieve a list of entities intersecting or contained within a circular arc
 	 * @param center The center point of the arc
 	 * @param start The starting point of the arc (the arc will be treated as having radius |start-center|)
@@ -394,19 +416,49 @@ public class Room implements Comparable<Room>{
 		Arc2D.Double arcShape = new Arc2D.Double(center.x-r, center.y-r, 2*r, 2*r, 360-startAngle, -angularExtent, Arc2D.PIE);
 		Area area = new Area(arcShape);
 		
-		synchronized(entityMap){
-			for(Integer x:entityMap.keySet()){
-				DrawableObject obj = entityMap.get(x);
-
-				Vector pos = obj.getPosition();
-				double R = obj.getRadius();
-				Ellipse2D.Double test = new Ellipse2D.Double(pos.x-R, pos.y-R, 2*R, 2*R);
-				Area testArea = new Area(test);
-				
-				testArea.intersect(area);
-				if(!testArea.isEmpty())
-					ret.add(obj);
-			}
+		ArrayDeque<DrawableObject> candidates = getEntitiesIntersectingCircle(center, r);
+		for(DrawableObject obj : candidates){
+			Vector pos = obj.getPosition();
+			double R = obj.getRadius();
+			Ellipse2D.Double test = new Ellipse2D.Double(pos.x-R, pos.y-R, 2*R, 2*R);
+			Area testArea = new Area(test);
+			
+			testArea.intersect(area);
+			if(!testArea.isEmpty())
+				ret.add(obj);
+		}
+		
+		return ret;
+	}
+	
+	/**
+	 * Retrieve a list of entities intersecting or contained within a circular arc
+	 * @param center The center point of the arc
+	 * @param start The starting point of the arc (the arc will be treated as having radius |start-center|)
+	 * @param a The angular extension of the arc in the counter-clockwise direction
+	 * @return
+	 */
+	public ArrayDeque<DrawableObject> getVisibleEntitiesIntersectingArc(Vector center, Vector start, double a){
+		ArrayDeque<DrawableObject> ret = new ArrayDeque<DrawableObject>();
+		
+		double r = start.sub(center).mag();
+		
+		double startAngle = Math.toDegrees(start.sub(center).ang());
+		double angularExtent = Math.toDegrees(a);
+		
+		Arc2D.Double arcShape = new Arc2D.Double(center.x-r, center.y-r, 2*r, 2*r, 360-startAngle, -angularExtent, Arc2D.PIE);
+		Area area = new Area(arcShape);
+		
+		ArrayDeque<DrawableObject> candidates = getEntitiesIntersectingCircle(center, r);
+		for(DrawableObject obj : candidates){
+			Vector pos = obj.getPosition();
+			double R = obj.getRadius();
+			Ellipse2D.Double test = new Ellipse2D.Double(pos.x-R, pos.y-R, 2*R, 2*R);
+			Area testArea = new Area(test);
+			
+			testArea.intersect(area);
+			if(!testArea.isEmpty() && isPathClear(center,pos))
+				ret.add(obj);
 		}
 		
 		return ret;
@@ -469,13 +521,37 @@ public class Room implements Comparable<Room>{
 			for(Tile t:row)
 				t.update(elapsedSeconds);
 		
+		Portal transfer = null;
+		
 		synchronized(entityMap){			
-			for(Integer oid:entityMap.keySet())
+			for(Integer oid:entityMap.keySet()){
 				entityMap.get(oid).update(elapsedSeconds);
+				if(entityMap.get(oid) instanceof Portal){
+					Portal p = (Portal)entityMap.get(oid);
+					if(transfer == null && p.canTransfer())
+						transfer = p;
+				}
+			}
 		}
+		
+		if(transfer != null)
+			transfer.transfer();
 	}
 	
 	public void drawAll(Graphics2D g, double elapsedSeconds, Camera cam){
+		
+		double L = getDepth(RoomManager.getCurrentRoom().getLayer());
+		
+		if(L < 0)
+			return;
+		
+		if(getRID() != RoomManager.getCurrentRoom().getRID())
+			g = new DimmerGraphics(g,1/(2+L*L));
+		
+		double prevScale = cam.getScale();
+		cam.setScale(1/(1+L*.75) * cam.getScale());
+//		cam = new Camera(cam.getPosition(), 1/(1 + L*.75)*cam.scale());
+		
 		//Get bounding box
 		double[] bound = cam.getBoundingBox();
 		//Compute draw bounds
@@ -489,25 +565,27 @@ public class Room implements Comparable<Room>{
 			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++)
 				map[i][j].drawBody(g, elapsedSeconds, cam);
 		
-		g.setColor(Color.cyan);
-		for(int i = Math.max(top,0); i <= Math.min(bot,R-1); i++)
-			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++){
-				Node node = map[i][j].getNode();
-				for(Node x:nodeGraph[node.n])
-					g.drawLine((int)cam.xTranslatePosition(node.getPosition().x), (int)cam.yTranslatePosition(node.getPosition().y), (int)cam.xTranslatePosition((x.getPosition().x+node.getPosition().x)/2), (int)cam.yTranslatePosition((x.getPosition().y+node.getPosition().y)/2));
-			}
-		
-		g.setColor(Color.cyan.darker());
-		for(int i = Math.max(top,0); i <= Math.min(bot,R-1); i++)
-			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++){
-				Node node = map[i][j].getNode();
-				g.fillRect((int)cam.xTranslatePosition(node.getPosition().x)-5, (int)cam.yTranslatePosition(node.getPosition().y)-5, 10, 10);
-			}
+//		g.setColor(Color.cyan);
+//		for(int i = Math.max(top,0); i <= Math.min(bot,R-1); i++)
+//			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++){
+//				Node node = map[i][j].getNode();
+//				for(Node x:nodeGraph[node.n])
+//					g.drawLine((int)cam.xTranslatePosition(node.getPosition().x), (int)cam.yTranslatePosition(node.getPosition().y), (int)cam.xTranslatePosition((x.getPosition().x+node.getPosition().x)/2), (int)cam.yTranslatePosition((x.getPosition().y+node.getPosition().y)/2));
+//			}
+//		
+//		g.setColor(Color.cyan.darker());
+//		for(int i = Math.max(top,0); i <= Math.min(bot,R-1); i++)
+//			for(int j = Math.max(left,0); j <= Math.min(right,C-1); j++){
+//				Node node = map[i][j].getNode();
+//				g.fillRect((int)cam.xTranslatePosition(node.getPosition().x)-5, (int)cam.yTranslatePosition(node.getPosition().y)-5, 10, 10);
+//			}
 		
 		synchronized(entityMap){
 			for(Integer e:entityMap.keySet())
 				entityMap.get(e).drawBody(g, elapsedSeconds, cam);
 		}
+		
+		cam.setScale(prevScale);
 	}
 	
 	public int compareTo(Room r){

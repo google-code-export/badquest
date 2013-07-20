@@ -2,14 +2,14 @@ package gameStates;
 
 import gameObjects.Actor;
 import gameObjects.DebugBall;
-import gameObjects.DebugEnemy;
+import gameObjects.DebugEnemy_v1;
 import gameObjects.Door;
 import gameObjects.DrawableObject;
+import gameObjects.Follower;
 import gameObjects.Keyper;
 import gameObjects.Player;
 import gameObjects.Portal;
 import graphics.Camera;
-import graphics.DimmerGraphics;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -26,8 +26,6 @@ import util.Vector;
 import world.Room;
 import world.RoomManager;
 import world.tile.Tile;
-import world.tile.Wall;
-import world.tile.Wire;
 
 public class DebugState extends State{
 	Room room = new Room(0,new Vector(400,0),0);
@@ -81,8 +79,8 @@ public class DebugState extends State{
 		room.addEntity(new Door());
 		
 		player = new Player("Rawnblade", 10, new Vector(200,200));
-		DebugEnemy follower = new DebugEnemy(10);
-		DebugEnemy forefollower = new DebugEnemy(10);
+		Follower follower = new Follower();
+		Follower forefollower = new Follower();
 		actors = new Actor[]{player, 
 							 new Player("Rusty Stranglechain", 10, new Vector(120,100), new Color(.55f, .3f, .02f)),
 							 new Actor("Gunther Boneguzzler", 10, new Vector(40,100)),
@@ -99,15 +97,15 @@ public class DebugState extends State{
 		for(Actor a:actors)
 			room.addEntityAt(a,new Vector((x=x+Tile.SIZE)-Tile.SIZE, 4*Tile.SIZE));
 		
-		follower.setFollow(player);
-		forefollower.setFollow(player);
+//		follower.setFollow(player);
+//		forefollower.setFollow(player);
 		fore.addEntityAt(forefollower, new Vector(Tile.SIZE,Tile.SIZE));
 		
 		DebugBall rock = new DebugBall(new Vector(651,350),13);
 		
-		DebugEnemy[] masstest = new DebugEnemy[10];
+		DebugEnemy_v1[] masstest = new DebugEnemy_v1[10];
 		for(int i = 0; i < 10; i++){
-			masstest[i] = new DebugEnemy(10);
+			masstest[i] = new DebugEnemy_v1(10);
 //			masstest[i].setFollow(i==0?player:masstest[i-1]);
 			masstest[i].setFollow(rock);
 			room.addEntityAt(masstest[i], new Vector(Tile.SIZE*20 + (i+20)*Tile.SIZE, Tile.SIZE*9));
@@ -133,24 +131,13 @@ public class DebugState extends State{
 	//State stuff
 	//**************
 	
-	static double TOGGLE = 0;
 	protected void update(double elapsedSeconds){
+		room = RoomManager.getCurrentRoom();
+		
 		if(keys.get(KeyEvent.VK_Q))
 			scale = scale*9/10.;
 		if(keys.get(KeyEvent.VK_E))
 			scale = scale*10/9.;
-		
-		TOGGLE += elapsedSeconds;
-		if(TOGGLE >= 1){
-			room.updateTile(0, 1, new Wire(0,1,room));
-			room.updateTile(6, 7, new Wire(6,7,room));
-			room.updateTile(7, 7, new Wire(7,7,room));
-			TOGGLE = 0;
-		}else if(TOGGLE >= .5){
-			room.updateTile(0, 1, new Wall(0,1,room));
-			room.updateTile(6, 7, new Wall(6,7,room));
-			room.updateTile(7, 7, new Wall(7,7,room));
-		}
 		
 //		for(Actor a:actors)
 //			a.setInternalVelocity(new Vector(0,0));
@@ -177,38 +164,6 @@ public class DebugState extends State{
 		
 		room.updateAll(elapsedSeconds);
 		
-		Portal transfer = null;
-		Actor move = null;
-		synchronized(drawList){
-			for(Integer oid:drawList.keySet()){
-				if(drawList.get(oid) instanceof Player)
-				for(Integer pid:drawList.keySet()){
-					if(drawList.get(pid) instanceof Portal){
-						Portal p = (Portal)drawList.get(pid);
-						Player a = (Player)drawList.get(oid);
-						if(p.getState() == Portal.State.ACTIVE && p.getPosition().dis2(a.getPosition()) <= p.getRadius()*p.getRadius()){
-							transfer = p;
-							move = a;
-						}
-					}
-				}
-			}
-		}
-		
-		if(transfer != null){
-			Room next = transfer.getExitRoom();
-			Vector pos = transfer.getExitPosition();
-			
-			move.setPosition(next.getPosition().add(pos));
-			
-			ArrayDeque<DrawableObject> nearby = next.getEntitiesWithinCircle(move.getPosition(), move.getRadius()+transfer.getRadius());
-			for(DrawableObject d:nearby)
-				if(d instanceof Portal && ((Portal) d).getState() == Portal.State.ACTIVE)
-					((Portal) d).setState(Portal.State.INACTIVE);
-			
-			changeActiveRoom(next);
-		}
-		
 		room.clean(); //Delete all dead objects
 		
 		cam.setScale(scale);
@@ -219,26 +174,29 @@ public class DebugState extends State{
 		AffineTransform prev = g.getTransform();
 		Stroke pStroke = g.getStroke();
 		
-		DimmerGraphics backgroundGraphics = new DimmerGraphics(g,1);
+		for(Room r:roomList)
+			r.drawAll(g,elapsedSeconds,cam);
 		
-		//Draw non-focus rooms
-		for(Room r:roomList){
-			double L = r.getDepth(room.getLayer());
-			
-			if(L < 0)
-				break;
-			if(r.getRID() == room.getRID())
-				continue;
-			
-			backgroundGraphics.setLevel(1/(2+L*L));
-			Camera backCam = new Camera(cam.getPosition(), 1/(1 + L*layerSpacing)*cam.scale());
-			r.drawAll(backgroundGraphics, elapsedSeconds, backCam);
-		}
-		
-		backgroundGraphics.dispose();
+//		DimmerGraphics backgroundGraphics = new DimmerGraphics(g,1);
+//		
+//		//Draw non-focus rooms
+//		for(Room r:roomList){
+//			double L = r.getDepth(room.getLayer());
+//			
+//			if(L < 0)
+//				break;
+//			if(r.getRID() == room.getRID())
+//				continue;
+//			
+//			backgroundGraphics.setLevel(1/(2+L*L));
+//			Camera backCam = new Camera(cam.getPosition(), 1/(1 + L*layerSpacing)*cam.scale());
+//			r.drawAll(backgroundGraphics, elapsedSeconds, backCam);
+//		}
+//		
+//		backgroundGraphics.dispose();
 		
 		//Draw current room, above all else
-		room.drawAll(g, elapsedSeconds, cam);
+//		room.drawAll(g, elapsedSeconds, cam);
 		
 		//Draw camera information
 		cam.draw(g, elapsedSeconds);

@@ -1,10 +1,10 @@
 package gameAI.behaviors;
 
-import util.Vector;
-import world.Room;
 import gameAI.actions.Action;
 import gameAI.actions.Idle;
 import gameObjects.Actor;
+import util.Vector;
+import world.Room;
 
 public abstract class Behavior{
 	protected Actor host;

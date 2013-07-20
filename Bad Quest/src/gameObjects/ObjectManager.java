@@ -16,7 +16,7 @@ public class ObjectManager {
 		return map.size();
 	}
 	
-	public static int register(DrawableObject obj, int ID){
+	public static int registerWithID(DrawableObject obj, int ID){
 		synchronized(map){
 			if(map.containsKey(ID)){
 				System.err.println("Error registering " + obj + ", OID currently in use.");
@@ -25,6 +25,15 @@ public class ObjectManager {
 			map.put(ID, obj);
 		}
 		return ID;
+	}
+	
+	public static int registerWithOffset(DrawableObject obj, int offset){
+		synchronized(map){
+			while(map.containsKey(offset))
+				offset++;
+			map.put(offset, obj);
+		}
+		return offset;
 	}
 	
 	public static int register(DrawableObject obj){

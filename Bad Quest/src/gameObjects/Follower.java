@@ -4,12 +4,9 @@ import gameAI.Node;
 import gameAI.actions.MoveTo;
 import gameAI.actions.Wander;
 import gameAI.behaviors.Behavior;
-import gameAI.behaviors.KeyperClosedBehavior;
-import gameAI.behaviors.KeyperOpenBehavior;
-import gameObjects.equipment.DebugHelmet;
+import gameAI.behaviors.FollowerBehavior;
 import gameObjects.equipment.EquipmentModule;
 import gameObjects.equipment.HornedHelmet;
-import gameObjects.interfaces.Ambulatory;
 import graphics.Camera;
 
 import java.awt.Color;
@@ -19,37 +16,17 @@ import java.util.ArrayDeque;
 
 import util.Vector;
 
-public class Keyper extends Actor implements Ambulatory{
-	private Behavior brain;
-	private EquipmentModule head;
+public class Follower extends Actor{
+	EquipmentModule helmet;
+	FollowerBehavior brain;
 	
-	private double moveSpeed = 50;
-	
-	public Keyper(){
-		super("Key-per of... what?", 8);
-		brain = new KeyperClosedBehavior(this);
-		head = new EquipmentModule(this);
-		head.loadEquipment(new DebugHelmet(Color.gray));
-	}
-	
-	public Keyper(String name){
-		super(name, 10);
-		brain = new KeyperClosedBehavior(this);
-		head = new EquipmentModule(this);
-		head.loadEquipment(new DebugHelmet(Color.gray));
-	}
-	
-	public Keyper(String name, int type){
-		super(name, 10);
-		
-		head = new EquipmentModule(this);
-		if(type == 0){
-			head.loadEquipment(new DebugHelmet(new Color(167,80,0)));
-			brain = new KeyperClosedBehavior(this);
-		}else{
-			head.loadEquipment(new HornedHelmet());
-			brain = new KeyperOpenBehavior(this);
-		}
+	double moveSpeed = 75;
+
+	public Follower(){
+		super("Follower", 10);
+		brain = new FollowerBehavior(this);
+		helmet = new EquipmentModule(this);
+		helmet.loadEquipment(new HornedHelmet());
 	}
 	
 	public Behavior getBrain(){
@@ -57,8 +34,15 @@ public class Keyper extends Actor implements Ambulatory{
 	}
 	
 	@Override
-	public double getMaxSpeed(){
-		return moveSpeed;
+	public void kill() {
+		helmet.loadEquipment(null);
+		super.kill();
+	}
+	
+	@Override
+	public void setPosition(Vector v){
+		super.setPosition(v);
+		helmet.move(0);
 	}
 	
 	@Override
@@ -66,21 +50,20 @@ public class Keyper extends Actor implements Ambulatory{
 		if(brain != null)
 			brain.update(elapsedSeconds);
 		super.update(elapsedSeconds);
-		head.update(elapsedSeconds);
+		helmet.update(elapsedSeconds);
 	}
 	
 	@Override
-	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam){
-		super.drawBody(g, elapsedSeconds, cam);
-		head.drawBody(g, elapsedSeconds, cam);
-		
+	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam) {
 		AffineTransform prev = g.getTransform();
+		
+		super.drawBody(g, elapsedSeconds, cam);
 		
 		AffineTransform next = new AffineTransform();
 		next.translate(cam.xTranslatePosition(position.x), cam.yTranslatePosition(position.y));
 		next.scale(cam.xScale(), cam.yScale());
-		
 		g.setTransform(next);
+
 		g.setColor(Color.green);
 		if(brain.getCurrentAction() instanceof MoveTo){
 			MoveTo action = (MoveTo)(brain.getCurrentAction());
@@ -101,6 +84,13 @@ public class Keyper extends Actor implements Ambulatory{
 			}
 		}
 		
+		g.setColor(Color.orange);
+		g.fillRect(-(int)radius, -(int)(radius+4), (int)(2*radius*brain.getInterestLevel()), 3);
+		g.setColor(Color.black);
+		g.drawRect(-(int)radius, -(int)(radius+4), (int)(2*radius), 3);
+		
 		g.setTransform(prev);
+		
+		helmet.drawBody(g, elapsedSeconds, cam);
 	}
 }

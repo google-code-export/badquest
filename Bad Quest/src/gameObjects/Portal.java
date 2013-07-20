@@ -6,9 +6,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayDeque;
 
 import util.Vector;
 import world.Room;
+import world.RoomManager;
 import world.tile.Tile;
 
 public class Portal extends DrawableObject {
@@ -22,6 +24,8 @@ public class Portal extends DrawableObject {
 	private int n = 6;
 	private int[] x,y;
 	private double angularVelocity = Math.PI/2;
+	
+	private Camera lastCamera = null;
 	
 	public Portal(Room owner, Vector position){
 		moveable = false;
@@ -74,11 +78,43 @@ public class Portal extends DrawableObject {
 	}
 	
 	public void linkAndSetActive(Portal p){
-		setExit(p.getOwner(), p.getPosition().sub(p.getOwner().getPosition()));
-		p.setExit(owner, getPosition().sub(owner.getPosition()));
+		setExit(p.getOwner(), p.getPosition());
+		p.setExit(owner, getPosition());
 		
 		setState(State.ACTIVE);
 		p.setState(State.ACTIVE);
+	}
+	
+	public boolean canTransfer(){
+		return state == State.ACTIVE && getPortablePlayer() != null;
+	}
+	
+	public void transfer(){
+		Player transfer = getPortablePlayer();
+		
+		if(transfer != null){
+			ArrayDeque<DrawableObject> crowd = getExitRoom().getEntitiesWithinCircle(getExitPosition(), transfer.getRadius() + getRadius());
+			for(DrawableObject d:crowd)
+				if(d instanceof Portal && ((Portal) d).getState() == Portal.State.ACTIVE)
+					((Portal) d).setState(Portal.State.INACTIVE);
+			
+			transfer.setPosition(getExitPosition());
+			RoomManager.changeRoom(transfer.getOID(), getExitRoom().getRID());
+		}
+		
+		if(lastCamera != null)
+			lastCamera.shake(10,.8);
+	}
+	
+	private Player getPortablePlayer(){
+		Player transfer = null;
+		ArrayDeque<DrawableObject> check = owner.getEntitiesWithinCircle(getPosition(), getRadius());
+		for(DrawableObject d:check)
+			if(d instanceof Player){
+				transfer = (Player)d;
+				break;
+			}
+		return transfer;
 	}
 	
 	@Override
@@ -91,6 +127,7 @@ public class Portal extends DrawableObject {
 	
 	@Override
 	public void drawBody(Graphics2D g, double elapsedSeconds, Camera cam) {
+		lastCamera = cam;
 		AffineTransform prev = g.getTransform();
 		
 		g.translate(cam.xTranslatePosition(position.x), cam.yTranslatePosition(position.y));
@@ -117,9 +154,6 @@ public class Portal extends DrawableObject {
 			g.setColor(Color.green);
 			
 		g.drawOval(-drawRadius, -drawRadius, 2*drawRadius, 2*drawRadius);
-		
-//		if(state == State.ACTIVE)
-//			g.fillOval(-drawRadius+1, -drawRadius+1, 2*drawRadius-2, 2*drawRadius-2);
 		
 		g.setTransform(prev);
 	}

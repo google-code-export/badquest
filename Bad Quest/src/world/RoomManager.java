@@ -13,11 +13,44 @@ public class RoomManager {
 	private static int RIDcounter = 1;
 	private static int curRID = -1;
 	
+	public static Room getCurrentRoom(){
+		if(getRoomFromID(curRID) == null)
+			throw new AssertionError();
+		return getRoomFromID(curRID);
+	}
+	
 	public static Room setRoom(int ID){
 		if(getRoomFromID(ID) == null)
 			throw new AssertionError();
 		curRID = ID;
 		return getRoomFromID(curRID);
+	}
+	
+	public static Room changeRoom(int transfer, int ID){
+		if(getRoomFromID(ID) == null){
+			System.err.println("Error referencing room " + ID + ", no room found with this ID");
+			return null;
+		}else if(ID == curRID){
+			return rmap.get(ID);
+		}
+		
+		ArrayDeque<Integer> add = new ArrayDeque<Integer>();
+		if(curRID > -1){
+			TreeMap<Integer, DrawableObject> entityMap = getRoomFromID(curRID).getEntityMap();
+			synchronized(entityMap){
+				if(entityMap.containsKey(transfer))
+					add.add(transfer);
+			}
+		}
+		
+		Room next = getRoomFromID(ID);
+		for(Integer OID:add)
+			ObjectManager.getObjectByID(OID).changeCurrentRoom(next);
+		
+		System.out.println("Transferring from " + rmap.get(curRID) + " to " + rmap.get(ID));
+		
+		curRID = ID;
+		return next;
 	}
 	
 	public static Room changeRoom(ArrayDeque<Integer> transfer, int ID){

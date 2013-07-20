@@ -1,12 +1,18 @@
 package gameAI.behaviors;
 
+import gameAI.actions.Idle;
+import gameAI.actions.Interact;
+import gameAI.actions.MoveTo;
+import gameAI.actions.Wander;
+import gameObjects.Door;
+import gameObjects.DrawableObject;
+import gameObjects.Keyper;
+
 import java.util.ArrayDeque;
 
 import util.Vector;
 import world.Room;
 import world.tile.Tile;
-import gameAI.actions.*;
-import gameObjects.*;
 
 public class KeyperOpenBehavior extends Behavior{
 	Keyper host;
