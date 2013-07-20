@@ -1,7 +1,7 @@
 package gameAI.actions;
 
-import util.Vector;
 import gameAI.behaviors.Behavior;
+import util.Vector;
 
 public class Idle extends Action{
 	private Action next;

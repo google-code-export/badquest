@@ -20,19 +20,28 @@ public abstract class DrawableObject {
 	protected final int OID;
 	
 	public DrawableObject(){
-		OID = register();
+		if(this instanceof Player)
+			OID = registerWithOffset(1000000000);
+		else if(this instanceof Actor)
+			OID = registerWithOffset(1000000);
+		else
+			OID = register();
 	}
 	
 	public DrawableObject(int ID){
-		OID = register(ID);
+		OID = registerSpecific(ID);
 	}
 	
 	private final int register(){
 		return ObjectManager.register(this);
 	}
 	
-	private final int register(int ID){
-		return ObjectManager.register(this, ID);
+	private final int registerSpecific(int ID){
+		return ObjectManager.registerWithID(this, ID);
+	}
+	
+	private final int registerWithOffset(int ID){
+		return ObjectManager.registerWithOffset(this, ID);
 	}
 	
 	//Gets

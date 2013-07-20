@@ -80,6 +80,7 @@ public class Player extends Actor {
 	public void update(double elapsedSeconds){		
 		//Add a block for player input
 		Vector inputVel = new Vector(0,0);
+		int useMask = 0;
 		if(!lock && inputFlag){
 			for(PlayerInput pid:input){
 				switch(pid){
@@ -96,17 +97,20 @@ public class Player extends Actor {
 					inputVel = inputVel.add(new Vector(-speed,0));
 					break;
 				case JUMP:
+					if(externalVelocity.compareTo(Vector.ZERO) == 0)
+						applyExternalVelocity(new Vector(angle).scale(350));
 					break;
 				case USE1:
-					equip[0].use();
+					useMask |= 1;
 					break;
 				case USE2:
-					equip[1].use();
+					useMask |= 2;
 					break;
 				case USE3:
-					equip[2].use();
+					useMask |= 4;
 					break;
 				case USE4:
+					useMask |= 8;
 					break;
 				default:
 					System.err.println("Unrecognized player input: " + pid);
@@ -116,13 +120,21 @@ public class Player extends Actor {
 			inputFlag = false;
 		}
 		
+		//Set internal velocity
 		setInternalVelocity(inputVel);
 		
 		//Perform the Actor update
 		super.update(elapsedSeconds);
+		
+		
 		//Update equipment modules
 		for(EquipmentModule mod:equip)
 			mod.update(elapsedSeconds);
+		
+		//Use equipment
+		for(int i = 0; i < equip.length; i++)
+			if((useMask&(1<<i)) > 0)
+				equip[i].use();
 	}
 	
 	@Override

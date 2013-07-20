@@ -1,20 +1,18 @@
 package gameObjects;
 
-import gameAI.Node;
-import gameAI.Pathfinding;
+import gameAI.behaviors.FollowerBehavior;
+import gameObjects.equipment.DebugSword;
 import gameObjects.equipment.EquipmentModule;
 import gameObjects.equipment.HornedHelmet;
 import graphics.Camera;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
-import java.util.ArrayDeque;
 
 import util.Vector;
 
 public class DebugEnemy extends Actor {
-	EquipmentModule helmet;
-	ArrayDeque<Node> waypoints;
+	EquipmentModule[] equip;
 	
 	double moveSpeed = 75;
 	double moveClock = .5;
@@ -22,76 +20,47 @@ public class DebugEnemy extends Actor {
 	double skipAhead = 4;
 	boolean canSkip = false;
 	
-	DrawableObject follow; //The target this object will pathfind to
+	FollowerBehavior brain;
 	
-	public DebugEnemy(int r){
-		super("Pathfinder", r);
-		waypoints = new ArrayDeque<Node>();
+	public DebugEnemy(){
+		super("Hunter", 10);
 		
-		helmet = new EquipmentModule(this);
-		helmet.loadEquipment(new HornedHelmet());
+		equip = new EquipmentModule[3];
+		equip[0] = new EquipmentModule(this, radius*1.5, Math.PI/2.5, Math.PI/6);
+		equip[0].loadEquipment(new DebugSword());
+		
+		equip[1] = new EquipmentModule(this, radius*1.5, -Math.PI/2.5, -Math.PI/6);
+//		equip[1] = new EquipmentModule(this, radius*1.4, -Math.PI/2, -Math.PI/1.9, 4);
+		equip[1].loadEquipment(new DebugSword());
+		
+		equip[2] = new EquipmentModule(this);
+		equip[2].loadEquipment(new HornedHelmet());
+		
+		
+		brain = new FollowerBehavior(this);
 	}
 	
 	@Override
 	public void kill() {
-		helmet.loadEquipment(null);
+		for(EquipmentModule eqm:equip)
+			eqm.loadEquipment(null);
 		super.kill();
-	}
-	
-	public void setFollow(DrawableObject d){
-		follow = d;
 	}
 	
 	@Override
 	public void setPosition(Vector v){
 		super.setPosition(v);
-		helmet.move(0);
+		for(EquipmentModule eqm:equip)
+			eqm.move(0);
 	}
 	
 	@Override
 	public void update(double elapsedSeconds) {
-		if(follow != null && follow.isDead())
-			follow = null;
-		
-		if(follow == null){
-			setInternalVelocity(Vector.ZERO);
-		}else{
-			timeToNextMove -= elapsedSeconds;
-			
-			if(position.dis2(follow.getPosition()) < Math.pow(2.5 * (radius+follow.getRadius())/2, 2))
-				waypoints.clear();
-			else if(Pathfinding.isPathClear(this, follow.getPosition())){
-				waypoints.clear();
-				waypoints.add(new Node(follow.getPosition(), -1));
-			}else if(timeToNextMove <= 0){
-				timeToNextMove = moveClock;
-				waypoints = Pathfinding.routeTo(position, currentRoom.getNodesInTileRadius(position,2.013), currentRoom.getNearestNode(follow.getPosition()), currentRoom.getNodeGraph());
-				canSkip = true;
-			}
-			
-			if(!waypoints.isEmpty() && canSkip){
-				int cnt = 0;
-				Node next = null;
-				while(waypoints.size() > 1 && Pathfinding.isPathClear(this, waypoints.peek().getPosition()) && cnt++ < skipAhead)
-					next = waypoints.remove();
-				if(next != null)
-					waypoints.addFirst(next);
-				canSkip = false;
-			}
-			
-			if(!waypoints.isEmpty() && waypoints.peek().getPosition().dis2(position) < 10){
-				waypoints.remove();
-				canSkip = true;
-			}
-			if(!waypoints.isEmpty()){
-				setInternalVelocity(waypoints.peek().getPosition().sub(position).scaleTo(moveSpeed));
-				setLookAt(position.add(internalVelocity));
-			}else
-				setInternalVelocity(Vector.ZERO);
-		}
+		brain.update(elapsedSeconds);
 		
 		super.update(elapsedSeconds);
-		helmet.update(elapsedSeconds);
+		for(EquipmentModule eqm:equip)
+			eqm.update(elapsedSeconds);
 	}
 	
 	@Override
@@ -105,15 +74,11 @@ public class DebugEnemy extends Actor {
 		next.scale(cam.xScale(), cam.yScale());
 		g.setTransform(next);
 		
-		if(!waypoints.isEmpty()){
-//			g.setColor(Color.cyan);
-//			g.drawLine(0, 0, (int)(waypoints.peek().getPosition().x-position.x), (int)(waypoints.peek().getPosition().y-position.y));
-//			for(Node w:waypoints)
-//				g.drawOval((int)(w.getPosition().x-position.x), (int)(w.getPosition().y-position.y),5,5);
-		}
+		
 		
 		g.setTransform(prev);
 		
-		helmet.drawBody(g, elapsedSeconds, cam);
+		for(EquipmentModule eqm:equip)
+			eqm.drawBody(g, elapsedSeconds, cam);
 	}
 }
